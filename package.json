@@ -1,0 +1,12 @@
+{
+  "name": "tradex-academy-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix user-frontend && npm install --prefix admin-frontend",
+    "seed": "npm run seed --prefix backend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:user": "npm run dev --prefix user-frontend",
+    "dev:admin": "npm run dev --prefix admin-frontend"
+  }
+}

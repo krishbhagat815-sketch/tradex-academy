@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Backend API (Port 5000)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/backend",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "src/server.ts"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "PORT": "5000",
+        "NODE_ENV": "development",
+        "JWT_SECRET": "tradex_super_secret_jwt_key_2026"
+      }
+    },
+    {
+      "name": "Launch Student Website (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/user-frontend/src"
+    },
+    {
+      "name": "Launch Admin Dashboard (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5174",
+      "webRoot": "${workspaceFolder}/admin-frontend/src"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack Dev (Backend + Web)",
+      "configurations": ["Debug Backend API (Port 5000)", "Launch Student Website (Chrome)"]
+    }
+  ]
+}

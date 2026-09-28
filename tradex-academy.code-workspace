@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "name": "🚀 Backend API (Express + SQLite)",
+      "path": "backend"
+    },
+    {
+      "name": "🎓 Student Website (React + Tailwind)",
+      "path": "user-frontend"
+    },
+    {
+      "name": "⚡ Admin Dashboard (React + SaaS UI)",
+      "path": "admin-frontend"
+    },
+    {
+      "name": "📁 Project Root Config",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  }
+}

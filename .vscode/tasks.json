@@ -1,0 +1,59 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Full Stack (All-in-One)",
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Start Backend Server (Port 5000)",
+      "type": "npm",
+      "script": "dev:backend",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Start Student Website (Port 5173)",
+      "type": "npm",
+      "script": "dev:user",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Start Admin Dashboard (Port 5174)",
+      "type": "npm",
+      "script": "dev:admin",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Re-Seed Database with Sample Data",
+      "type": "npm",
+      "script": "seed",
+      "problemMatcher": []
+    },
+    {
+      "label": "Install All Dependencies",
+      "type": "npm",
+      "script": "install:all",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All Frontends",
+      "type": "npm",
+      "script": "build:all",
+      "problemMatcher": []
+    }
+  ]
+}
