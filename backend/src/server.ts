@@ -44,6 +44,21 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+// Root welcome route
+app.get('/', (_req, res) => {
+  res.send(`
+    <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 50px auto; padding: 30px; background: #0f172a; color: #f8fafc; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); text-align: center;">
+      <h1 style="color: #38bdf8; margin-bottom: 8px;">🚀 TradeX Academy API</h1>
+      <p style="color: #94a3b8; font-size: 16px;">Backend server is live and running successfully on Render!</p>
+      <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left;">
+        <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #4ade80;">Active (200 OK)</span></p>
+        <p style="margin: 5px 0;"><strong>Health Endpoint:</strong> <a href="/api/health" style="color: #38bdf8;">/api/health</a></p>
+      </div>
+      <p style="color: #64748b; font-size: 13px;">Next: Deploy the frontend static sites to connect with this API.</p>
+    </div>
+  `);
+});
+
 // Route registration
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
