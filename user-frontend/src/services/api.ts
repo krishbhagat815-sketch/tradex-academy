@@ -1,6 +1,9 @@
+const PROD_API = "https://tradex-academy.onrender.com/api";
 const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api`
-  : "/api";
+  : window.location.hostname === "localhost"
+  ? "/api"
+  : PROD_API;
 
 export interface ApiResponse<T = any> {
   success: boolean;
