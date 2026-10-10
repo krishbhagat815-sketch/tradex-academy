@@ -4,6 +4,7 @@ import { Star, Clock, BookOpen, Users, Heart, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { api } from '../../services/api';
+import { getMediaUrl } from '../../utils/media';
 
 export interface Course {
   id: string;
@@ -81,7 +82,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
       {/* Thumbnail Header */}
       <Link to={`/course/${course.slug || course.id}`} className="relative block aspect-[16/9] overflow-hidden bg-slate-950">
         <img
-          src={course.thumbnail}
+          src={getMediaUrl(course.thumbnail)}
           alt={course.title}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -159,9 +160,12 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
           {course.instructor_name && (
             <div className="mt-3 flex items-center gap-2">
               <img
-                src={course.instructor_avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${course.instructor_name}`}
+                src={getMediaUrl(course.instructor_avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name)}`}
                 alt={course.instructor_name}
-                className="w-5 h-5 rounded-full object-cover"
+                className="w-5 h-5 rounded-full object-cover bg-slate-800"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name || 'Instructor')}`;
+                }}
               />
               <span className="text-xs text-slate-300 font-medium truncate">{course.instructor_name}</span>
             </div>

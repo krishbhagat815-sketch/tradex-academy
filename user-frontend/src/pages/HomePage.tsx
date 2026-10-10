@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import { CourseCard, Course } from '../components/courses/CourseCard';
 import { PromoBanner } from '../components/layout/PromoBanner';
 import { useLanguage } from '../context/LanguageContext';
+import { getMediaUrl } from '../utils/media';
 import {
   ArrowRight,
   Sparkles,
@@ -32,6 +33,7 @@ export const HomePage: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [cmsContent, setCmsContent] = useState<any>(null);
+  const [instructorsList, setInstructorsList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'free' | 'options' | 'price-action' | 'crypto'>('all');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -39,15 +41,19 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     async function loadData() {
       try {
-        const [courseRes, catRes, contentRes] = await Promise.all([
+        const [courseRes, catRes, contentRes, instRes] = await Promise.all([
           api.get('/courses?limit=12'),
           api.get('/categories'),
-          api.get('/content')
+          api.get('/content'),
+          api.get('/instructors').catch(() => ({ success: false, instructors: [] }))
         ]);
 
         if (courseRes.success) setCourses(courseRes.courses);
         if (catRes.success) setCategories(catRes.categories);
         if (contentRes.success) setCmsContent(contentRes.content);
+        if (instRes.success && instRes.instructors?.length > 0) {
+          setInstructorsList(instRes.instructors);
+        }
       } catch (err) {
         console.error('Error loading homepage data:', err);
       } finally {
@@ -647,33 +653,57 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {mentors.map((m, idx) => (
-              <div
-                key={idx}
-                className="p-8 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:border-slate-700 transition-all"
-              >
-                <img
-                  src={m.avatar}
-                  alt={m.name}
-                  className="w-24 h-24 rounded-2xl object-cover ring-2 ring-emerald-500/40 flex-shrink-0"
-                />
-                <div className="text-center sm:text-left">
-                  <h3 className="text-xl font-bold text-white">{m.name}</h3>
-                  <p className="text-xs font-semibold text-emerald-400 mt-0.5">{m.role}</p>
-                  <p className="text-xs text-slate-400 mt-3 leading-relaxed">{m.bio}</p>
-                  <div className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-center sm:justify-start gap-6 text-xs text-slate-300">
-                    <div>
-                      <span className="font-bold text-white">{m.exp}</span> {dict.mentors.experience}
-                    </div>
-                    <div>
-                      <span className="font-bold text-white">{m.students}</span> {dict.mentors.studentsTrained}
+          {/* Dynamic or curated mentors */}
+          {(() => {
+            const displayMentors = instructorsList.length > 0
+              ? instructorsList.map((inst) => ({
+                  name: inst.name,
+                  role: inst.title || (language === 'gu' ? 'મુખ્ય ટ્રેડિંગ મેન્ટર' : 'Lead Trading Mentor'),
+                  exp: inst.expertise ? inst.expertise.split(',')[0] : '8+ Years',
+                  students: inst.students_count ? `${Number(inst.students_count).toLocaleString()}+` : '15,000+',
+                  avatar: getMediaUrl(inst.avatar),
+                  bio: inst.bio || (language === 'gu'
+                    ? 'ભારતીય શેર બજારમાં ફૂલ-ટાઇમ ટ્રેડિંગ અને વિદ્યાર્થીઓને સ્વતંત્ર બનાવવાનો અનુભવ.'
+                    : 'Professional full-time trader and mentor at The Safe Trading.')
+                }))
+              : mentors.map((m) => ({
+                  ...m,
+                  avatar: getMediaUrl(m.avatar)
+                }));
+
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                {displayMentors.map((m, idx) => (
+                  <div
+                    key={idx}
+                    className="p-8 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:border-slate-700 transition-all shadow-lg"
+                  >
+                    <img
+                      src={m.avatar}
+                      alt={m.name}
+                      className="w-24 h-24 rounded-2xl object-cover ring-2 ring-emerald-500/40 flex-shrink-0 bg-slate-950"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(m.name)}`;
+                      }}
+                    />
+                    <div className="text-center sm:text-left flex-1 min-w-0">
+                      <h3 className="text-xl font-bold text-white truncate">{m.name}</h3>
+                      <p className="text-xs font-semibold text-emerald-400 mt-0.5 truncate">{m.role}</p>
+                      <p className="text-xs text-slate-400 mt-3 leading-relaxed line-clamp-3">{m.bio}</p>
+                      <div className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-center sm:justify-start gap-6 text-xs text-slate-300">
+                        <div>
+                          <span className="font-bold text-white">{m.exp}</span> {dict.mentors.experience}
+                        </div>
+                        <div>
+                          <span className="font-bold text-white">{m.students}</span> {dict.mentors.studentsTrained}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            );
+          })()}
         </div>
       </section>
 
@@ -712,9 +742,12 @@ export const HomePage: React.FC = () => {
 
                 <div className="mt-6 pt-5 border-t border-slate-800/80 flex items-center gap-3">
                   <img
-                    src={t.avatar}
+                    src={getMediaUrl(t.avatar)}
                     alt={t.name}
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30"
+                    className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30 bg-slate-950"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(t.name)}`;
+                    }}
                   />
                   <div>
                     <h4 className="text-sm font-bold text-white">{t.name}</h4>

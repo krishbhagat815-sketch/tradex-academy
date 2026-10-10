@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { api } from "../../services/api";
+import { getMediaUrl } from "../../utils/media";
 import {
   GraduationCap,
   Search,
@@ -324,11 +325,14 @@ export const Navbar: React.FC = () => {
               >
                 <img
                   src={
-                    user.avatar ||
-                    `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`
+                    getMediaUrl(user.avatar) ||
+                    `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}`
                   }
                   alt={user.name}
-                  className="w-7 h-7 rounded-full object-cover ring-2 ring-brand-500/40"
+                  className="w-7 h-7 rounded-full object-cover ring-2 ring-brand-500/40 bg-slate-800"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}`;
+                  }}
                 />
                 <span className="text-slate-200 max-w-[100px] truncate">
                   {user.name.split(" ")[0]}

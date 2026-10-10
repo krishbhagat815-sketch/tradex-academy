@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
+import { getMediaUrl } from "../utils/media";
 import {
   LayoutDashboard,
   BookOpen,
@@ -211,11 +212,14 @@ export const StudentDashboardPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10 text-center sm:text-left">
           <img
             src={
-              user?.avatar ||
-              `https://api.dicebear.com/7.x/initials/svg?seed=${user?.name}`
+              getMediaUrl(user?.avatar) ||
+              `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name || "Student")}`
             }
             alt={user?.name}
-            className="w-20 h-20 rounded-2xl object-cover ring-4 ring-brand-500/30 shadow-lg"
+            className="w-20 h-20 rounded-2xl object-cover ring-4 ring-brand-500/30 shadow-lg bg-slate-800"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name || "Student")}`;
+            }}
           />
           <div className="flex-1">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 mb-2">
@@ -680,11 +684,14 @@ export const StudentDashboardPage: React.FC = () => {
               <div className="flex items-center gap-4">
                 <img
                   src={
-                    avatar ||
+                    getMediaUrl(avatar) ||
                     `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || "Student")}`
                   }
                   alt="Profile preview"
-                  className="w-16 h-16 rounded-full object-cover border-2 border-brand-500/30"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-brand-500/30 bg-slate-800"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || "Student")}`;
+                  }}
                 />
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">

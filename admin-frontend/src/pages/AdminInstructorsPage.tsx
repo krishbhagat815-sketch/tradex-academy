@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
-import { GraduationCap, PlusCircle, Trash2, Edit, Star, X } from 'lucide-react';
+import { GraduationCap, PlusCircle, Trash2, Edit, Star, X, Upload, Camera, Loader2, CheckCircle2 } from 'lucide-react';
+import { getMediaUrl } from '../utils/media';
 
 export const AdminInstructorsPage: React.FC = () => {
   const [instructors, setInstructors] = useState<any[]>([]);
@@ -15,6 +16,7 @@ export const AdminInstructorsPage: React.FC = () => {
   const [avatar, setAvatar] = useState('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300');
   const [bio, setBio] = useState('');
   const [expertise, setExpertise] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const loadInstructors = async () => {
     setLoading(true);
@@ -39,6 +41,7 @@ export const AdminInstructorsPage: React.FC = () => {
     setName('');
     setEmail('');
     setTitle('');
+    setAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300');
     setBio('');
     setExpertise('');
     setShowModal(true);
@@ -53,6 +56,42 @@ export const AdminInstructorsPage: React.FC = () => {
     setBio(inst.bio || '');
     setExpertise(inst.expertise || '');
     setShowModal(true);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Photo must be less than 10MB.');
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await api.post('/upload', formData);
+      if (res.success && res.url) {
+        setAvatar(res.url);
+      } else {
+        throw new Error(res.message || 'Photo upload failed');
+      }
+    } catch (err: any) {
+      console.warn('Server upload failed, converting to local data URL:', err);
+      const reader = new FileReader();
+      reader.onload = (loadEvt) => {
+        if (loadEvt.target?.result) {
+          setAvatar(loadEvt.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -125,9 +164,12 @@ export const AdminInstructorsPage: React.FC = () => {
             >
               <div className="flex items-start gap-4">
                 <img
-                  src={inst.avatar}
+                  src={getMediaUrl(inst.avatar)}
                   alt={inst.name}
-                  className="w-14 h-14 rounded-xl object-cover ring-2 ring-brand-500/30 flex-shrink-0"
+                  className="w-14 h-14 rounded-xl object-cover ring-2 ring-brand-500/30 flex-shrink-0 bg-slate-950"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(inst.name)}`;
+                  }}
                 />
                 <div className="min-w-0 flex-1">
                   <h3 className="text-base font-bold text-white truncate">{inst.name}</h3>
@@ -216,13 +258,96 @@ export const AdminInstructorsPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Profile Photo URL</label>
-              <input
-                type="text"
-                value={avatar}
-                onChange={(e) => setAvatar(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white"
-              />
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                Instructor Profile Photo
+              </label>
+              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                <div className="flex items-center gap-4">
+                  {/* Photo Preview Circle/Square */}
+                  <div className="relative w-16 h-16 rounded-xl overflow-hidden ring-2 ring-brand-500/40 bg-slate-900 flex-shrink-0 flex items-center justify-center">
+                    {avatar ? (
+                      <img
+                        src={getMediaUrl(avatar)}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || 'Instructor')}`;
+                        }}
+                      />
+                    ) : (
+                      <Camera className="w-6 h-6 text-slate-500" />
+                    )}
+                    {uploading && (
+                      <div className="absolute inset-0 bg-slate-950/75 flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 text-brand-400 animate-spin" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <label
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                          uploading
+                            ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                            : 'bg-brand-500 hover:bg-brand-400 text-slate-950 hover:shadow-brand-500/20'
+                        }`}
+                      >
+                        {uploading ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="w-3.5 h-3.5" />
+                            <span>Upload Photo</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          disabled={uploading}
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+
+                      {avatar && (
+                        <button
+                          type="button"
+                          onClick={() => setAvatar('')}
+                          className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-400 hover:text-rose-400 text-xs transition-colors"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-1.5">
+                      Upload JPG, PNG or WebP image. Max 10MB.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Direct image URL fallback */}
+                <div className="pt-1 border-t border-slate-850">
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                    <span>Or image URL</span>
+                    {avatar && avatar.startsWith('/uploads') && (
+                      <span className="text-emerald-400 font-mono text-[10px] flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> Uploaded to server
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="https://... or /uploads/..."
+                    value={avatar}
+                    onChange={(e) => setAvatar(e.target.value)}
+                    className="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white placeholder-slate-500 font-mono focus:border-brand-500/50 focus:outline-none"
+                  />
+                </div>
+              </div>
             </div>
 
             <div>

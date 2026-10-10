@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { VideoModal } from '../components/common/VideoModal';
+import { getMediaUrl } from '../utils/media';
 import {
   Star,
   Clock,
@@ -259,9 +260,12 @@ export const CourseDetailsPage: React.FC = () => {
               {/* Instructor snippet */}
               <div className="pt-4 flex items-center gap-3 border-t border-slate-800">
                 <img
-                  src={course.instructor_avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${course.instructor_name}`}
+                  src={getMediaUrl(course.instructor_avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name)}`}
                   alt={course.instructor_name}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-emerald-500/40"
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-emerald-500/40 bg-slate-800"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name || 'Instructor')}`;
+                  }}
                 />
                 <div>
                   <p className="text-xs text-slate-400">
@@ -279,7 +283,7 @@ export const CourseDetailsPage: React.FC = () => {
                 {/* Thumbnail Preview Area */}
                 <div className="relative aspect-video bg-black group overflow-hidden">
                   <img
-                    src={course.thumbnail}
+                    src={getMediaUrl(course.thumbnail)}
                     alt={course.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -552,9 +556,12 @@ export const CourseDetailsPage: React.FC = () => {
               </span>
               <div className="mt-4 flex flex-col sm:flex-row items-start gap-6">
                 <img
-                  src={course.instructor_avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${course.instructor_name}`}
+                  src={getMediaUrl(course.instructor_avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name)}`}
                   alt={course.instructor_name}
-                  className="w-20 h-20 rounded-2xl object-cover ring-2 ring-emerald-500/30 flex-shrink-0"
+                  className="w-20 h-20 rounded-2xl object-cover ring-2 ring-emerald-500/30 flex-shrink-0 bg-slate-800"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name || 'Instructor')}`;
+                  }}
                 />
                 <div className="space-y-2 flex-1">
                   <h4 className="text-xl font-bold text-white">{course.instructor_name}</h4>
