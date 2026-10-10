@@ -184,8 +184,11 @@ export const Navbar: React.FC = () => {
 
             {/* Live Autocomplete Suggestions Dropdown */}
             {showDropdown && searchQuery.trim().length >= 2 && (
-              <div className="absolute left-0 right-0 top-full mt-2 bg-slate-900/98 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl">
-                <div className="p-3 border-b border-slate-800 text-[11px] font-semibold text-slate-400 flex items-center justify-between">
+              <div
+                style={{ backgroundColor: "#0f172a" }}
+                className="absolute left-0 right-0 top-full mt-2 bg-slate-900 border border-slate-750 rounded-2xl shadow-2xl overflow-hidden z-[999] opacity-100"
+              >
+                <div className="p-3 border-b border-slate-800 bg-slate-950/70 text-[11px] font-semibold text-slate-400 flex items-center justify-between">
                   <span>{language === 'gu' ? 'કોર્સ પરિણામો:' : 'Matching Courses:'}</span>
                   {isSearching && <span className="text-brand-400 animate-pulse text-[10px]">Searching...</span>}
                 </div>
