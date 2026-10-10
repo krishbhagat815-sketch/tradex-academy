@@ -167,55 +167,31 @@ export const HomePage: React.FC = () => {
   ];
 
   // Testimonials in Gujarati & English
-  const testimonials = language === 'gu' ? [
-    {
-      name: 'પ્રતીક પટેલ',
-      city: 'અમદાવાદ (નવરંગપુરા)',
-      role: 'ફૂલ-ટાઇમ ઓપ્શન્સ ટ્રેડર',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
-      rating: 5,
-      content: 'હું પહેલાં ટેલિગ્રામ ટીપ્સના ચક્કરમાં દર મહિને મોટો લોસ કરતો હતો. TradeX Academy ના પ્રાઇસ એક્શન અને રિસ્ક મેનેજમેન્ટ કોર્સે મારી આંખો ખોલી નાખી. હવે મારી પાસે ચોક્કસ સેટઅપ અને સ્ટોપ લોસ છે. અમદાવાદમાં બેસીને પોતાની મહેનતથી પ્રોફિટેબલ ટ્રેડર બનવાનો ગર્વ છે!'
-    },
-    {
-      name: 'હર્ષિલ મહેતા',
-      city: 'સુરત (અડાજણ)',
-      role: 'ટેક્સટાઇલ બિઝનેસમેન & સ્વિંગ ટ્રેડર',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
-      rating: 5,
-      content: 'બિઝનેસની સાથે ટ્રેડિંગ કેવી રીતે કરવું તે મને સ્વિંગ ટ્રેડિંગ કોર્સમાં શીખવા મળ્યું. સૌથી મોટી વાત એ છે કે બધું સરળ ગુજરાતીમાં સમજાવ્યું છે. કોઈ અઘરા અંગ્રેજી શબ્દો વગર લાઈવ ચાર્ટ પર પ્રેક્ટિકલ નોલેજ મળ્યું. ગુજરાતીઓ માટે આ બેસ્ટ પ્લેટફોર્મ છે.'
-    },
-    {
-      name: 'નેહા શાહ',
-      city: 'વડોદરા (અલકાપુરી)',
-      role: 'બેંકિંગ પ્રોફેશનલ & ઓપ્શન્સ બાયર',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
-      rating: 5,
-      content: 'નિફ્ટી અને બેંકનિફ્ટી એક્સપાયરી સ્ટ્રેટેજી કોર્સ અદભુત છે! ઓપ્શન ગ્રીક્સ ડેલ્ટા અને થીટા કેવી રીતે કામ કરે છે તે પહેલીવાર સાચી રીતે સમજાયું. વોટ્સએપ પર જ્યારે પણ શંકા હોય ત્યારે મેન્ટર ટીમ તરફથી તરત જવાબ મળે છે.'
-    }
-  ] : [
+  // Testimonials in English as requested
+  const testimonials = [
     {
       name: 'Pratik Patel',
-      city: 'Ahmedabad',
-      role: 'Full-Time Options Trader',
+      city: language === 'gu' ? 'અમદાવાદ (નવરંગપુરા)' : 'Ahmedabad (Navrangpura)',
+      role: language === 'gu' ? 'Full-Time Options Trader' : 'Full-Time Options Trader',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
       rating: 5,
-      content: 'I used to lose capital following random Telegram tip channels. TradeX Academy’s price action and risk management course completely transformed my trading discipline. Now I trade with strict stop losses and high conviction.'
+      content: 'I used to lose capital every month following random Telegram tip channels. The Safe Trading’s Price Action & Risk Management course opened my eyes! Now I have strict setups, predefined entry points, and disciplined stop losses. Proud to be a consistently profitable trader.'
     },
     {
       name: 'Harshil Mehta',
-      city: 'Surat',
-      role: 'Business Owner & Swing Trader',
+      city: language === 'gu' ? 'સુરત (અડાજણ)' : 'Surat (Adajan)',
+      role: language === 'gu' ? 'Textile Business Owner & Swing Trader' : 'Textile Business Owner & Swing Trader',
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
       rating: 5,
-      content: 'Learning in mother tongue Gujarati made all the difference. The swing trading setups let me manage my textile business while building a structured equity portfolio. Highly recommended to every trader in Gujarat.'
+      content: 'I learned how to trade alongside running my textile business through the Swing Trading course. The best part is the practical live chart analysis without confusing financial jargon. Truly the most reliable trading education platform!'
     },
     {
       name: 'Neha Shah',
-      city: 'Vadodara',
-      role: 'Banking Professional & Options Trader',
+      city: language === 'gu' ? 'વડોદરા (અલકાપુરી)' : 'Vadodara (Alkapuri)',
+      role: language === 'gu' ? 'Banking Professional & Options Trader' : 'Banking Professional & Options Trader',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
       rating: 5,
-      content: 'The Nifty and BankNifty expiry masterclass is phenomenal! Greek mechanics, theta decay, and strike selection are explained with unmatched clarity. Mentor support on WhatsApp is prompt and genuinely helpful.'
+      content: 'The Nifty & BankNifty Expiry Strategy course is simply phenomenal! How Option Greeks (Delta & Theta) work was explained with crystal clarity. Whenever I have a question during live market hours, the mentor team answers instantly on WhatsApp.'
     }
   ];
 
@@ -338,7 +314,7 @@ export const HomePage: React.FC = () => {
             </Link>
 
             <a
-              href="https://wa.me/919876543210?text=%E0%AA%A8%E0%AA%AE%E0%AA%B8%E0%AB%8D%E0%AA%A4%E0%AB%87%20TradeX%20Academy%2C%20%E0%AA%AE%E0%AA%BE%E0%AA%B0%E0%AB%87%20%E0%AA%9F%E0%AB%8D%E0%AA%B0%E0%AB%87%E0%AA%A1%E0%AA%BF%E0%AA%82%E0%AA%97%20%E0%AA%95%E0%AB%8B%E0%AA%B0%E0%AB%8D%E0%AA%B8%20%E0%AA%B5%E0%AA%BF%E0%AA%B7%E0%AB%87%20%E0%AA%AE%E0%AA%BE%E0%AA%B9%E0%AA%BF%E0%AA%A4%E0%AA%BF%20%E0%AA%9C%E0%AB%8B%E0%AA%88%E0%AA%8F%20%E0%AA%9B%E0%AB%87."
+              href="https://wa.me/919876543210?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-6 py-4 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 font-bold text-base border border-emerald-500/30 transition-all flex items-center justify-center gap-2"

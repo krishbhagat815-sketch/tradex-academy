@@ -826,7 +826,7 @@ export const StudentDashboardPage: React.FC = () => {
                 <Award className="w-10 h-10 text-amber-400" />
               </div>
               <h2 className="text-xs uppercase tracking-[0.3em] font-extrabold text-amber-400">
-                TradeX Academy Global Educational Institute
+                The Safe Trading Global Educational Institute
               </h2>
               <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white mt-4">
                 Certificate of Completion
