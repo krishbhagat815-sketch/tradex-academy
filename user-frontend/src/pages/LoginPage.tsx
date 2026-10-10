@@ -37,10 +37,6 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleFillDemoStudent = () => {
-    setEmail("student@tradex.com");
-    setPassword("Student@123");
-  };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
@@ -63,15 +59,6 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Demo student quick fill */}
-        <button
-          type="button"
-          onClick={handleFillDemoStudent}
-          className="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>{dict.auth.fillDemoStudent} (student@tradex.com)</span>
-        </button>
 
         {error && (
           <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">

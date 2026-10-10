@@ -26,10 +26,6 @@ export const AdminLoginPage: React.FC = () => {
     }
   };
 
-  const handleFillDemoAdmin = () => {
-    setEmail('admin@tradex.com');
-    setPassword('Admin@123');
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-16">
@@ -42,15 +38,6 @@ export const AdminLoginPage: React.FC = () => {
           <p className="text-xs text-slate-500">The Safe Trading Operations & Curriculum Console</p>
         </div>
 
-        {/* Demo Admin Helper Button */}
-        <button
-          type="button"
-          onClick={handleFillDemoAdmin}
-          className="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
-        >
-          <Sparkles className="w-4 h-4 text-emerald-600" />
-          <span>Fill Demo Admin Credentials (admin@tradex.com)</span>
-        </button>
 
         {error && (
           <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
