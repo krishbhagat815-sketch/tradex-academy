@@ -100,7 +100,11 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: dict.nav.courses, path: "/courses" },
-    { name: dict.nav.freeCourses, path: "/courses?price=free" },
+    {
+      name: dict.nav.myCourses,
+      path: user ? "/my-courses" : "/login?redirect=/my-courses",
+      badge: user ? "Enrolled" : undefined
+    },
     { name: dict.nav.whyUs, path: "/#why-us" },
     { name: dict.nav.testimonials, path: "/#testimonials" },
     { name: dict.nav.verifyCert, path: "/verify-certificate" },
@@ -253,17 +257,27 @@ export const Navbar: React.FC = () => {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden xl:flex items-center gap-5 text-sm font-medium text-slate-300">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`hover:text-brand-400 transition-colors ${
-                location.pathname === link.path ? "text-brand-400 font-semibold" : ""
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive =
+              location.pathname === link.path ||
+              (link.path.startsWith('/my-courses') &&
+                (location.pathname === '/my-courses' ||
+                  (location.pathname === '/dashboard' && !location.search.includes('tab='))));
+            return (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`hover:text-brand-400 transition-colors flex items-center gap-1.5 ${
+                  isActive ? "text-brand-400 font-semibold" : ""
+                }`}
+              >
+                <span>{link.name}</span>
+                {link.badge && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" title="Active Learning" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Action Controls & Language Switcher */}
@@ -356,6 +370,13 @@ export const Navbar: React.FC = () => {
                       {user.email}
                     </p>
                   </div>
+                  <Link
+                    to="/my-courses"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-300 hover:bg-slate-800/60 hover:text-white transition-colors"
+                  >
+                    <BookOpen className="w-4 h-4 text-emerald-400" />
+                    {dict.nav.myCourses}
+                  </Link>
                   <Link
                     to="/dashboard"
                     className="flex items-center gap-2.5 px-4 py-2.5 text-slate-300 hover:bg-slate-800/60 hover:text-white transition-colors"
@@ -490,16 +511,32 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="flex flex-col space-y-1.5">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 text-sm font-medium text-slate-300 hover:text-brand-400 hover:bg-slate-900 rounded-lg"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive =
+                location.pathname === link.path ||
+                (link.path.startsWith('/my-courses') &&
+                  (location.pathname === '/my-courses' ||
+                    (location.pathname === '/dashboard' && !location.search.includes('tab='))));
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg flex items-center justify-between ${
+                    isActive
+                      ? "text-brand-400 bg-brand-500/10 font-semibold"
+                      : "text-slate-300 hover:text-brand-400 hover:bg-slate-900"
+                  }`}
+                >
+                  <span>{link.name}</span>
+                  {link.badge && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-500/20 text-brand-400">
+                      Enrolled
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="pt-3 border-t border-slate-800">

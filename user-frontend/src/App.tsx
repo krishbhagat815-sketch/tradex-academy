@@ -44,6 +44,7 @@ export function App() {
               <Route path="/course/:id" element={<CourseDetailsPage />} />
               <Route path="/checkout/:courseId" element={<CheckoutPage />} />
               <Route path="/dashboard" element={<StudentDashboardPage />} />
+              <Route path="/my-courses" element={<StudentDashboardPage />} />
               <Route path="/learn/:courseId" element={<CoursePlayerPage />} />
               <Route path="/verify-certificate" element={<CertificateVerifyPage />} />
               <Route path="/login" element={<LoginPage />} />

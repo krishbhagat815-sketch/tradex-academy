@@ -5,6 +5,7 @@ export interface TranslationDictionary {
   nav: {
     home: string;
     courses: string;
+    myCourses: string;
     freeCourses: string;
     whyUs: string;
     testimonials: string;
@@ -290,6 +291,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     nav: {
       home: 'Home',
       courses: 'Courses',
+      myCourses: 'My Courses',
       freeCourses: 'Free Courses',
       whyUs: 'Why Choose Us',
       testimonials: 'Student Reviews',
@@ -545,6 +547,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     nav: {
       home: 'Home',
       courses: 'Courses',
+      myCourses: 'My Courses',
       freeCourses: 'Free Learning',
       whyUs: 'Why Us',
       testimonials: 'Testimonials',

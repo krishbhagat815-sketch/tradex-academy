@@ -63,7 +63,8 @@ export const StudentDashboardPage: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/login?redirect=/dashboard");
+      const redirectPath = window.location.pathname + window.location.search;
+      navigate(`/login?redirect=${encodeURIComponent(redirectPath || '/dashboard')}`);
       return;
     }
 
@@ -361,9 +362,9 @@ export const StudentDashboardPage: React.FC = () => {
                   >
                     <div className="flex gap-4 items-start">
                       <img
-                        src={c.thumbnail}
+                        src={getMediaUrl(c.thumbnail)}
                         alt={c.title}
-                        className="w-28 h-20 rounded-xl object-cover flex-shrink-0"
+                        className="w-28 h-20 rounded-xl object-cover flex-shrink-0 bg-slate-950"
                       />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">
@@ -447,17 +448,18 @@ export const StudentDashboardPage: React.FC = () => {
             <div className="p-12 text-center rounded-2xl bg-slate-900 border border-slate-800 max-w-md mx-auto">
               <BookOpen className="w-12 h-12 text-slate-500 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-white">
-                No Enrolled Courses Yet
+                {language === 'gu' ? 'તમે હજુ સુધી કોઈ Course માં Enroll નથી કર્યું' : 'No Enrolled Courses Yet'}
               </h3>
               <p className="mt-2 text-xs text-slate-400">
-                Explore our catalog to start learning modern data engineering,
-                web development, and quantitative finance.
+                {language === 'gu'
+                  ? 'Stock Market, Options, અને Price Action શીખવા માટે અમારા Courses જુઓ અને શરૂ કરો.'
+                  : 'Explore our catalog to start learning stock market trading, options strategies, and price action.'}
               </p>
               <Link
                 to="/courses"
-                className="mt-6 inline-flex px-6 py-2.5 rounded-xl bg-brand-500 text-slate-950 font-bold text-xs"
+                className="mt-6 inline-flex px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs shadow-md transition-all"
               >
-                Browse Catalog
+                {language === 'gu' ? 'Courses જુઓ' : 'Browse Courses'}
               </Link>
             </div>
           )}

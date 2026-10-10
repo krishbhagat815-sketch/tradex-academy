@@ -154,8 +154,8 @@ export const Footer: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link to="/courses?price=free" className="hover:text-brand-400 transition-colors text-emerald-400 font-medium">
-                {dict.nav.freeCourses}
+              <Link to="/my-courses" className="hover:text-brand-400 transition-colors text-emerald-400 font-medium">
+                {dict.nav.myCourses}
               </Link>
             </li>
             <li>
