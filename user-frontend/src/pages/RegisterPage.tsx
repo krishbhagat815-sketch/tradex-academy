@@ -18,7 +18,7 @@ export const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password.length < 6) {
-      setError(language === 'gu' ? 'પાસવર્ડ ઓછામાં ઓછો ૬ અક્ષરનો હોવો જોઈએ.' : 'Password must be at least 6 characters.');
+      setError(language === 'gu' ? 'Password ઓછામાં ઓછો 6 characters નો હોવો જોઈએ.' : 'Password must be at least 6 characters.');
       return;
     }
 
@@ -28,7 +28,7 @@ export const RegisterPage: React.FC = () => {
       await register(name, email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.message || (language === 'gu' ? 'એકાઉન્ટ બનાવવામાં ભૂલ આવી.' : 'Failed to register account.'));
+      setError(err.message || (language === 'gu' ? 'Account બનાવવામાં problem આવી.' : 'Failed to register account.'));
     } finally {
       setLoading(false);
     }

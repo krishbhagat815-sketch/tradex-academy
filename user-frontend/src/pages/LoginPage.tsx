@@ -31,7 +31,7 @@ export const LoginPage: React.FC = () => {
       await login(email, password);
       navigate(redirect);
     } catch (err: any) {
-      setError(err.message || (language === 'gu' ? "અમાન્ય ઇમેઇલ અથવા પાસવર્ડ." : "Invalid email or password."));
+      setError(err.message || (language === 'gu' ? "Invalid Email અથવા Password." : "Invalid email or password."));
     } finally {
       setLoading(false);
     }

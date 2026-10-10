@@ -54,11 +54,11 @@ export const ForgotPasswordPage: React.FC = () => {
             </span>
           </Link>
           <h2 className="text-2xl font-extrabold text-white">
-            {language === 'gu' ? 'પાસવર્ડ રીસેટ કરો' : 'Reset Password'}
+            {language === 'gu' ? 'Password Reset કરો' : 'Reset Password'}
           </h2>
           <p className="text-xs text-slate-400">
             {language === 'gu'
-              ? 'તમારા એકાઉન્ટનો પાસવર્ડ ફરીથી સેટ કરો'
+              ? 'તમારા Account નો Password reset કરો'
               : 'Recover access to your learning credentials'}
           </p>
         </div>
@@ -67,11 +67,11 @@ export const ForgotPasswordPage: React.FC = () => {
           <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-4">
             <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
             <h4 className="text-base font-bold text-white">
-              {language === 'gu' ? 'પાસવર્ડ સફળતાપૂર્વક અપડેટ થયો!' : 'Password Updated!'}
+              {language === 'gu' ? 'Password સફળતાપૂર્વક Update થઈ ગયો!' : 'Password Updated!'}
             </h4>
             <p className="text-xs text-slate-300">
               {language === 'gu'
-                ? 'તમારો પાસવર્ડ બદલાઈ ગયો છે. હવે તમે નવા પાસવર્ડ વડે લોગિન કરી શકો છો.'
+                ? 'તમારો Password બદલાઈ ગયો છે. હવે તમે નવા Password વડે Login કરી શકો છો.'
                 : 'Your password has been successfully reset. You can now sign in with your new credentials.'}
             </p>
             <Link
@@ -106,9 +106,9 @@ export const ForgotPasswordPage: React.FC = () => {
               className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2"
             >
               {loading ? (
-                <span>{language === 'gu' ? 'મોકલી રહ્યા છીએ...' : 'Sending...'}</span>
+                <span>{language === 'gu' ? 'Sending...' : 'Sending...'}</span>
               ) : (
-                <span>{language === 'gu' ? 'રીસેટ લિંક મોકલો' : 'Send Reset Instructions'}</span>
+                <span>{language === 'gu' ? 'Reset Instructions મોકલો' : 'Send Reset Instructions'}</span>
               )}
             </button>
           </form>
@@ -116,12 +116,12 @@ export const ForgotPasswordPage: React.FC = () => {
           <form onSubmit={handleSetNewPassword} className="space-y-4">
             <p className="text-xs text-emerald-400 bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/30">
               {language === 'gu'
-                ? 'સિક્યોરિટી કોડ ચકાસાયો છે. કૃપા કરીને નવો પાસવર્ડ દાખલ કરો:'
+                ? 'Security verify થઈ ગઈ છે. કૃપા કરીને નવો Password enter કરો:'
                 : 'Security verified. Please enter your new password below:'}
             </p>
             <div>
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                {language === 'gu' ? 'નવો પાસવર્ડ (ઓછામાં ઓછો ૬ અક્ષર)' : 'New Password (min 6 characters)'}
+                {language === 'gu' ? 'નવો Password (ઓછામાં ઓછા 6 characters)' : 'New Password (min 6 characters)'}
               </label>
               <div className="relative">
                 <input
@@ -142,9 +142,9 @@ export const ForgotPasswordPage: React.FC = () => {
               className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2"
             >
               {loading ? (
-                <span>{language === 'gu' ? 'અપડેટ થઈ રહ્યો છે...' : 'Updating...'}</span>
+                <span>{language === 'gu' ? 'Updating...' : 'Updating...'}</span>
               ) : (
-                <span>{language === 'gu' ? 'નવો પાસવર્ડ સેવ કરો' : 'Update Password'}</span>
+                <span>{language === 'gu' ? 'નવો Password Save કરો' : 'Update Password'}</span>
               )}
             </button>
           </form>
@@ -152,7 +152,7 @@ export const ForgotPasswordPage: React.FC = () => {
 
         <div className="pt-2 text-center text-xs text-slate-400">
           <Link to="/login" className="text-emerald-400 hover:underline">
-            {language === 'gu' ? '← લોગિન પેજ પર પાછા જાઓ' : '← Return to Sign In'}
+            {language === 'gu' ? '← Login Page પર પાછા જાઓ' : '← Return to Sign In'}
           </Link>
         </div>
       </div>

@@ -65,7 +65,7 @@ export const CheckoutPage: React.FC = () => {
             navigate(`/learn/${res.course.id}`);
           }
         } else {
-          setError(language === 'gu' ? 'કોર્સ મળ્યો નથી.' : 'Course not found.');
+          setError(language === 'gu' ? 'Course મળ્યો નથી.' : 'Course not found.');
         }
       } catch (err: any) {
         setError(err.message || 'Failed to load course details.');
@@ -93,10 +93,10 @@ export const CheckoutPage: React.FC = () => {
       if (res.success && res.coupon) {
         setAppliedCoupon(res.coupon);
       } else {
-        setCouponError(res.message || (language === 'gu' ? 'અમાન્ય કુપન કોડ' : 'Invalid coupon code'));
+        setCouponError(res.message || (language === 'gu' ? 'Invalid Coupon Code' : 'Invalid coupon code'));
       }
     } catch (err: any) {
-      setCouponError(err.message || (language === 'gu' ? 'કુપન લાગુ કરવામાં ભૂલ આવી.' : 'Failed to apply coupon.'));
+      setCouponError(err.message || (language === 'gu' ? 'Coupon apply કરવામાં error આવી.' : 'Failed to apply coupon.'));
     } finally {
       setValidatingCoupon(false);
     }
@@ -162,7 +162,7 @@ export const CheckoutPage: React.FC = () => {
       <div className="max-w-2xl mx-auto px-4 py-24 text-center">
         <AlertCircle className="w-12 h-12 text-rose-500 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-white">
-          {language === 'gu' ? 'ઓર્ડર શરૂ થઈ શક્યો નથી' : 'Unable to Proceed with Checkout'}
+          {language === 'gu' ? 'Order શરૂ થઈ શક્યો નથી' : 'Unable to Proceed with Checkout'}
         </h2>
         <p className="mt-2 text-slate-400">{error}</p>
         <Link

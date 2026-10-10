@@ -62,29 +62,29 @@ export async function runSeed() {
   `, [
     inst1Id, 'ભાવિક પટેલ (Bhavik Patel)', 'bhavik@tradex.com',
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
-    'મુખ્ય મેન્ટર & પ્રાઇસ એક્શન ટ્રેડર (10+ Years Exp)',
-    'ભારતીય શેર બજારમાં ૧૦+ વર્ષનો અનુભવ ધરાવતા ફૂલ-ટાઇમ ટ્રેડર. ૩૫,૦૦૦થી વધુ ગુજરાતી વિદ્યાર્થીઓને સરળ માતૃભાષામાં નફાકારક પ્રાઇસ એક્શન ટેકનિક શીખવી છે.',
-    'પ્રાઇસ એક્શન, કેન્ડલસ્ટિક પેટર્ન, રિસ્ક મેનેજમેન્ટ, સ્વિંગ ટ્રેડિંગ',
+    'Head Mentor & Price Action Trader (10+ Years Exp)',
+    'Stock Market માં 10+ Years નો Real Experience ધરાવતા Full-Time Trader. 35,000+ Gujarati Students ને સરળ Gujlish માં Price Action અને Chart Reading શીખવ્યું છે.',
+    'Price Action, Technical Analysis, Candlestick Patterns, Risk Management',
     JSON.stringify({ youtube: 'https://youtube.com', telegram: 'https://t.me', instagram: 'https://instagram.com' }),
     now,
 
     inst2Id, 'જિજ્ઞેશ શાહ (Jignesh Shah)', 'jignesh@tradex.com',
     'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=300',
-    'ઓપ્શન્સ ડેટા & એક્સપાયરી સ્પેશિયાલિસ્ટ (8+ Years Exp)',
-    'નિફ્ટી અને બેંકનિફ્ટી ઓપ્શન્સ ગ્રીક્સ (Delta/Theta), ઓપન ઇન્ટરેસ્ટ (OI) એનાલિસિસ અને હાઇ-પ્રોબેબિલિટી એક્સપાયરી સેટઅપના નિષ્ણાત.',
-    'ઓપ્શન્સ બાઇંગ/સેલિંગ, ઓપ્શન ગ્રીક્સ, નિફ્ટી/બેંકનિફ્ટી, ક્રિપ્ટો ફ્યુચર્સ',
+    'Options Strategist & Data Analyst (8+ Years Exp)',
+    'Nifty & BankNifty Options Greeks (Delta/Theta), Open Interest (OI) Data Analysis અને High-Probability Expiry Setups ના Specialist.',
+    'Options Buying & Selling, Option Greeks, Nifty/BankNifty, Crypto Futures',
     JSON.stringify({ youtube: 'https://youtube.com', telegram: 'https://t.me' }),
     now
   ]);
 
-  // 3. Categories (Gujarati Trading Pillars)
+  // 3. Categories (Gujlish Trading Pillars)
   const catData = [
-    { id: 'cat-stock-basics', name: 'શેર બજાર બેઝિક્સ (Stock Market Basics)', slug: 'stock-basics', description: 'ડીમેટ એકાઉન્ટ, NSE/BSE, ઓર્ડર ટાઇપ્સ અને શરૂઆત કરવાની સાચી રીત.', icon: 'BarChart3', order: 1 },
-    { id: 'cat-price-action', name: 'પ્રાઇસ એક્શન અને કેન્ડલસ્ટિક (Price Action)', slug: 'price-action', description: 'કોઈ ઇન્ડિકેટર વગર પ્યોર ચાર્ટ રીડિંગ, સપોર્ટ, રેઝિસ્ટન્સ અને પેટર્ન.', icon: 'TrendingUp', order: 2 },
-    { id: 'cat-options-trading', name: 'ઓપ્શન્સ ટ્રેડિંગ માસ્ટરી (Options Trading)', slug: 'options-trading', description: 'નિફ્ટી અને બેંકનિફ્ટીમાં કોલ-પુટ, ગ્રીક્સ અને એક્સપાયરી ડે સેટઅપ.', icon: 'Sparkles', order: 3 },
-    { id: 'cat-swing-trading', name: 'સ્વિંગ ટ્રેડિંગ અને વેલ્થ બિલ્ડિંગ (Swing Trading)', slug: 'swing-trading', description: 'મલ્ટીબેગર સ્ટોક્સ શોધવા અને ૧:૩ રિસ્ક-રિવોર્ડ સાથે ટ્રેડિંગ.', icon: 'Briefcase', order: 4 },
-    { id: 'cat-crypto-trading', name: 'ક્રિપ્ટોકરન્સી અને બ્લોકચેન (Crypto Trading)', slug: 'crypto-trading', description: 'બિટકોઇન, ઓલ્ટકોઇન્સ, સ્પોટ અને સેફ ફ્યુચર્સ પોઝિશનિંગ.', icon: 'Coins', order: 5 },
-    { id: 'cat-psychology-risk', name: 'ટ્રેડિંગ સાયકોલોજી & રિસ્ક મેનેજમેન્ટ (Psychology)', slug: 'psychology-risk', description: 'કેપિટલ પ્રોટેક્શન, સ્ટોપ લોસ ડિસિપ્લિન અને માઇન્ડસેટ માસ્ટરી.', icon: 'ShieldAlert', order: 6 },
+    { id: 'cat-stock-basics', name: 'Stock Market Basics', slug: 'stock-basics', description: 'Demat Account, NSE/BSE, Nifty 50 અને Trading શરૂ કરવાની સાચી રીત.', icon: 'BarChart3', order: 1 },
+    { id: 'cat-price-action', name: 'Price Action & Technical Analysis', slug: 'price-action', description: 'Indicators વગર Pure Chart Reading, Support, Resistance અને Patterns.', icon: 'TrendingUp', order: 2 },
+    { id: 'cat-options-trading', name: 'Options Trading Mastery', slug: 'options-trading', description: 'Nifty અને BankNifty માં Call & Put, Option Greeks અને Expiry Setups.', icon: 'Sparkles', order: 3 },
+    { id: 'cat-swing-trading', name: 'Swing Trading & Wealth Building', slug: 'swing-trading', description: 'Multibagger Stocks શોધવા અને 1:3 Risk-to-Reward સાથે Trades.', icon: 'Briefcase', order: 4 },
+    { id: 'cat-crypto-trading', name: 'Crypto & Futures Trading', slug: 'crypto-trading', description: 'Bitcoin, Altcoins, Spot અને Safe Futures Trading.', icon: 'Coins', order: 5 },
+    { id: 'cat-psychology-risk', name: 'Trading Psychology & Risk Management', slug: 'psychology-risk', description: 'Capital Protection, Stop Loss Discipline અને Trader Mindset.', icon: 'ShieldAlert', order: 6 },
   ];
 
   for (const c of catData) {
@@ -104,17 +104,18 @@ export async function runSeed() {
   const courses = [
     {
       id: 'crs-trade-01',
-      title: 'બેઝિક શેર બજાર ફાઉન્ડેશન માસ્ટરક્લાસ (Stock Market Basics for Beginners)',
+      title: 'Stock Market Basics for Beginners (શેર બજાર શીખો સરળ રીતે)',
       slug: 'stock-market-basics-for-beginners-gujarati',
-      short_description: 'નવા નિશાળિયાઓ માટે ૧૦૦% સરળ ગુજરાતીમાં શેર બજારનો સંપૂર્ણ કોર્સ. ડીમેટ એકાઉન્ટ ખોલવાથી લઈને પહેલો નફાકારક શેર ખરીદવા સુધીનું લાઈવ ગાઈડન્સ.',
-      description: `### ગુજરાતીમાં શીખો શેર બજારનો પાયો
-શેર બજારમાં પ્રવેશતા પહેલાં સાચી સમજ હોવી સૌથી જરૂરી છે. આ ફાઉન્ડેશન કોર્સમાં કોઈ અઘરા અંગ્રેજી શબ્દો વગર બિલકુલ શૂન્યથી પ્રેક્ટિકલ નોલેજ આપવામાં આવ્યું છે.
+      short_description: 'Stock Market Trading ની શરૂઆત કરો એકદમ શૂન્યથી! Demat Account ખોલવાથી લઈને પહેલો Stock ખરીદવા સુધી step by step live guidance.',
+      description: `### Stock Market Trading શીખો સરળ રીતે!
+Trading ની શરૂઆત કરો અને market concepts ને step by step સમજો. આ Course માં તમે Demat Account, Chart Reading, Order Types અને Risk Management વિશે સરળ Gujlish માં શીખશો.
 
-#### આ કોર્સમાં તમે શું શીખશો:
-* **શેર બજાર કેવી રીતે કામ કરે છે?**: NSE, BSE, Nifty 50 અને Sensex ની સંપૂર્ણ સમજ.
-* **ડીમેટ અને ટ્રેડિંગ એકાઉન્ટ**: Zerodha, AngelOne કે Groww માં એકાઉન્ટ કેવી રીતે ઓપરેટ કરવું.
-* **ઓર્ડર ટાઇપ્સ**: માર્કેટ ઓર્ડર, લિમિટ ઓર્ડર, સ્ટોપ લોસ (SL) અને ટાર્ગેટ ઓર્ડર.
-* **બેઝિક ચાર્ટ રીડિંગ**: કેન્ડલ્સ કેવી રીતે બને છે અને પ્રાઇસ મોમેન્ટમ કેવી રીતે જોવું.`,
+#### આ Course માં તમે શું શીખશો:
+* **Stock Market Fundamentals**: NSE, BSE, Nifty 50 અને Sensex ની complete સમજ.
+* **Demat & Trading Account Setup**: Zerodha, AngelOne કે Groww માં account operate કરવાની સાચી રીત.
+* **Order Types**: Market Order, Limit Order, Stop Loss (SL) અને Target Orders.
+* **Basic Chart Reading**: Candlesticks કેવી રીતે બને છે અને Price Momentum કેવી રીતે identify કરવું.
+* **Risk Management Rules**: Capital safe રાખવાના golden rules.`,
       category_id: 'cat-stock-basics',
       instructor_id: inst1Id,
       thumbnail: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=800',
@@ -122,25 +123,25 @@ export async function runSeed() {
       price: 0,
       discount_price: 0,
       difficulty_level: 'Beginner',
-      duration: '12.5 કલાક',
-      language: 'ગુજરાતી (Gujarati)',
+      duration: '12.5 Hours',
+      language: 'Gujarati + English (Gujlish)',
       learning_outcomes: JSON.stringify([
-        'ડીમેટ અને ટ્રેડિંગ એકાઉન્ટ ઓપરેટ કરવાની સાચી પદ્ધતિ',
-        'શેરની ખરીદ-વેચાણ અને ઓર્ડર ટાઇપ્સનું વ્યવહારુ જ્ઞાન',
-        'શેર બજારમાં કેપિટલ ગુમાવ્યા વગર સેફ શરૂઆત',
-        'બેઝિક ટ્રેડિંગવ્યૂ (TradingView) ચાર્ટ સેટઅપ'
+        'Demat અને Trading Account operate કરવાની સાચી પદ્ધતિ',
+        'Stocks ની buying-selling અને Order Types નું practical knowledge',
+        'Stock Market માં Capital ગુમાવ્યા વગર safe start',
+        'TradingView Charts પર basic analysis અને watchlist setup'
       ]),
       requirements: JSON.stringify([
-        'કોઈ પૂર્વ નાણાકીય કે કોડિંગ અનુભવ જરૂરી નથી',
-        'મોબાઈલ ફોન અથવા કમ્પ્યુટર અને ઇન્ટરનેટ કનેક્શન',
-        'રોજ ૩૦ મિનિટ પ્રેક્ટિસ કરવાની ધગશ'
+        'કોઈ previous finance કે trading background જરૂરી નથી',
+        'Smartphone અથવા Laptop અને Internet Connection',
+        'રોજ 30 minutes practice કરવાની ઈચ્છા'
       ]),
       target_audience: JSON.stringify([
-        'સંપૂર્ણ નવા વિદ્યાર્થીઓ અને હાઉસવાઇફ્સ',
-        'નોકરીયાત અને વેપારી મિત્રો જે સાઇડ ઇન્કમ ઇચ્છે છે',
-        'શેર બજારને વ્યવસાય તરીકે શરૂ કરવા માંગતા મિત્રો'
+        'Beginners, Students અને Housewives જે trading શીખવા માંગે છે',
+        'Job professionals અને Business owners જે side income generate કરવા માંગે છે',
+        'Stock Market ને serious career તરીકે શરૂ કરવા માંગતા લોકો'
       ]),
-      tags: JSON.stringify(['શેર બજાર', 'Stock Market', 'Basics', 'Demat Account', 'Beginner Friendly']),
+      tags: JSON.stringify(['Stock Market', 'Trading Basics', 'Demat Account', 'Beginner Friendly', 'Gujlish']),
       status: 'published',
       featured: 1,
       popular: 1,
@@ -150,35 +151,35 @@ export async function runSeed() {
       review_count: 840,
       modules: [
         {
-          title: 'મોડ્યુલ ૧: શેર બજાર પરિચય અને ડીમેટ એકાઉન્ટ',
-          description: 'શેર બજારની શરૂઆત અને જરૂરી સાધનો.',
+          title: 'Module 1: Stock Market Introduction & Demat Account',
+          description: 'Stock Market ની શરૂઆત અને basic tools.',
           lessons: [
             {
-              title: '૧.૧ શેર બજાર શું છે અને નફો કેવી રીતે થાય છે?',
-              description: 'કંપનીઓ લિસ્ટ કેમ થાય છે અને રિટેલ ટ્રેડર તરીકે આપણી તક શું છે.',
+              title: '1.1 Stock Market શું છે અને Profit કેવી રીતે થાય છે?',
+              description: 'Companies list કેમ થાય છે અને Retail Trader તરીકે આપણી opportunity શું છે.',
               video_url: sampleVideo1,
               video_duration: '18:40',
               is_preview: 1,
               resources: [
-                { name: 'Stock-Market-Basics-Gujarati.pdf', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', type: 'pdf', size: '2.1 MB' }
+                { name: 'Stock-Market-Basics-Gujlish.pdf', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', type: 'pdf', size: '2.1 MB' }
               ],
               quizzes: [
                 {
-                  question: 'NSE અને BSE ભારતમાં શું ભૂમિકા ભજવે છે?',
+                  question: 'NSE અને BSE ભારતમાં શું role play કરે છે?',
                   options: [
-                    'તે શેર ખરીદ-વેચાણ માટેના માન્ય સ્ટોક એક્સચેન્જ છે',
-                    'તે સરકારી બેંકો છે',
-                    'તે શેરની કિંમત નક્કી કરતી ખાનગી કંપનીઓ છે',
-                    'તે મ્યુચ્યુઅલ ફંડ એજન્ટ છે'
+                    'તે Stocks buying-selling માટેના official stock exchanges છે',
+                    'તે Government Banks છે',
+                    'તે Share price decide કરતી private companies છે',
+                    'તે Mutual Fund distributors છે'
                   ],
                   correct_index: 0,
-                  explanation: 'NSE (National Stock Exchange) અને BSE (Bombay Stock Exchange) ભારતના બે મુખ્ય શેર એક્સચેન્જ છે.'
+                  explanation: 'NSE (National Stock Exchange) અને BSE (Bombay Stock Exchange) ભારતના બે મુખ્ય stock exchanges છે.'
                 }
               ]
             },
             {
-              title: '૧.૨ ડીમેટ એકાઉન્ટ ઓપરેટિંગ અને બ્રોકરેજ સેટઅપ',
-              description: 'બ્રોકર કેવી રીતે પસંદ કરવો અને ઓર્ડર કેવી રીતે મુકવા.',
+              title: '1.2 Demat Account Setup & Brokerage Comparison',
+              description: 'Right Broker પસંદ કરવો અને App માં Watchlist create કરવી.',
               video_url: sampleVideo2,
               video_duration: '22:15',
               is_preview: 0,
@@ -190,12 +191,12 @@ export async function runSeed() {
           ]
         },
         {
-          title: 'મોડ્યુલ ૨: પહેલો શેર ખરીદવો અને રિસ્ક મેનેજમેન્ટ',
-          description: 'પ્રાયોગિક ટ્રેડિંગ અને કેપિટલ પ્રોટેક્શન.',
+          title: 'Module 2: First Stock Buying & Risk Management',
+          description: 'Practical Trading Execution અને Capital Protection.',
           lessons: [
             {
-              title: '૨.૧ માર્કેટ, લિમિટ અને સ્ટોપ લોસ (SL) ઓર્ડર',
-              description: 'ઓર્ડર મુકતી વખતે થતી ભૂલો અને સાચી રીત.',
+              title: '2.1 Market, Limit અને Stop Loss (SL) Orders',
+              description: 'Orders place કરતી વખતે થતી common mistakes અને correct way.',
               video_url: sampleVideo3,
               video_duration: '25:10',
               is_preview: 1,
@@ -208,17 +209,17 @@ export async function runSeed() {
     },
     {
       id: 'crs-trade-02',
-      title: 'પ્યોર પ્રાઇસ એક્શન અને કેન્ડલસ્ટિક સિક્રેટ્સ (Price Action Mastery)',
+      title: 'Pure Price Action & Candlestick Secrets (પ્રાઇસ એક્શન માસ્ટરી)',
       slug: 'price-action-and-candlestick-secrets-gujarati',
-      short_description: 'કોઈ પણ લેગિંગ ઇન્ડિકેટર વગર પ્યોર ચાર્ટ રીડિંગ. સપોર્ટ-રેઝિસ્ટન્સ, ટ્રેન્ડલાઈન, હેમર, ડોજી અને ફોલ્સ બ્રેકઆઉટ ટ્રેપ પકડવાની માસ્ટરી.',
-      description: `### માર્કેટની ભાષા એટલે પ્રાઇસ એક્શન
-ઇન્ડિકેટર્સ હંમેશાં ભાવ ચાલ્યા પછી સિગ્નલ આપે છે, જ્યારે પ્રાઇસ એક્શન તમને માર્કેટ ચાલતા પહેલાં સંકેત આપે છે. આ કોર્સમાં અમે તમને મોટા પ્લેયર્સ (FII / DII) કેવી રીતે વિચારે છે અને ચાર્ટ પર ક્યાં ફૂટપ્રિન્ટ્સ છોડે છે તે શીખવીએ છીએ.
+      short_description: 'આ Course માં તમે Technical Analysis અને Price Action વિશે શીખશો. Lagging Indicators વગર Support, Resistance, Trendlines અને Breakout Trading ની master strategies.',
+      description: `### Price Action Trading શીખો Live Market Logic સાથે!
+Indicators હંમેશાં lag કરે છે, જ્યારે Pure Price Action તમને market move થતાં પહેલાં clear signals આપે છે. આ Course માં તમે Big Institutions (FII/DII) ના footprints ઓળખીને confident trades લેતાં શીખશો.
 
-#### મુખ્ય આકર્ષણ:
-* સપોર્ટ અને રેઝિસ્ટન્સ લાઈન સાચી રીતે ડ્રો કરવાની પદ્ધતિ
-* ૭ મોસ્ટ પ્રોફિટેબલ કેન્ડલસ્ટિક પેટર્ન અને ખોટા સિગ્નલથી બચવાના નિયમો
-* બ્રેકઆઉટ vs રીટેસ્ટ ટ્રેડિંગ સેટઅપ
-* ૧:૨ અને ૧:૩ રિસ્ક-ટુ-રિવોર્ડ રેશિયો સાથે એન્ટ્રી`,
+#### આ Course ના Key Highlights:
+* Support & Resistance levels accurately draw કરવાની method.
+* 7 Most Profitable Candlestick Patterns અને Fake Breakout identification.
+* Breakout vs Retest Trading Setups.
+* 1:2 & 1:3 Risk-to-Reward Ratio સાથે Perfect Entry & Exit.`,
       category_id: 'cat-price-action',
       instructor_id: inst1Id,
       thumbnail: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&q=80&w=800',
@@ -226,25 +227,25 @@ export async function runSeed() {
       price: 3999,
       discount_price: 1999,
       difficulty_level: 'All Levels',
-      duration: '18.0 કલાક',
-      language: 'ગુજરાતી (Gujarati)',
+      duration: '18.0 Hours',
+      language: 'Gujarati + English (Gujlish)',
       learning_outcomes: JSON.stringify([
-        'કોઈ પણ ઇન્ડિકેટર વગર ક્લીન ચાર્ટ એનાલિસિસ',
-        'સપોર્ટ, રેઝિસ્ટન્સ અને ડાયનેમિક ટ્રેન્ડલાઈન્સ',
-        'હેમર, શૂટિંગ સ્ટાર, એન્ગલ્ફિંગ અને મોર્નિંગ સ્ટાર પેટર્ન',
-        'ફેક બ્રેકઆઉટ ટ્રેપ ઓળખીને વિપરીત ટ્રેડ લેવો'
+        'કોઈ પણ Indicators વગર Clean Chart Analysis',
+        'Support, Resistance અને Dynamic Trendlines accurately draw કરવી',
+        'Hammer, Shooting Star, Engulfing અને Morning Star patterns mastery',
+        'Fake Breakout Traps ઓળખીને safe trade લેવો'
       ]),
       requirements: JSON.stringify([
-        'શેર બજારની મૂળભૂત બાબતોની સમજ',
-        'TradingView વેબસાઇટનો બેઝિક ઉપયોગ',
-        'ચાર્ટ પ્રેક્ટિસ કરવાની તૈયારી'
+        'Stock Market ની basic understanding',
+        'TradingView platform નો basic usage',
+        'Daily Charts practice કરવાની willingness'
       ]),
       target_audience: JSON.stringify([
-        'ઇન્ટ્રાડે અને સ્વિંગ ટ્રેડર્સ જે લોસ ઘટાડવા માંગે છે',
-        'ઇન્ડિકેટર્સના કન્ફ્યુઝનથી કંટાળેલા ટ્રેડર્સ',
-        'ચાર્ટ રીડિંગમાં કોન્ફિડન્સ ઇચ્છતા ગુજરાતીઓ'
+        'Intraday અને Swing Traders જે loss ઘટાડીને consistent બનવા માંગે છે',
+        'Indicators ના confusion થી કંટાળેલા traders',
+        'Chart Reading માં solid confidence મેળવવા માંગતા Gujarati Traders'
       ]),
-      tags: JSON.stringify(['Price Action', 'Candlestick', 'Support Resistance', 'Chart Reading', 'Intraday']),
+      tags: JSON.stringify(['Price Action', 'Candlestick', 'Support Resistance', 'Chart Reading', 'Technical Analysis']),
       status: 'published',
       featured: 1,
       popular: 1,
@@ -254,12 +255,12 @@ export async function runSeed() {
       review_count: 620,
       modules: [
         {
-          title: 'મોડ્યુલ ૧: માર્કેટ સ્ટ્રક્ચર અને પ્રાઇસ બિહેવિયર',
-          description: 'હાયર હાઈ (HH), હાયર લો (HL) અને ટ્રેન્ડ કન્ફર્મેશન.',
+          title: 'Module 1: Market Structure & Price Behavior',
+          description: 'Higher Highs (HH), Higher Lows (HL) અને Trend Confirmation.',
           lessons: [
             {
-              title: '૧.૧ સપોર્ટ અને રેઝિસ્ટન્સનું સાચું સાયકોલોજીકલ રહસ્ય',
-              description: 'બાયર્સ અને સેલર્સ વચ્ચેની લડાઈ ચાર્ટ પર કેવી રીતે દેખાય છે.',
+              title: '1.1 Support & Resistance પાછળની Buyer-Seller Psychology',
+              description: 'Real Buyers અને Sellers વચ્ચેનું battle chart પર કેવી રીતે identify કરવું.',
               video_url: sampleVideo2,
               video_duration: '24:10',
               is_preview: 1,
@@ -269,8 +270,8 @@ export async function runSeed() {
               quizzes: []
             },
             {
-              title: '૧.૨ ટ્રેન્ડલાઈન ડ્રો કરવાની ૧૦૦% સાચી પદ્ધતિ',
-              description: 'ફેક વીક્સ અને બોડી વચ્ચે સાચો ટ્રેન્ડ નક્કી કરવો.',
+              title: '1.2 Trendline Draw કરવાની 100% Accurate Method',
+              description: 'Fake Wicks અને Body વચ્ચે correct trendlines identify કરવી.',
               video_url: sampleVideo3,
               video_duration: '21:40',
               is_preview: 0,
@@ -280,12 +281,12 @@ export async function runSeed() {
           ]
         },
         {
-          title: 'મોડ્યુલ ૨: કેન્ડલસ્ટિક પેટર્ન અને ટ્રેડિંગ એન્ટ્રી',
-          description: 'પ્રાઇસ રિજેક્શન અને મોમેન્ટમ કેન્ડલ્સ.',
+          title: 'Module 2: Candlestick Patterns & High Probability Entries',
+          description: 'Price Rejection અને Momentum Candlesticks.',
           lessons: [
             {
-              title: '૨.૧ હેમર અને શૂટિંગ સ્ટાર: ક્યાં ટ્રેડ કરવો અને ક્યાં અવોઇડ કરવો',
-              description: 'સપોર્ટ પર હેમર બનતા જ હાઈ પ્રોબેબિલિટી ટ્રેડ.',
+              title: '2.1 Hammer & Shooting Star: ક્યાં Trade કરવો અને ક્યાં Avoid કરવો',
+              description: 'Major Support પર Hammer બનતા high probability trade setup.',
               video_url: sampleVideo4,
               video_duration: '28:50',
               is_preview: 1,
@@ -298,17 +299,17 @@ export async function runSeed() {
     },
     {
       id: 'crs-trade-03',
-      title: 'ઓપ્શન્સ ટ્રેડિંગ અને નિફ્ટી/બેંકનિફ્ટી એક્સપાયરી સ્ટ્રેટેજી (Options Mastery)',
+      title: 'Nifty & BankNifty Options Trading Mastery (ઓપ્શન્સ ટ્રેડિંગ)',
       slug: 'nifty-banknifty-options-trading-mastery-gujarati',
-      short_description: 'ઓપ્શન્સ બાઇંગ અને સેલિંગની સંપૂર્ણ પદ્ધતિ. ઓપ્શન ગ્રીક્સ (Delta, Theta, Gamma), સ્ટ્રાઇક સિલેક્શન, ઓપન ઇન્ટરેસ્ટ (OI) અને એક્સપાયરી ડે હીરો-ઝીરો સેટઅપ.',
-      description: `### ઓપ્શન્સ ટ્રેડિંગમાં પ્રોફિટેબલ બનવાનો રોડમેપ
-મોટાભાગના નવા ટ્રેડર્સ ઓપ્શન્સ બાઇંગમાં થીટા ડીકે (સમયના નુકસાન)ને કારણે કેપિટલ ગુમાવે છે. આ માસ્ટરક્લાસમાં જિજ્ઞેશ શાહ તમને ડેટા-ડ્રિવન ઓપ્શન્સ ટ્રેડિંગ શીખવે છે.
+      short_description: 'Options Buying અને Selling શીખો Data Logic સાથે! Option Greeks (Delta, Theta), Open Interest (OI) Data Analysis અને Expiry Day Special Setups.',
+      description: `### Options Trading માં Consistent Profitable બનવાનો Complete Roadmap!
+મોટાભાગના Option Buyers Theta Decay (સમયનો ઘટાડો) ને કારણે Capital lose કરે છે. આ Masterclass માં Mentor Jignesh Shah તમને Data-Driven Options Trading શીખવશે.
 
-#### આ કોર્સમાં શામેલ છે:
-* કૉલ (CE) અને પુટ (PE) ની ગણતરી અને સ્ટ્રાઇક પ્રાઇસ પસંદગી
-* ઓપ્શન ગ્રીક્સ: ડેલ્ટા, થીટા ડીકે અને વેગા વોલેટિલિટી
-* ઓપન ઇન્ટરેસ્ટ (OI) અને ચેઇન એનાલિસિસથી સપોર્ટ નક્કી કરવો
-* ગુરુવાર (એક્સપાયરી) સ્પેશિયલ સેટઅપ્સ અને પ્રીમિયમ ડીકે લાભ`,
+#### આ Course માં શું શામેલ છે:
+* Call (CE) & Put (PE) selection અને Strike Price પસંદગી (ITM, ATM, OTM).
+* Option Greeks Mastery: Delta, Theta Decay અને Vega Volatility.
+* Open Interest (OI) અને Option Chain Analysis.
+* Thursday Expiry Day Special Setups અને Premium Decay advantages.`,
       category_id: 'cat-options-trading',
       instructor_id: inst2Id,
       thumbnail: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800',
@@ -316,25 +317,25 @@ export async function runSeed() {
       price: 5999,
       discount_price: 2999,
       difficulty_level: 'Intermediate',
-      duration: '22.5 કલાક',
-      language: 'ગુજરાતી (Gujarati)',
+      duration: '22.5 Hours',
+      language: 'Gujarati + English (Gujlish)',
       learning_outcomes: JSON.stringify([
-        'ઓપ્શન્સમાં કોલ અને પુટની સાચી ગણતરી',
-        'ઓપ્શન ગ્રીક્સ (Delta/Theta) સમજીને થીટા લોસથી બચવું',
-        'નિફ્ટી અને બેંકનિફ્ટીમાં હાઇ-મોમેન્ટમ ઓપ્શન બાઇંગ',
-        'ઓપન ઇન્ટરેસ્ટ (OI) અને પીસીઆર (PCR) ડેટા રીડિંગ'
+        'Options માં Call અને Put ની accurate calculation',
+        'Option Greeks (Delta/Theta) સમજીને Premium Loss થી બચવું',
+        'Nifty & BankNifty માં High-Momentum Option Buying Setups',
+        'Open Interest (OI) અને PCR (Put-Call Ratio) Data Reading'
       ]),
       requirements: JSON.stringify([
-        'શેર બજાર અને બેઝિક ચાર્ટ્સનું જ્ઞાન',
-        'ઓછામાં ઓછું ૩ મહિનાનું માર્કેટ ઓબ્ઝર્વેશન',
-        'કડક સ્ટોપ લોસ પાળવાની માનસિકતા'
+        'Stock Market અને basic Charts ની understanding',
+        'ઓછામાં ઓછું 3 મહિનાનું Market observation',
+        'Strict Stop Loss follow કરવાની discipline'
       ]),
       target_audience: JSON.stringify([
-        'નિફ્ટી અને બેંકનિફ્ટીમાં ટ્રેડ કરતા તમામ ટ્રેડર્સ',
-        'ઓપ્શન્સમાં વારંવાર પ્રીમિયમ લોસ ભોગવતા લોકો',
-        'ડેટા આધારિત ઓપ્શન્સ સ્ટ્રેટેજી શીખવા માંગતા રોકાણકારો'
+        'Nifty અને BankNifty માં trade કરતા તમામ traders',
+        'Options માં વારંવાર premium loss ભોગવતા લોકો',
+        'Data-driven institutional setups શીખવા માંગતા options traders'
       ]),
-      tags: JSON.stringify(['Options Trading', 'Nifty', 'BankNifty', 'Option Greeks', 'Expiry Strategy']),
+      tags: JSON.stringify(['Options Trading', 'Nifty', 'BankNifty', 'Option Greeks', 'Expiry Strategy', 'Gujlish']),
       status: 'published',
       featured: 1,
       popular: 1,
@@ -344,12 +345,12 @@ export async function runSeed() {
       review_count: 730,
       modules: [
         {
-          title: 'મોડ્યુલ ૧: ઓપ્શન્સ બેઝિક્સ અને ગ્રીક્સ મિકેનિક્સ',
-          description: 'કોલ, પુટ અને થીટા ટાઇમ ડીકેની ગણતરી.',
+          title: 'Module 1: Options Fundamentals & Greeks Mechanics',
+          description: 'Call, Put અને Theta Time Decay ની complete calculation.',
           lessons: [
             {
-              title: '૧.૧ ઓપ્શન્સ શું છે? પ્રીમિયમ કઈ રીતે વધે-ઘટે છે?',
-              description: 'ઇન્ટ્રિન્સિક વેલ્યુ અને ટાઇમ વેલ્યુ વચ્ચેનો તફાવત.',
+              title: '1.1 Options શું છે? Premium કઈ રીતે વધે અને ઘટે છે?',
+              description: 'Intrinsic Value અને Time Value વચ્ચેનો difference.',
               video_url: sampleVideo3,
               video_duration: '26:30',
               is_preview: 1,
@@ -359,8 +360,8 @@ export async function runSeed() {
               quizzes: []
             },
             {
-              title: '૧.૨ થીટા ડીકે (Theta Decay) થી બચીને સાચી સ્ટ્રાઇક કેમ પસંદ કરવી',
-              description: 'ITM vs ATM vs OTM નો વાસ્તવિક ઉપયોગ.',
+              title: '1.2 Theta Decay થી બચીને Right Strike Price કેવી રીતે select કરવી',
+              description: 'ITM vs ATM vs OTM નો practical usage.',
               video_url: sampleVideo1,
               video_duration: '31:20',
               is_preview: 0,
@@ -370,12 +371,12 @@ export async function runSeed() {
           ]
         },
         {
-          title: 'મોડ્યુલ ૨: નિફ્ટી અને બેંકનિફ્ટી લાઈવ ટ્રેડિંગ સેટઅપ્સ',
-          description: 'એક્સપાયરી સ્પેશિયલ અને બ્રેકઆઉટ ટ્રેડ્સ.',
+          title: 'Module 2: Nifty & BankNifty Live Trading Setups',
+          description: 'Expiry Special અને Breakout Momentum Trades.',
           lessons: [
             {
-              title: '૨.૧ ઓપન ઇન્ટરેસ્ટ (OI) ડેટા વડે ટ્રેન્ડ નક્કી કરવો',
-              description: 'ઓપ્શન ચેઇન રીડ કરીને સપોર્ટ અને રેઝિસ્ટન્સ પકડવું.',
+              title: '2.1 Open Interest (OI) Data વડે Trend Direction નક્કી કરવો',
+              description: 'Option Chain read કરીને strong Support અને Resistance identify કરવું.',
               video_url: sampleVideo4,
               video_duration: '29:40',
               is_preview: 1,
@@ -388,11 +389,11 @@ export async function runSeed() {
     },
     {
       id: 'crs-trade-04',
-      title: 'સ્વિંગ ટ્રેડિંગ અને મલ્ટીબેગર સ્ટોક સિલેક્શન (Swing Trading & Wealth)',
+      title: 'Professional Swing Trading & Wealth Building (સ્વિંગ ટ્રેડિંગ)',
       slug: 'swing-trading-and-multibagger-stocks-gujarati',
-      short_description: 'રોજ સ્ક્રીન સામે બેઠા વગર પાર્ટ-ટાઇમ ટ્રેડિંગ. ૧ થી ૪ અઠવાડિયામાં ૧૦% થી ૨૫% વળતર મેળવવા માટેના શ્રેષ્ઠ બ્રેકઆઉટ સ્ટોક્સ પસંદ કરવાની સ્ટ્રેટેજી.',
-      description: `### નોકરી અને બિઝનેસ સાથે વેલ્થ બિલ્ડિંગ
-સ્વિંગ ટ્રેડિંગ એ એવા લોકો માટે શ્રેષ્ઠ માધ્યમ છે જેઓ દિવસભર સ્ક્રીન સામે બેસી શકતા નથી. અઠવાડિયામાં ફક્ત ૨ કલાકનું એનાલિસિસ કરીને સારા સ્ટોક્સમાં પોઝિશન બનાવવાની ટેકનિક શીખો.`,
+      short_description: 'રોજ Screen સામે બેઠા વગર Part-time Trading કરો. 1 થી 4 અઠવાડિયામાં 10% થી 25% returns target કરવા માટે Best Breakout Stocks શોધવાની strategies.',
+      description: `### Job અને Business સાથે Wealth Building શીખો!
+Swing Trading એ Part-Time Traders માટે Best approach છે. અઠવાડિયે ફક્ત 2 કલાક Chart Analysis કરીને Multibagger Breakout Stocks માં position બનાવવાની strategies શીખો.`,
       category_id: 'cat-swing-trading',
       instructor_id: inst1Id,
       thumbnail: 'https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&q=80&w=800',
@@ -400,24 +401,24 @@ export async function runSeed() {
       price: 4999,
       discount_price: 2499,
       difficulty_level: 'Beginner',
-      duration: '15.0 કલાક',
-      language: 'ગુજરાતી (Gujarati)',
+      duration: '15.0 Hours',
+      language: 'Gujarati + English (Gujlish)',
       learning_outcomes: [
-        '૨૦ અને ૫૦ મૂવિંગ એવરેજ પુલબેક સેટઅપ',
-        'હાઈ વોલ્યુમ બ્રેકઆઉટ સ્ટોક્સ સ્કેનિંગ',
-        '૧:૩ રિસ્ક-રિવોર્ડ સાથે પોઝિશન હોલ્ડિંગ',
-        'ટ્રેઇલિંગ સ્ટોપ લોસથી મહત્તમ નફો મેળવવો'
+        '20 અને 50 Moving Average Pullback Setups',
+        'High Volume Breakout Stocks Scanning with Free Scanners',
+        '1:3 Risk-to-Reward Ratio સાથે Position Holding',
+        'Trailing Stop Loss થી maximum profits lock કરવા'
       ],
       requirements: [
-        'કોઈ પણ વ્યક્તિ શીખી શકે છે',
-        'અઠવાડિયે ૨-૩ કલાક ચાર્ટ જોવાની તૈયારી'
+        'કોઈ પણ વ્યક્તિ સરળ રીતે શીખી શકે છે',
+        'અઠવાડિયે 2-3 કલાક Charts study કરવાની તૈયારી'
       ],
       target_audience: [
-        'નોકરીયાત મિત્રો અને વેપારીઓ',
-        'લાંબા ગાળાના રોકાણકારો',
-        'શાંતિપૂર્ણ ટ્રેડિંગ પસંદ કરતા લોકો'
+        'Job professionals અને Businessmen જે screen સામે બેસી શકતા નથી',
+        'Medium-term investors અને swing traders',
+        'Peace of mind સાથે trading કરવા માંગતા Gujarati Investors'
       ],
-      tags: ['Swing Trading', 'Multibagger', 'Breakout Stocks', 'Part-Time Trading'],
+      tags: ['Swing Trading', 'Multibagger Stocks', 'Breakout Strategy', 'Part-Time Trading'],
       status: 'published',
       featured: 1,
       popular: 0,
@@ -427,12 +428,12 @@ export async function runSeed() {
       review_count: 410,
       modules: [
         {
-          title: 'મોડ્યુલ ૧: સ્વિંગ ટ્રેડિંગ ફંડામેન્ટલ્સ',
-          description: 'સ્ટોક સ્કેનિંગ અને વોલ્યુમ એનાલિસિસ.',
+          title: 'Module 1: Swing Trading Fundamentals & Stock Screening',
+          description: 'Stock Scanning અને Volume Analysis.',
           lessons: [
             {
-              title: '૧.૧ સ્વિંગ ટ્રેડિંગના સુવર્ણ નિયમો અને સ્ટોક સ્કેનિંગ',
-              description: 'Chartink જેવા ફ્રી ટૂલ્સથી ૨ મિનિટમાં સારા સ્ટોક્સ શોધવા.',
+              title: '1.1 Swing Trading Rules અને Chartink Scanner Setup',
+              description: 'Free Tools થી 2 minutes માં high quality stocks scan કરવા.',
               video_url: sampleVideo4,
               video_duration: '22:10',
               is_preview: 1,
@@ -445,11 +446,11 @@ export async function runSeed() {
     },
     {
       id: 'crs-trade-05',
-      title: 'ક્રિપ્ટોકરન્સી ટ્રેડિંગ અને ફ્યુચર્સ ગાઇડ (Crypto Trading Essentials)',
+      title: 'Crypto & Futures Trading Masterclass (ક્રિપ્ટો ટ્રેડિંગ)',
       slug: 'crypto-trading-and-futures-guide-gujarati',
-      short_description: 'બિટકોઇન, ઇથેરિયમ અને અલ્ટકોઇન્સનું ટેકનિકલ એનાલિસિસ. ૨૪/૭ ગ્લોબલ માર્કેટમાં સેફ સ્પોટ અને ફ્યુચર્સ ટ્રેડિંગના નિયમો.',
-      description: `### ગ્લોબલ ક્રિપ્ટો માર્કેટમાં યોગ્ય માર્ગદર્શન
-ક્રિપ્ટો માર્કેટમાં હાઈ વોલેટિલિટી હોય છે. જો યોગ્ય રિસ્ક મેનેજમેન્ટ ન હોય તો મોટો લોસ થઈ શકે છે. આ કોર્સમાં અમે સેફ પોઝિશનિંગ અને ગ્લોબલ સેન્ટિમેન્ટ રીડિંગ શીખવીએ છીએ.`,
+      short_description: 'Bitcoin, Ethereum અને Altcoins નું Technical Analysis. 24/7 Global Markets માં Safe Spot અને Futures Trading માં Position Sizing ના rules.',
+      description: `### Crypto Markets માં Safe Trading શીખો!
+Crypto Market માં High Volatility હોય છે. Proper Risk Management અને Leverage Control વગર trade ન કરવો જોઈએ. આ Course માં Binance અને CoinDCX પર safe execution શીખવવામાં આવે છે.`,
       category_id: 'cat-crypto-trading',
       instructor_id: inst2Id,
       thumbnail: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800',
@@ -457,20 +458,20 @@ export async function runSeed() {
       price: 2999,
       discount_price: 1499,
       difficulty_level: 'Intermediate',
-      duration: '14.0 કલાક',
-      language: 'ગુજરાતી (Gujarati)',
+      duration: '14.0 Hours',
+      language: 'Gujarati + English (Gujlish)',
       learning_outcomes: [
-        'બિટકોઇન અને અલ્ટકોઇન્સ ચાર્ટ એનાલિસિસ',
-        'સ્પોટ અને ફ્યુચર્સ ટ્રેડિંગમાં લેવરેજ કંટ્રોલ',
-        'ક્રિપ્ટો વોલેટ સિક્યોરિટી અને એક્સચેન્જ સેફ્ટી'
+        'Bitcoin & Altcoins Chart Analysis',
+        'Spot vs Futures Trading માં Leverage Management',
+        'Crypto Wallet Security અને Safe Exchange Practices'
       ],
       requirements: [
-        'ઇન્ટરનેટ કનેક્શન અને બેઝિક ડિજિટલ સાક્ષરતા'
+        'Internet connection અને basic digital literacy'
       ],
       target_audience: [
-        'ક્રિપ્ટોમાં સાચી સમજ સાથે ટ્રેડ કરવા માંગતા મિત્રો'
+        'Global Crypto Markets માં safely trade કરવા માંગતા લોકો'
       ],
-      tags: ['Crypto', 'Bitcoin', 'Futures', 'Blockchain'],
+      tags: ['Crypto Trading', 'Bitcoin', 'Futures', 'Blockchain', 'Altcoins'],
       status: 'published',
       featured: 0,
       popular: 0,
@@ -480,12 +481,12 @@ export async function runSeed() {
       review_count: 290,
       modules: [
         {
-          title: 'મોડ્યુલ ૧: ક્રિપ્ટો માર્કેટ સ્ટ્રક્ચર',
-          description: 'બિટકોઇન સાયકલ અને અલ્ટકોઇન સીઝન.',
+          title: 'Module 1: Crypto Market Structure & Spot vs Futures',
+          description: 'Bitcoin Cycle અને Altcoin Seasons.',
           lessons: [
             {
-              title: '૧.૧ બિટકોઇન સાયકલ અને ગ્લોબલ લિક્વિડિટી',
-              description: 'ક્રિપ્ટોમાં સાચો ટ્રેડ ક્યારે લેવો.',
+              title: '1.1 Bitcoin Halving Cycles અને Global Liquidity Dynamics',
+              description: 'Crypto માં right entry time કેવી રીતે ઓળખવો.',
               video_url: sampleVideo1,
               video_duration: '20:15',
               is_preview: 1,
@@ -498,11 +499,11 @@ export async function runSeed() {
     },
     {
       id: 'crs-trade-06',
-      title: 'ટ્રેડિંગ સાયકોલોજી, રિસ્ક મેનેજમેન્ટ અને સ્ટોપ લોસ રૂલ્સ (Psychology Mastery)',
+      title: 'Trading Psychology, Discipline & Risk Management (માઇન્ડસેટ)',
       slug: 'trading-psychology-risk-management-gujarati',
-      short_description: '૯૦% ટ્રેડર્સ સાયકોલોજી અને ડિસિપ્લિનના અભાવે લોસ કરે છે. લોભ, ડર અને રિવિન્જ ટ્રેડિંગ પર નિયંત્રણ મેળવીને પ્રોફેશનલ માઇન્ડસેટ કેળવવાનો ફ્રી માસ્ટરક્લાસ.',
-      description: `### ટ્રેડિંગ એ માઇન્ડગેમ છે
-જો તમારી પાસે દુનિયાની શ્રેષ્ઠ સ્ટ્રેટેજી હોય પણ સાયકોલોજી નબળી હોય, તો તમે ક્યારેય પ્રોફિટેબલ નહીં બની શકો. આ કોર્સમાં ટ્રેડિંગ જર્નલ બનાવવું, ડેઇલી લોસ લિમિટ સેટ કરવી અને ઇમોશન્સ કંટ્રોલ કરવાની સાયન્ટિફિક પદ્ધતિઓ શીખવવામાં આવે છે.`,
+      short_description: '90% Traders Psychology અને Discipline ના અભાવે Loss કરે છે. Greed, Fear અને Revenge Trading પર control મેળવીને Professional Mindset કેળવવાનો 100% Free Course.',
+      description: `### Trading is 80% Psychology & 20% Strategy!
+દુનિયાની Best Strategy હોય પણ Psychology નબળી હોય તો Profit નથી થતો. આ Course માં Trading Journal બનાવવું, Daily Loss Limit set કરવી અને Emotion Control ના practical rules શીખવવામાં આવે છે.`,
       category_id: 'cat-psychology-risk',
       instructor_id: inst1Id,
       thumbnail: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',
@@ -510,21 +511,21 @@ export async function runSeed() {
       price: 0,
       discount_price: 0,
       difficulty_level: 'All Levels',
-      duration: '8.5 કલાક',
-      language: 'ગુજરાતી (Gujarati)',
+      duration: '8.5 Hours',
+      language: 'Gujarati + English (Gujlish)',
       learning_outcomes: [
-        'રિવિન્જ ટ્રેડિંગ અને ઓવર-ટ્રેડિંગ પર ૧૦૦% કાબૂ',
-        '૧ દિવસમાં કેટલો લોસ લેવો તેનો ચોક્કસ નિયમ',
-        'ટ્રેડિંગ જર્નલ બનાવીને ભૂલો સુધારવાની ટેકનિક',
-        'શાંત મનથી ચાર્ટ સામે બેસવાની આદતો'
+        'Revenge Trading અને Over-Trading પર 100% control',
+        '1 Day માં કેટલો Loss tolerate કરવો તેનો exact rule',
+        'Trading Journal maintain કરીને mistakes eliminate કરવાની technique',
+        'Calm mind સાથે Charts analyze કરવાની habits'
       ],
       requirements: [
-        'ટ્રેડિંગમાં સુધારો કરવાની નિષ્ઠાવાન ઇચ્છા'
+        'Trading discipline સુધારવાની sincere desire'
       ],
       target_audience: [
-        'દરેક ઇન્ટ્રાડે, સ્વિંગ અને ઓપ્શન્સ ટ્રેડર'
+        'દરેક Intraday, Swing અને Options Trader'
       ],
-      tags: ['Psychology', 'Risk Management', 'Capital Protection', 'Discipline'],
+      tags: ['Psychology', 'Risk Management', 'Capital Protection', 'Discipline', 'Mindset'],
       status: 'published',
       featured: 1,
       popular: 1,
@@ -534,12 +535,12 @@ export async function runSeed() {
       review_count: 1120,
       modules: [
         {
-          title: 'મોડ્યુલ ૧: ટ્રેડિંગ માઇન્ડસેટ અને કેપિટલ પ્રોટેક્શન',
-          description: 'ડર અને લોભ સામે જીત મેળવવી.',
+          title: 'Module 1: Trader Mindset & Capital Protection Rules',
+          description: 'Fear અને Greed સામે victory મેળવવી.',
           lessons: [
             {
-              title: '૧.૧ શા માટે ૯૦% ટ્રેડર્સ પૈસા ગુમાવે છે? રિસ્ક મેનેજમેન્ટનો ૧% નિયમ',
-              description: 'કોઈ પણ એક ટ્રેડમાં કેપિટલના ૧% થી વધુ જોખમ ન લેવું.',
+              title: '1.1 Why 90% Traders Lose Money? The 1% Risk Rule',
+              description: 'કોઈ પણ Single Trade માં Capital ના 1% થી વધારે risk ન લેવો.',
               video_url: sampleVideo2,
               video_duration: '27:40',
               is_preview: 1,
@@ -652,121 +653,121 @@ export async function runSeed() {
   execute(`
     INSERT INTO reviews (id, course_id, user_id, rating, review_text, status, created_at, updated_at)
     VALUES
-    ('rev-01', 'crs-trade-01', ?, 5, 'શેર બજારમાં શૂન્યમાંથી શરૂઆત કરવા માટે આનાથી સારો કોર્સ બીજો કોઈ હોઈ ન શકે. ડીમેટ એકાઉન્ટ ઓપરેટ કરવાનું અને ઓર્ડર મુકવાનું બધું સરળ ગુજરાતીમાં શીખવા મળ્યું!', 'approved', '2026-08-25T14:20:00Z', '2026-08-25T14:20:00Z'),
-    ('rev-02', 'crs-trade-02', ?, 5, 'ભાવિક સરનું પ્રાઇસ એક્શન ટીચિંગ એકદમ પાવરફુલ છે! સપોર્ટ અને રેઝિસ્ટન્સ હવે ચાર્ટ જોતાં જ ઓળખાઈ જાય છે. અમદાવાદથી આ કોર્સ જોઈને મને ઘણો લાભ થયો છે.', 'approved', '2026-08-28T09:15:00Z', '2026-08-28T09:15:00Z'),
-    ('rev-03', 'crs-trade-03', ?, 5, 'નિફ્ટી અને બેંકનિફ્ટીમાં ઓપ્શન્સ ગ્રીક્સ (ડેલ્ટા/થીટા) સમજાવવાની જિજ્ઞેશ સરની રીત અદભુત છે. હવે થીટા ડીકેમાં પ્રીમિયમ લોસ થતો નથી!', 'approved', '2026-09-02T16:45:00Z', '2026-09-02T16:45:00Z')
+    ('rev-01', 'crs-trade-01', ?, 5, 'Stock Market માં zero થી start કરવા માટે આનાથી best course બીજો કોઈ હોઈ ન શકે. Demat Account operate કરવાનું અને Orders મૂકવાનું બધું સરળ Gujlish માં clear થઈ ગયું!', 'approved', '2026-08-25T14:20:00Z', '2026-08-25T14:20:00Z'),
+    ('rev-02', 'crs-trade-02', ?, 5, 'Bhavik Sir નું Price Action teaching એકદમ powerful છે! Support અને Resistance હવે Chart જોતાં જ identify થઈ જાય છે. Indicators વગર trading કરવાનો confidence આવી ગયો.', 'approved', '2026-08-28T09:15:00Z', '2026-08-28T09:15:00Z'),
+    ('rev-03', 'crs-trade-03', ?, 5, 'Nifty & BankNifty માં Option Greeks (Delta/Theta) સમજાવવાની Jignesh Sir ની style mindblowing છે. હવે Theta Decay માં unnecessary premium loss થતો નથી!', 'approved', '2026-09-02T16:45:00Z', '2026-09-02T16:45:00Z')
   `, [studentId, student2Id, studentId]);
 
-  // 7. Site Content & CMS (Gujarati First)
+  // 7. Site Content & CMS (Gujlish First)
   const heroContent = {
-    badge: '🔥 ગુજરાતનું નંબર 1 ટ્રેડિંગ એજ્યુકેશન પ્લેટફોર્મ',
-    headline: 'ગુજરાતીમાં શીખો શેર બજાર અને ઓપ્શન્સ ટ્રેડિંગની સાચી રીત',
-    subheadline: 'પ્રાઇસ એક્શન, નિફ્ટી-બેંકનિફ્ટી ઓપ્શન્સ, કેન્ડલસ્ટિક પેટર્ન અને ક્રિપ્ટો ટ્રેડિંગ સરળ માતૃભાષામાં. લાઈવ માર્કેટ એનાલિસિસ અને રિસ્ક મેનેજમેન્ટ સાથે પ્રોફેશનલ ટ્રેડર બનો.',
-    ctaPrimaryText: 'મફતમાં શીખવાનું શરૂ કરો',
+    badge: '🔥 Gujarat નું #1 Trading Education Platform',
+    headline: 'Stock Market Trading શીખો સરળ રીતે!',
+    subheadline: 'Trading ની શરૂઆત કરો અને market concepts ને step by step સમજો. Technical Analysis, Price Action, Nifty-BankNifty Options અને Crypto Trading હવે શીખો સરળ Gujlish માં. Live Chart Analysis અને Strict Risk Management સાથે Professional Trader બનો.',
+    ctaPrimaryText: 'Course શરૂ કરો (Free)',
     ctaPrimaryLink: '/courses?price=free',
-    ctaSecondaryText: 'બધા કોર્સ જુઓ',
+    ctaSecondaryText: 'અમારા Trading Courses',
     ctaSecondaryLink: '/courses',
     stats: [
-      { label: 'ગુજરાતી વિદ્યાર્થીઓ', value: '૫૦,૦૦૦+' },
-      { label: 'કોમ્યુનિટી રેટિંગ', value: '૪.૯/૫' },
-      { label: 'પ્રાયોગિક જ્ઞાન', value: '૧૦૦%' },
-      { label: 'વોટ્સએપ મેન્ટર સપોર્ટ', value: '૨૪/૭' }
+      { label: 'Trained Gujarati Students', value: '50,000+' },
+      { label: 'Community Rating', value: '4.9/5' },
+      { label: 'Practical Chart Learning', value: '100%' },
+      { label: 'WhatsApp Mentor Support', value: '24/7' }
     ]
   };
 
   const learningBenefits = [
     {
-      title: '૧૦૦% સરળ ગુજરાતી ભાષા',
-      description: 'અંગ્રેજીના અઘરા શબ્દો વગર માતૃભાષામાં લાઈવ ઉદાહરણો સાથે સંપૂર્ણ શિક્ષણ.',
+      title: 'સરળ Gujarati + English (Gujlish)',
+      description: 'અઘરા terms વગર રોજિંદી Gujlish ભાષામાં practical market concepts શીખો.',
       icon: 'Target'
     },
     {
-      title: 'પ્યોર પ્રાઇસ એક્શન — કોઈ ટીપ્સ નહીં',
-      description: 'અમે ટેલિગ્રામ ટીપ્સ નથી આપતા. તમને જાતે ચાર્ટ રીડ કરીને સ્વતંત્ર ટ્રેડર બનાવીએ છીએ.',
+      title: 'Pure Price Action — No Tips',
+      description: 'કોઈ Telegram tips નહિ, તમે જાતે Charts Analyze કરીને confident trade લઈ શકશો.',
       icon: 'Briefcase'
     },
     {
-      title: 'કેપિટલ પ્રોટેક્શન પ્રથમ નિયમ',
-      description: 'પ્રોફિટ કરતાં પહેલાં કેપિટલ કેવી રીતે બચાવવી અને સ્ટોપ લોસ ક્યાં મુકવો તે શીખવો.',
+      title: 'Capital Protection First',
+      description: 'Profit કરતાં પહેલાં Capital બચાવવી અને Risk Manage કરવો એ અમારો #1 Rule છે.',
       icon: 'CheckCircle'
     },
     {
-      title: 'લાઈફટાઈમ એક્સેસ અને સર્ટિફિકેટ',
-      description: 'ગમે ત્યારે રિવિઝન કરો અને કોર્સ પૂર્ણ કરતાં સત્તાવાર ડિજિટલ સર્ટિફિકેટ મેળવો.',
+      title: 'Lifetime Access & Certificates',
+      description: 'ગમે ત્યારે revision કરો અને Course complete થતાં verified Digital Certificate મેળવો.',
       icon: 'Award'
     }
   ];
 
   const whyChooseUs = {
-    badge: 'શા માટે TRADEX ACADEMY?',
-    title: 'હજારો ગુજરાતીઓ શા માટે અમારા પર ભરોસો મૂકે છે?',
-    subtitle: 'અમે માત્ર થિયરી નથી ભણાવતા — લાઈવ માર્કેટમાં ટકી રહેવાની સાચી ટેકનિક શીખવીએ છીએ',
+    badge: 'WHY TRADEX ACADEMY',
+    title: 'Gujarati Traders શા માટે અમને પસંદ કરે છે?',
+    subtitle: 'અમે tips નથી આપતા — Live Market માં Chart Read કરીને Self-Reliant Trader બનતા શીખવીએ છીએ',
     points: [
-      '૧૦૦% સરળ ગુજરાતી ભાષામાં લાઈવ એક્ઝામ્પલ સાથે શિક્ષણ',
-      'ખોટા પ્રોમિસ કે ટીપ્સ નહીં - માત્ર વાસ્તવિક પ્રાઇસ એક્શન',
-      'કેપિટલ પ્રોટેક્શન અને કડક રિસ્ક-ટુ-રિવોર્ડ રેશિયો',
-      'લાઈફટાઈમ કોર્સ એક્સેસ અને ડાઉનલોડેબલ પીડીએફ ચીટશીટ'
+      'સરળ Gujlish ભાષામાં Live Market Case Studies સાથે practical learning',
+      'No fake promises, no tips — ફક્ત proven Price Action & Data setups',
+      'Capital Protection અને strict 1:2 Risk-to-Reward Ratio',
+      'Lifetime Course Access અને downloadable PDF cheatsheets'
     ]
   };
 
   const testimonials = [
     {
       id: 't-1',
-      name: 'પ્રતીક પટેલ',
-      role: 'અમદાવાદ • ફૂલ-ટાઇમ ઓપ્શન્સ ટ્રેડર',
+      name: 'પ્રતીક પટેલ (Pratik Patel)',
+      role: 'Ahmedabad • Full-Time Options Trader',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
       rating: 5,
-      content: 'હું પહેલાં ટેલિગ્રામ ટીપ્સના ચક્કરમાં દર મહિને મોટો લોસ કરતો હતો. TradeX Academy ના પ્રાઇસ એક્શન અને રિસ્ક મેનેજમેન્ટ કોર્સે મારી આંખો ખોલી નાખી. હવે મારી પાસે ચોક્કસ સેટઅપ અને સ્ટોપ લોસ છે.'
+      content: 'હું પહેલાં Telegram Tips ના ચક્કરમાં દર મહિને મોટો Loss કરતો હતો. TradeX Academy ના Price Action અને Risk Management Course એ મારી trading life બદલી નાખી. હવે મારી પાસે proper setup અને defined Stop Loss છે.'
     },
     {
       id: 't-2',
-      name: 'હર્ષિલ મહેતા',
-      role: 'સુરત • ટેક્સટાઇલ બિઝનેસમેન & સ્વિંગ ટ્રેડર',
+      name: 'હર્ષિલ મહેતા (Harshil Mehta)',
+      role: 'Surat • Textile Businessman & Swing Trader',
       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
       rating: 5,
-      content: 'બિઝનેસની સાથે ટ્રેડિંગ કેવી રીતે કરવું તે મને સ્વિંગ ટ્રેડિંગ કોર્સમાં શીખવા મળ્યું. સૌથી મોટી વાત એ છે કે બધું સરળ ગુજરાતીમાં સમજાવ્યું છે. કોઈ અઘરા અંગ્રેજી શબ્દો વગર લાઈવ ચાર્ટ પર પ્રેક્ટિકલ નોલેજ મળ્યું.'
+      content: 'Business ની સાથે Part-time Trading કેવી રીતે કરવું તે મને Swing Trading Course માં શીખવા મળ્યું. સૌથી મોટી વાત એ છે કે બધું સરળ Gujlish માં સમજાવ્યું છે. Live Charts પર 1:3 Risk-to-Reward setups મળ્યા.'
     },
     {
       id: 't-3',
-      name: 'નેહા શાહ',
-      role: 'વડોદરા • બેંકિંગ પ્રોફેશનલ & ઓપ્શન્સ બાયર',
+      name: 'નેહા શાહ (Neha Shah)',
+      role: 'Vadodara • Banking Professional & Options Trader',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
       rating: 5,
-      content: 'નિફ્ટી અને બેંકનિફ્ટી એક્સપાયરી સ્ટ્રેટેજી કોર્સ અદભુત છે! ઓપ્શન ગ્રીક્સ ડેલ્ટા અને થીટા કેવી રીતે કામ કરે છે તે પહેલીવાર સાચી રીતે સમજાયું. વોટ્સએપ પર જ્યારે પણ શંકા હોય ત્યારે મેન્ટર ટીમ તરફથી તરત જવાબ મળે છે.'
+      content: 'Nifty & BankNifty Options Trading Course outstanding છે! Option Greeks Delta અને Theta કેવી રીતે work કરે છે તે પહેલીવાર properly સમજાયું. WhatsApp Mentor Support પણ instantly help કરે છે.'
     }
   ];
 
   const faqs = [
     {
       id: 'faq-1',
-      question: 'શું સંપૂર્ણ નવો માણસ (Beginner) પણ આ કોર્સથી શેર બજાર શીખી શકે?',
-      answer: 'હા, ચોક્કસ! અમારો "બેઝિક શેર બજાર ફાઉન્ડેશન કોર્સ" બિલકુલ શૂન્યથી શરૂ થાય છે. ડીમેટ એકાઉન્ટ શું છે, શેર કેવી રીતે ખરીદવા-વેચવા, અને રિસ્ક કેવી રીતે કંટ્રોલ કરવું તે બધું સરળ ગુજરાતીમાં શીખવવામાં આવે છે.'
+      question: 'શું Complete Beginner પણ આ Course થી Trading શીખી શકે?',
+      answer: 'હા, ચોક્કસ! અમારો "Stock Market Basics for Beginners" Course એકદમ zero થી start થાય છે. Demat Account open કરવાથી લઈને First Stock buy કરવો અને Risk Manage કરવો બધું સરળ Gujlish માં શીખવવામાં આવે છે.'
     },
     {
       id: 'faq-2',
-      question: 'શું શીખવા માટે મોંઘા લેપટોપની જરૂર છે કે મોબાઈલથી શીખી શકાય?',
-      answer: 'તમે કોઈપણ સાધન — તમારા એન્ડ્રોઇડ કે આઈફોન મોબાઈલ, ટેબ્લેટ અથવા લેપટોપ પરથી આરામથી વિડિયો જોઈ શકો છો. અમારું પ્લેટફોર્મ ૧૦૦% મોબાઈલ ફ્રેન્ડલી છે.'
+      question: 'શું Trading શીખવા માટે Expensive Laptop જરૂરી છે કે Mobile થી શીખી શકાય?',
+      answer: 'તમે કોઈપણ device — તમારા Android કે iPhone mobile, Tablet અથવા Laptop પરથી smoothly videos જોઈ શકો છો. અમારું platform 100% Mobile Friendly છે.'
     },
     {
       id: 'faq-3',
-      question: 'કોર્સ ખરીદ્યા પછી વિડિયો કેટલા સમય સુધી જોઈ શકાશે?',
-      answer: 'તમામ કોર્સમાં લાઈફટાઈમ (આજીવન) અનલિમિટેડ એક્સેસ મળે છે! તમે ગમે ત્યારે, ગમે તેટલી વાર વિડિયો રિવિઝન કરી શકો છો. ભવિષ્યમાં ઉમેરાતા નવા વિડિયો પણ મફત મળશે.'
+      question: 'Course enroll કર્યા પછી Videos કેટલા સમય સુધી જોઈ શકાશે?',
+      answer: 'બધા Courses માં Lifetime Unlimited Access મળે છે! તમે ગમે ત્યારે, ગમે તેટલી વાર Videos revise કરી શકો છો. Future updates પણ completely Free મળશે.'
     },
     {
       id: 'faq-4',
-      question: 'જો મને કોઈ સવાલ કે શંકા હોય તો માર્ગદર્શન કેવી રીતે મળશે?',
-      answer: 'દરેક વિદ્યાર્થીને અમારો ડેડિકેટેડ વોટ્સએપ મેન્ટર સપોર્ટ મળે છે. તમે તમારા ચાર્ટના સ્ક્રીનશોટ મોકલીને મેન્ટર પાસેથી સીધો પ્રતિસાદ મેળવી શકો છો.'
+      question: 'જો મને કોઈ Doubts કે Queries હોય તો Mentor Support કેવી રીતે મળશે?',
+      answer: 'દરેક Student ને અમારો Dedicated WhatsApp Mentor Support મળે છે. તમે તમારા Chart Screenshots send કરીને Mentors પાસેથી direct feedback મેળવી શકો છો.'
     },
     {
       id: 'faq-5',
-      question: 'શું તમે લાઈવ ટ્રેડિંગ ટીપ્સ કે કોલ્સ આપો છો?',
-      answer: 'ના. અમે કોઈ ટીપ્સ આપતા નથી. અમે તમને ૧૦૦% સાચું શિક્ષણ આપીએ છીએ જેથી તમે જાતે ચાર્ટ રીડ કરીને આત્મનિર્ભર બનીને ટ્રેડિંગ કરી શકો.'
+      question: 'શું તમે Live Trading Tips કે Calls આપો છો?',
+      answer: 'ના. અમે કોઈ Telegram tips કે calls આપતા નથી. અમે તમને 100% genuine education આપીએ છીએ જેથી તમે જાતે Charts Analyze કરીને Self-Reliant Trader બની શકો.'
     }
   ];
 
   const siteSettings = {
     platformName: 'TradeX Academy',
-    tagline: 'ગુજરાતનું પ્રીમિયર શેર બજાર અને ટ્રેડિંગ શિક્ષણ પ્લેટફોર્મ',
+    tagline: 'ગુજરાતનું #1 Trading Education Platform',
     supportEmail: 'support@tradex.com',
     supportPhone: '+91 98765 43210',
     currency: 'INR',
@@ -778,7 +779,7 @@ export async function runSeed() {
 
   const promoBanner = {
     isActive: true,
-    message: '🎉 ગુજરાતીઓ માટે સ્પેશિયલ ઓફર: તમામ કોર્સ પર ફ્લેટ ૫૦% ડિસ્કાઉન્ટ!',
+    message: '🎉 Gujarat ના Traders માટે Special Offer: બધા Trading Courses પર Flat 50% OFF!',
     couponCode: 'LAUNCH50',
     link: '/courses'
   };

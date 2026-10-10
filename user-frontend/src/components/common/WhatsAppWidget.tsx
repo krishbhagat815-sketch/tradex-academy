@@ -14,10 +14,10 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
   const [customMsg, setCustomMsg] = useState('');
 
   const quickPrompts = language === 'gu' ? [
-    'મને શેર બજારનો ફ્રી કોર્સ કરવો છે.',
-    'ઓપ્શન્સ ટ્રેડિંગ કોર્સની ફી કેટલી છે?',
-    'નવા વિદ્યાર્થી માટે કયો કોર્સ બેસ્ટ છે?',
-    'મને ડીમેટ એકાઉન્ટ ખોલવામાં મદદ જોઈએ છે.'
+    'મને Free Stock Market Course કરવો છે.',
+    'Options Trading Course ની fees કેટલી છે?',
+    'Beginner માટે કયો Trading Course best છે?',
+    'મને Demat Account setup કરવામાં help જોઈએ છે.'
   ] : [
     'I want to join the Free Stock Market Course.',
     'What are the fees for Options Trading Course?',

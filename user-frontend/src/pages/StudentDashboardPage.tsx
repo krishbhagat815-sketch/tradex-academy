@@ -222,11 +222,13 @@ export const StudentDashboardPage: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5" /> Student Learning Portal
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Welcome back, {user?.name}!
+              {dict.dashboard.welcome} {user?.name}!
             </h1>
             <p className="mt-1 text-sm text-slate-400 max-w-2xl">
               {user?.headline ||
-                "Continuous engineering & data mastery journey. Keep pushing towards 100% completion!"}
+                (language === 'gu'
+                  ? 'Trading ની શરૂઆત કરો અને market concepts ને step by step સમજો. 100% completion તરફ આગળ વધો!'
+                  : 'Start your trading education journey and master market concepts step by step.')}
             </p>
           </div>
 
@@ -234,7 +236,7 @@ export const StudentDashboardPage: React.FC = () => {
             to="/courses"
             className="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs transition-all shadow-md flex items-center gap-1.5 flex-shrink-0"
           >
-            <span>Browse New Courses</span>
+            <span>{language === 'gu' ? 'નવા Courses જુઓ' : 'Browse New Courses'}</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
@@ -251,7 +253,7 @@ export const StudentDashboardPage: React.FC = () => {
           </div>
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-850">
             <p className="text-xs text-slate-400 font-medium">
-              {language === 'gu' ? 'ચાલુ કોર્સ' : 'In Progress'}
+              {language === 'gu' ? 'In Progress Courses' : 'In Progress'}
             </p>
             <p className="text-2xl font-extrabold text-brand-400 mt-1">
               {stats.inProgressCourses}

@@ -67,14 +67,14 @@ export const CertificateVerifyPage: React.FC = () => {
       <div className="text-center max-w-2xl mx-auto mb-12">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-3">
           <ShieldCheck className="w-4 h-4" />
-          <span>{language === 'gu' ? 'ઓફિશિયલ સર્ટિફિકેટ રજીસ્ટ્રી' : 'Official Credential Registry'}</span>
+          <span>{language === 'gu' ? 'Official Certificate Registry' : 'Official Credential Registry'}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          {language === 'gu' ? 'સર્ટિફિકેટ વેરિફિકેશન' : 'Verify Course Completion Certificate'}
+          {language === 'gu' ? 'Certificate Verification' : 'Verify Course Completion Certificate'}
         </h1>
         <p className="mt-3 text-sm text-slate-400">
           {language === 'gu'
-            ? 'સર્ટિફિકેટના તળિયે આપેલો યુનિક સીરીયલ નંબર (દા.ત. CERT-TRX-2026-78491) દાખલ કરીને વિદ્યાર્થીની સિદ્ધિ ચકાસો.'
+            ? 'Certificate ના તળિયે આપેલો Unique Code (e.g. CERT-TRX-2026-78491) enter કરીને Student Achievement verify કરો.'
             : 'Enter the unique certificate serial number found at the bottom of the graduate credential to authenticate student achievement.'}
         </p>
       </div>
@@ -96,7 +96,7 @@ export const CertificateVerifyPage: React.FC = () => {
           disabled={loading || !inputCode.trim()}
           className="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-all shadow-md disabled:opacity-50"
         >
-          {loading ? (language === 'gu' ? 'ચકાસી રહ્યા છીએ...' : 'Verifying...') : (language === 'gu' ? 'ચકાસો' : 'Verify')}
+          {loading ? (language === 'gu' ? 'Verifying...' : 'Verifying...') : (language === 'gu' ? 'Verify કરો' : 'Verify')}
         </button>
       </form>
 
@@ -110,7 +110,7 @@ export const CertificateVerifyPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span className="font-bold text-sm">
-                    {language === 'gu' ? 'અસલ અને માન્ય સર્ટિફિકેટ પ્રમાણિત છે' : 'Authentic & Valid Credential Verified'}
+                    {language === 'gu' ? '100% Authentic & Verified Certificate' : 'Authentic & Valid Credential Verified'}
                   </span>
                 </div>
                 <span className="text-xs font-mono font-semibold">{certificate.certificate_code}</span>

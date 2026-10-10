@@ -82,7 +82,7 @@ export const HomePage: React.FC = () => {
       icon: <BarChart3 className="w-7 h-7 text-emerald-400" />,
       color: 'from-emerald-500/20 to-teal-500/5',
       borderColor: 'border-emerald-500/30',
-      tag: language === 'gu' ? 'બેઝિકથી શરૂઆત' : 'Beginner Friendly',
+      tag: language === 'gu' ? 'Beginner Friendly' : 'Beginner Friendly',
       link: '/courses?category=cat-stock-basics'
     },
     {
@@ -91,7 +91,7 @@ export const HomePage: React.FC = () => {
       icon: <TrendingUp className="w-7 h-7 text-cyan-400" />,
       color: 'from-cyan-500/20 to-blue-500/5',
       borderColor: 'border-cyan-500/30',
-      tag: language === 'gu' ? 'પ્યોર ચાર્ટ રીડિંગ' : 'Zero Indicators',
+      tag: language === 'gu' ? 'Pure Price Action' : 'Zero Indicators',
       link: '/courses?category=cat-price-action'
     },
     {
@@ -100,7 +100,7 @@ export const HomePage: React.FC = () => {
       icon: <Sparkles className="w-7 h-7 text-amber-400" />,
       color: 'from-amber-500/20 to-orange-500/5',
       borderColor: 'border-amber-500/30',
-      tag: language === 'gu' ? 'નિફ્ટી / બેંકનિફ્ટી' : 'Nifty & BankNifty',
+      tag: language === 'gu' ? 'Nifty & BankNifty' : 'Nifty & BankNifty',
       link: '/courses?category=cat-options-trading'
     },
     {
@@ -109,7 +109,7 @@ export const HomePage: React.FC = () => {
       icon: <CandlestickChart className="w-7 h-7 text-rose-400" />,
       color: 'from-rose-500/20 to-pink-500/5',
       borderColor: 'border-rose-500/30',
-      tag: language === 'gu' ? 'કેન્ડલ સિક્રેટ્સ' : 'Price Secrets',
+      tag: language === 'gu' ? 'Candlestick Secrets' : 'Price Secrets',
       link: '/courses?category=cat-price-action'
     },
     {
@@ -118,7 +118,7 @@ export const HomePage: React.FC = () => {
       icon: <Coins className="w-7 h-7 text-purple-400" />,
       color: 'from-purple-500/20 to-indigo-500/5',
       borderColor: 'border-purple-500/30',
-      tag: language === 'gu' ? 'ગ્લોબલ માર્કેટ' : 'Crypto & Futures',
+      tag: language === 'gu' ? 'Crypto & Futures' : 'Crypto & Futures',
       link: '/courses?category=cat-crypto-trading'
     },
     {
@@ -127,7 +127,7 @@ export const HomePage: React.FC = () => {
       icon: <ShieldAlert className="w-7 h-7 text-emerald-400" />,
       color: 'from-emerald-500/20 to-teal-500/5',
       borderColor: 'border-emerald-500/30',
-      tag: language === 'gu' ? 'કેપિટલ પ્રોટેક્શન' : 'Capital Safety',
+      tag: language === 'gu' ? 'Capital Protection' : 'Capital Safety',
       link: '/courses?category=cat-psychology-risk'
     }
   ];

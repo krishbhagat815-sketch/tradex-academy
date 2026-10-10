@@ -70,11 +70,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
 
   // Bilingual level label helper
   const getLevelLabel = (level: string) => {
-    if (language === 'en') return level;
-    if (level.toLowerCase().includes('begin')) return 'બિગિનર';
-    if (level.toLowerCase().includes('inter')) return 'ઇન્ટરમીડિયેટ';
-    if (level.toLowerCase().includes('adv')) return 'એડવાન્સ';
-    return 'બધા માટે';
+    if (level.toLowerCase().includes('begin')) return 'Beginner';
+    if (level.toLowerCase().includes('inter')) return 'Intermediate';
+    if (level.toLowerCase().includes('adv')) return 'Advanced';
+    return 'All Levels';
   };
 
   return (

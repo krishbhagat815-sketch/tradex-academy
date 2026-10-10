@@ -145,7 +145,7 @@ export const CourseDetailsPage: React.FC = () => {
       });
 
       if (res.success) {
-        setReviewSuccess(language === 'gu' ? 'તમારો રિવ્યુ સફળતાપૂર્વક સબમિટ થયો છે. આભાર!' : 'Thank you! Your review has been submitted.');
+        setReviewSuccess(language === 'gu' ? 'તમારો Review સફળતાપૂર્વક Submit થઈ ગયો છે. આભાર! 🎉' : 'Thank you! Your review has been submitted.');
         setReviewText('');
         // Refresh course reviews
         const updated = await api.get(`/courses/${id}`);
@@ -174,10 +174,10 @@ export const CourseDetailsPage: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center min-h-[60vh]">
         <h2 className="text-2xl font-bold text-white">
-          {language === 'gu' ? 'કોર્સ મળ્યો નથી' : 'Course Not Found'}
+          {language === 'gu' ? 'Course મળ્યો નથી' : 'Course Not Found'}
         </h2>
         <p className="mt-2 text-slate-400">
-          {error || (language === 'gu' ? 'આ કોર્સ અસ્તિત્વમાં નથી.' : 'The requested course does not exist.')}
+          {error || (language === 'gu' ? 'આ Course અસ્તિત્વમાં નથી.' : 'The requested course does not exist.')}
         </p>
         <Link
           to="/courses"

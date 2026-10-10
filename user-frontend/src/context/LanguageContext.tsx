@@ -61,7 +61,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const formatPrice = (price: number | string | null | undefined): string => {
     const num = Number(price || 0);
     if (num <= 0) {
-      return language === 'gu' ? 'મફત (₹૦)' : 'Free (₹0)';
+      return language === 'gu' ? 'FREE (મફત)' : 'FREE (₹0)';
     }
     return `₹${num.toLocaleString('en-IN')}`;
   };

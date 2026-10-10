@@ -80,7 +80,7 @@ async function startServer() {
         await (0, database_js_1.getDb)();
         await (0, schema_js_1.initSchema)();
         // Check if Gujarati trading courses exist; if not, seed automatically
-        const gujjuCourse = (0, database_js_1.queryOne)("SELECT id FROM courses WHERE slug = 'gujarati-stock-market-basics'");
+        const gujjuCourse = (0, database_js_1.queryOne)("SELECT id FROM courses WHERE slug = 'stock-market-basics-for-beginners-gujarati'");
         if (!gujjuCourse) {
             console.log('Gujarati Trading courses not found in database. Auto-seeding initial data...');
             await (0, seed_js_1.runSeed)();

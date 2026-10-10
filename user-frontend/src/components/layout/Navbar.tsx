@@ -105,9 +105,9 @@ export const Navbar: React.FC = () => {
                     ? "bg-brand-500 text-slate-950 shadow-sm font-bold"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
-                title="ગુજરાતી ભાષા પસંદ કરો"
+                title="ગુજરાતી + English (Gujlish) ભાષા પસંદ કરો"
               >
-                <span>ગુજરાતી</span>
+                <span>ગુજરાતી (Gujlish)</span>
               </button>
               <button
                 onClick={() => setLanguage("en")}
@@ -290,7 +290,7 @@ export const Navbar: React.FC = () => {
                     : "text-slate-400"
                 }`}
               >
-                ગુજરાતી
+                ગુજરાતી (Gujlish)
               </button>
               <button
                 onClick={() => setLanguage("en")}

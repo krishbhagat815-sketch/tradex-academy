@@ -87,14 +87,14 @@ export const CoursesPage: React.FC = () => {
       <div className="mb-8">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-3">
           <BookOpen className="w-3.5 h-3.5" />
-          <span>{language === 'gu' ? 'સંપૂર્ણ ટ્રેડિંગ અભ્યાસક્રમ' : 'Full Curriculum Catalog'}</span>
+          <span>{language === 'gu' ? 'Complete Trading Curriculum' : 'Full Curriculum Catalog'}</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          {language === 'gu' ? 'તમામ ટ્રેડિંગ કોર્સ' : 'Explore Trading Courses'}
+          {language === 'gu' ? 'અમારા Trading Courses' : 'Explore Trading Courses'}
         </h1>
         <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
           {language === 'gu'
-            ? 'શેર બજાર, પ્રાઇસ એક્શન, નિફ્ટી/બેંકનિફ્ટી ઓપ્શન્સ અને ક્રિપ્ટોકરન્સીના વ્યવહારુ વિડિયો કોર્સ. તમારા અનુભવ મુજબ કોર્સ પસંદ કરો.'
+            ? 'Stock Market, Price Action, Nifty/BankNifty Options અને Crypto Trading ના practical video courses. તમારા Level મુજબ Course પસંદ કરો.'
             : 'Discover comprehensive stock market, price action, and options trading masterclasses designed for Gujarati investors.'}
         </p>
       </div>
