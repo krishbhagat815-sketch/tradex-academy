@@ -73,16 +73,27 @@ export const Navbar: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Sync input with URL search param on page change
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get('search');
+    if (q !== null) {
+      setSearchQuery(q);
+    }
+  }, [location.search]);
+
   const handleSearch = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/courses?search=${encodeURIComponent(searchQuery.trim())}`);
-      setShowDropdown(false);
-      setMobileMenuOpen(false);
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const clean = searchQuery.trim();
+    setShowDropdown(false);
+    setMobileMenuOpen(false);
+    if (clean) {
+      navigate(`/courses?search=${encodeURIComponent(clean)}`);
     } else {
       navigate('/courses');
-      setShowDropdown(false);
-      setMobileMenuOpen(false);
     }
   };
 
@@ -96,132 +107,145 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3">
-        {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-teal-400 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform">
-            <TrendingUp className="w-6 h-6 text-slate-950 stroke-[2.4]" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-              The Safe
-              <span className="text-brand-400 font-extrabold">Trading</span>
-            </span>
-            <span className="text-[10px] tracking-wider text-slate-400 font-medium -mt-1 font-gujarati">
-              {dict.nav.tagline}
-            </span>
-          </div>
-        </Link>
+      <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 sm:gap-6">
+        {/* Left Side: Brand Logo + Extended Search Bar */}
+        <div className="flex items-center gap-4 lg:gap-6 flex-1 min-w-0">
+          <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-500 to-teal-400 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform">
+              <TrendingUp className="w-6 h-6 text-slate-950 stroke-[2.4]" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5 whitespace-nowrap">
+                The Safe
+                <span className="text-brand-400 font-extrabold">Trading</span>
+              </span>
+              <span className="text-[10px] tracking-wider text-slate-400 font-medium -mt-1 font-gujarati whitespace-nowrap">
+                {dict.nav.tagline}
+              </span>
+            </div>
+          </Link>
 
-        {/* Global Search Bar (Desktop) with Live Autocomplete */}
-        <div
-          ref={searchContainerRef}
-          className="hidden md:flex flex-1 max-w-md lg:max-w-xl mx-3 relative"
-        >
-          <form onSubmit={handleSearch} className="w-full relative">
-            <input
-              type="text"
-              placeholder={dict.nav.searchPlaceholder}
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setShowDropdown(true);
-              }}
-              onFocus={() => setShowDropdown(true)}
-              className="w-full pl-12 pr-24 py-2.5 bg-slate-900/90 border border-slate-700 hover:border-slate-600 rounded-full text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all shadow-inner"
-            />
-            <button
-              type="submit"
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-400 transition-colors p-1"
-              title="Search"
-            >
-              <Search className="w-4.5 h-4.5" />
-            </button>
-            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSuggestions([]);
-                    setShowDropdown(false);
-                  }}
-                  className="p-1 text-slate-400 hover:text-white transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
+          {/* Global Extended Search Bar (Desktop) */}
+          <div
+            ref={searchContainerRef}
+            className="hidden md:flex flex-1 max-w-xl lg:max-w-2xl relative"
+          >
+            <form onSubmit={handleSearch} className="w-full relative flex items-center">
+              <input
+                type="text"
+                placeholder={dict.nav.searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowDropdown(true);
+                }}
+                onFocus={() => setShowDropdown(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch(e);
+                  }
+                }}
+                className="w-full pl-12 pr-28 py-2.5 bg-slate-900/95 border border-slate-700 hover:border-slate-600 focus:border-brand-500 rounded-full text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/40 transition-all shadow-inner"
+              />
               <button
                 type="submit"
-                className="px-3 py-1 rounded-full bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs transition-all shadow-sm"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-400 transition-colors p-1"
+                title="Search"
               >
-                Search
+                <Search className="w-4.5 h-4.5" />
               </button>
-            </div>
-          </form>
-
-          {/* Live Autocomplete Suggestions Dropdown */}
-          {showDropdown && searchQuery.trim().length >= 2 && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl">
-              <div className="p-3 border-b border-slate-800 text-[11px] font-semibold text-slate-400 flex items-center justify-between">
-                <span>{language === 'gu' ? 'કોર્સ પરિણામો:' : 'Matching Courses:'}</span>
-                {isSearching && <span className="text-brand-400 animate-pulse text-[10px]">Searching...</span>}
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSuggestions([]);
+                      setShowDropdown(false);
+                      if (location.pathname === "/courses") {
+                        navigate("/courses");
+                      }
+                    }}
+                    className="p-1 text-slate-400 hover:text-white transition-colors"
+                    title="Clear"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  onClick={handleSearch}
+                  className="px-4 py-1.5 rounded-full bg-brand-500 hover:bg-brand-400 active:scale-95 text-slate-950 font-bold text-xs transition-all shadow-sm cursor-pointer"
+                >
+                  Search
+                </button>
               </div>
+            </form>
 
-              {suggestions.length > 0 ? (
-                <div className="divide-y divide-slate-800/60 max-h-80 overflow-y-auto">
-                  {suggestions.map((course) => (
-                    <button
-                      key={course.id}
-                      type="button"
-                      onClick={() => {
-                        navigate(`/courses/${course.slug || course.id}`);
-                        setShowDropdown(false);
-                      }}
-                      className="w-full text-left p-3 hover:bg-slate-800/80 transition-colors flex items-center gap-3 group"
-                    >
-                      <img
-                        src={course.thumbnail}
-                        alt={course.title}
-                        className="w-12 h-9 rounded-lg object-cover flex-shrink-0 border border-slate-700"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-white group-hover:text-brand-400 transition-colors truncate">
-                          {course.title}
-                        </p>
-                        <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
-                          <span className="text-emerald-400 font-semibold">
-                            {formatPrice(course.discount_price ?? course.price)}
-                          </span>
-                          <span>•</span>
-                          <span>{course.difficulty_level}</span>
+            {/* Live Autocomplete Suggestions Dropdown */}
+            {showDropdown && searchQuery.trim().length >= 2 && (
+              <div className="absolute left-0 right-0 top-full mt-2 bg-slate-900/98 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-xl">
+                <div className="p-3 border-b border-slate-800 text-[11px] font-semibold text-slate-400 flex items-center justify-between">
+                  <span>{language === 'gu' ? 'કોર્સ પરિણામો:' : 'Matching Courses:'}</span>
+                  {isSearching && <span className="text-brand-400 animate-pulse text-[10px]">Searching...</span>}
+                </div>
+
+                {suggestions.length > 0 ? (
+                  <div className="divide-y divide-slate-800/60 max-h-80 overflow-y-auto">
+                    {suggestions.map((course) => (
+                      <button
+                        key={course.id}
+                        type="button"
+                        onClick={() => {
+                          navigate(`/courses/${course.slug || course.id}`);
+                          setShowDropdown(false);
+                        }}
+                        className="w-full text-left p-3 hover:bg-slate-800/80 transition-colors flex items-center gap-3 group"
+                      >
+                        <img
+                          src={course.thumbnail}
+                          alt={course.title}
+                          className="w-12 h-9 rounded-lg object-cover flex-shrink-0 border border-slate-700"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-white group-hover:text-brand-400 transition-colors truncate">
+                            {course.title}
+                          </p>
+                          <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
+                            <span className="text-emerald-400 font-semibold">
+                              {formatPrice(course.discount_price ?? course.price)}
+                            </span>
+                            <span>•</span>
+                            <span>{course.difficulty_level}</span>
+                          </div>
                         </div>
-                      </div>
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => handleSearch()}
+                      className="w-full text-center py-2.5 bg-slate-950/60 hover:bg-brand-500/10 text-brand-400 font-bold text-xs transition-colors"
+                    >
+                      {language === 'gu' ? 'બધા પરિણામો જુઓ →' : 'View all matching courses →'}
                     </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => handleSearch()}
-                    className="w-full text-center py-2.5 bg-slate-950/60 hover:bg-brand-500/10 text-brand-400 font-bold text-xs transition-colors"
-                  >
-                    {language === 'gu' ? 'બધા પરિણામો જુઓ →' : 'View all matching courses →'}
-                  </button>
-                </div>
-              ) : !isSearching ? (
-                <div className="p-4 text-center text-xs text-slate-400">
-                  <p>{language === 'gu' ? 'કોઈ કોર્સ મળ્યો નથી.' : 'No courses found for this query.'}</p>
-                  <button
-                    type="button"
-                    onClick={() => handleSearch()}
-                    className="mt-2 text-brand-400 underline hover:text-brand-300 font-medium"
-                  >
-                    {language === 'gu' ? 'બધા Courses પેજ પર શોધો' : 'Browse full catalog'}
-                  </button>
-                </div>
-              ) : null}
-            </div>
-          )}
+                  </div>
+                ) : !isSearching ? (
+                  <div className="p-4 text-center text-xs text-slate-400">
+                    <p>{language === 'gu' ? 'કોઈ કોર્સ મળ્યો નથી.' : 'No courses found for this query.'}</p>
+                    <button
+                      type="button"
+                      onClick={() => handleSearch()}
+                      className="mt-2 text-brand-400 underline hover:text-brand-300 font-medium"
+                    >
+                      {language === 'gu' ? 'બધા Courses પેજ પર શોધો' : 'Browse full catalog'}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
         </div>
+
 
         {/* Desktop Navigation Links */}
         <nav className="hidden xl:flex items-center gap-5 text-sm font-medium text-slate-300">
