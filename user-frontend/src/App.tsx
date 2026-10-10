@@ -23,7 +23,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isPlayer = location.pathname.startsWith('/learn/');
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100">
+    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 transition-colors duration-200">
       {!isPlayer && <Navbar />}
       <main className="flex-1">{children}</main>
       {!isPlayer && <Footer />}

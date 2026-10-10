@@ -20,22 +20,13 @@ export default {
           800: '#065f46',
           900: '#064e3b',
         },
-        slate: {
-          750: '#253248',
-          850: '#162032',
-        },
-        navy: {
-          850: '#111827',
-          900: '#0b0f19',
-          950: '#070a10',
-        },
         fintech: {
-          cyan: '#06b6d4',
-          blue: '#0ea5e9',
-          purple: '#8b5cf6',
-          emerald: '#10b981',
-          rose: '#f43f5e',
-          amber: '#f59e0b',
+          cyan: '#0891b2',
+          blue: '#0284c7',
+          purple: '#7c3aed',
+          emerald: '#059669',
+          rose: '#e11d48',
+          amber: '#d97706',
         }
       },
       fontFamily: {
@@ -44,9 +35,34 @@ export default {
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       boxShadow: {
-        'glow-sm': '0 0 15px rgba(16, 185, 129, 0.15)',
-        'glow-cyan': '0 0 20px rgba(6, 182, 212, 0.2)',
-        'glow-card': '0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 10px rgba(16, 185, 129, 0.05)',
+        'card': '0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04)',
+        'card-hover': '0 12px 28px -4px rgba(15, 23, 42, 0.1), 0 4px 8px -2px rgba(15, 23, 42, 0.04)',
+        'soft': '0 2px 12px -2px rgba(15, 23, 42, 0.06)',
+        'emerald-glow': '0 4px 14px 0 rgba(16, 185, 129, 0.25)',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translateY(-12px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.96)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-up': 'slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-down': 'slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'scale-in': 'scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards',
       }
     },
   },

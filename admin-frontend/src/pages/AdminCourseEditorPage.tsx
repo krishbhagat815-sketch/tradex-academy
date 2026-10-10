@@ -8,23 +8,18 @@ import {
   Trash2,
   Edit,
   PlayCircle,
-  FileText,
   Upload,
   CheckCircle2,
   Sparkles,
   Layers,
   DollarSign,
   ListPlus,
-  HelpCircle,
   X,
   Video,
   Film,
   Link as LinkIcon,
-  Check,
   AlertCircle,
   Loader2,
-  Paperclip,
-  Download
 } from 'lucide-react';
 
 export const AdminCourseEditorPage: React.FC = () => {
@@ -429,25 +424,25 @@ export const AdminCourseEditorPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="p-12 text-center text-slate-400">Loading course configuration...</div>;
+    return <div className="p-12 text-center text-slate-500 font-medium">Loading course configuration...</div>;
   }
 
   return (
     <div className="space-y-6 pb-20">
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div className="flex items-center gap-3">
           <Link
             to="/courses"
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-850 text-slate-300"
+            className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 shadow-xs transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-brand-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
               {isEditing ? 'Editing Course' : 'New Curriculum Draft'}
             </span>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">
               {title || 'Untitled Course Masterclass'}
             </h1>
           </div>
@@ -455,14 +450,14 @@ export const AdminCourseEditorPage: React.FC = () => {
 
         <div className="flex items-center gap-3">
           {saveSuccess && (
-            <span className="text-xs text-brand-400 font-semibold flex items-center gap-1">
+            <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
               <CheckCircle2 className="w-4 h-4" /> {saveSuccess}
             </span>
           )}
           <button
             onClick={handleSaveCourse}
             disabled={saving}
-            className="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs transition-all shadow-md flex items-center gap-1.5 disabled:opacity-50"
+            className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 disabled:opacity-50 active:scale-95 cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>{saving ? 'Saving...' : 'Save Course'}</span>
@@ -471,13 +466,13 @@ export const AdminCourseEditorPage: React.FC = () => {
       </div>
 
       {/* Tabs Row */}
-      <div className="flex items-center gap-2 overflow-x-auto border-b border-slate-800 pb-2 scrollbar-none text-xs font-semibold">
+      <div className="flex items-center gap-2 overflow-x-auto border-b border-slate-200 pb-2 scrollbar-none text-xs font-semibold">
         <button
           onClick={() => setActiveTab('details')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'details'
-              ? 'bg-brand-500 text-slate-950 font-bold'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              ? 'bg-emerald-600 text-white font-bold shadow-xs'
+              : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -486,10 +481,10 @@ export const AdminCourseEditorPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('pricing')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'pricing'
-              ? 'bg-brand-500 text-slate-950 font-bold'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              ? 'bg-emerald-600 text-white font-bold shadow-xs'
+              : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
           <DollarSign className="w-4 h-4" />
@@ -498,10 +493,10 @@ export const AdminCourseEditorPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('outcomes')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'outcomes'
-              ? 'bg-brand-500 text-slate-950 font-bold'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              ? 'bg-emerald-600 text-white font-bold shadow-xs'
+              : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
           <ListPlus className="w-4 h-4" />
@@ -510,10 +505,10 @@ export const AdminCourseEditorPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('curriculum')}
-          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'curriculum'
-              ? 'bg-brand-500 text-slate-950 font-bold'
-              : 'bg-slate-900 text-slate-400 hover:text-white'
+              ? 'bg-emerald-600 text-white font-bold shadow-xs'
+              : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
           <Sparkles className="w-4 h-4" />
@@ -523,9 +518,9 @@ export const AdminCourseEditorPage: React.FC = () => {
 
       {/* Tab 1: Basic Details */}
       {activeTab === 'details' && (
-        <div className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-6 max-w-4xl">
+        <div className="p-8 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-6 max-w-4xl">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
               Course Title *
             </label>
             <input
@@ -534,19 +529,19 @@ export const AdminCourseEditorPage: React.FC = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Complete Data Analytics & BI Masterclass"
-              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white"
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Category
               </label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white font-medium"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 font-medium focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
               >
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -557,13 +552,13 @@ export const AdminCourseEditorPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Assigned Lead Instructor
               </label>
               <select
                 value={instructorId}
                 onChange={(e) => setInstructorId(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white font-medium"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 font-medium focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
               >
                 {instructors.map((inst) => (
                   <option key={inst.id} value={inst.id}>
@@ -575,7 +570,7 @@ export const AdminCourseEditorPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
               Short Pitch / Subtitle
             </label>
             <input
@@ -583,12 +578,12 @@ export const AdminCourseEditorPage: React.FC = () => {
               value={shortDescription}
               onChange={(e) => setShortDescription(e.target.value)}
               placeholder="Catchy 1-2 sentence overview for course cards and banners"
-              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white"
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
               Full Detailed Description (Supports Markdown)
             </label>
             <textarea
@@ -596,19 +591,19 @@ export const AdminCourseEditorPage: React.FC = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Comprehensive curriculum breakdown, practical drills, deliverables, and projects..."
-              className="w-full p-4 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white"
+              className="w-full p-4 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Difficulty Level
               </label>
               <select
                 value={difficultyLevel}
                 onChange={(e) => setDifficultyLevel(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               >
                 <option value="Beginner">Beginner</option>
                 <option value="Intermediate">Intermediate</option>
@@ -618,7 +613,7 @@ export const AdminCourseEditorPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Duration
               </label>
               <input
@@ -626,12 +621,12 @@ export const AdminCourseEditorPage: React.FC = () => {
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="24.5 hours"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Language
               </label>
               <input
@@ -639,18 +634,18 @@ export const AdminCourseEditorPage: React.FC = () => {
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
                 placeholder="English"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Publication Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white font-bold"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-bold focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               >
                 <option value="published">Published (Live)</option>
                 <option value="draft">Draft (Private)</option>
@@ -662,10 +657,10 @@ export const AdminCourseEditorPage: React.FC = () => {
 
       {/* Tab 2: Pricing & Media */}
       {activeTab === 'pricing' && (
-        <div className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-6 max-w-4xl">
+        <div className="p-8 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-6 max-w-4xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Regular Price ($)
               </label>
               <input
@@ -673,12 +668,12 @@ export const AdminCourseEditorPage: React.FC = () => {
                 step="0.01"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Discounted / Sale Price ($)
               </label>
               <input
@@ -687,21 +682,21 @@ export const AdminCourseEditorPage: React.FC = () => {
                 placeholder="Leave blank for regular price"
                 value={discountPrice}
                 onChange={(e) => setDiscountPrice(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
               />
             </div>
           </div>
 
           {/* Thumbnail */}
           <div className="space-y-3">
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
               Course Thumbnail Image
             </label>
             <div className="flex gap-4 items-center">
               <img
                 src={thumbnail}
                 alt="Preview"
-                className="w-28 h-18 rounded-xl object-cover border border-slate-750 bg-black flex-shrink-0"
+                className="w-28 h-18 rounded-xl object-cover border border-slate-200 bg-slate-100 flex-shrink-0 shadow-xs"
               />
               <div className="flex-1 space-y-2">
                 <input
@@ -709,9 +704,9 @@ export const AdminCourseEditorPage: React.FC = () => {
                   value={thumbnail}
                   onChange={(e) => setThumbnail(e.target.value)}
                   placeholder="https://image-url..."
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
                 />
-                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-semibold cursor-pointer">
+                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer border border-slate-200 transition-colors">
                   <Upload className="w-3.5 h-3.5" />
                   <span>Upload Local Image</span>
                   <input
@@ -726,9 +721,9 @@ export const AdminCourseEditorPage: React.FC = () => {
           </div>
 
           {/* Preview Video */}
-          <div className="space-y-3 pt-4 border-t border-slate-800">
+          <div className="space-y-3 pt-4 border-t border-slate-200">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                 Official Trailer / Preview Video (URL or Upload)
               </label>
               <div>
@@ -743,7 +738,7 @@ export const AdminCourseEditorPage: React.FC = () => {
                   type="button"
                   onClick={() => courseTrailerInputRef.current?.click()}
                   disabled={uploadingCourseTrailer}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-brand-300 text-xs font-semibold transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-emerald-700 text-xs font-semibold border border-slate-200 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>{uploadingCourseTrailer ? 'Uploading...' : 'Upload Video File'}</span>
@@ -755,10 +750,10 @@ export const AdminCourseEditorPage: React.FC = () => {
               value={previewVideoUrl}
               onChange={(e) => setPreviewVideoUrl(e.target.value)}
               placeholder="https://video-url.mp4 or /uploads/..."
-              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white font-mono"
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 font-mono placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
             />
             {previewVideoUrl && (
-              <div className="relative rounded-xl overflow-hidden bg-black aspect-video max-h-52 border border-slate-800">
+              <div className="relative rounded-xl overflow-hidden bg-black aspect-video max-h-52 border border-slate-200 shadow-xs">
                 <video
                   key={previewVideoUrl}
                   src={previewVideoUrl}
@@ -773,17 +768,17 @@ export const AdminCourseEditorPage: React.FC = () => {
 
       {/* Tab 3: Outcomes & Audience */}
       {activeTab === 'outcomes' && (
-        <div className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-8 max-w-4xl">
+        <div className="p-8 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-8 max-w-4xl">
           {/* Learning Outcomes */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-brand-400">
+              <label className="text-xs font-bold uppercase tracking-wider text-emerald-600">
                 What You'll Learn (Outcomes)
               </label>
               <button
                 type="button"
                 onClick={() => setLearningOutcomes(prev => [...prev, ''])}
-                className="text-xs text-brand-400 font-semibold hover:underline"
+                className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold hover:underline cursor-pointer"
               >
                 + Add Item
               </button>
@@ -798,12 +793,12 @@ export const AdminCourseEditorPage: React.FC = () => {
                     next[idx] = e.target.value;
                     setLearningOutcomes(next);
                   }}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setLearningOutcomes(prev => prev.filter((_, i) => i !== idx))}
-                  className="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg"
+                  className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -812,15 +807,15 @@ export const AdminCourseEditorPage: React.FC = () => {
           </div>
 
           {/* Requirements */}
-          <div className="space-y-3 pt-6 border-t border-slate-800">
+          <div className="space-y-3 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-cyan-400">
+              <label className="text-xs font-bold uppercase tracking-wider text-sky-600">
                 Prerequisites & Requirements
               </label>
               <button
                 type="button"
                 onClick={() => setRequirements(prev => [...prev, ''])}
-                className="text-xs text-cyan-400 font-semibold hover:underline"
+                className="text-xs text-sky-600 hover:text-sky-700 font-semibold hover:underline cursor-pointer"
               >
                 + Add Item
               </button>
@@ -835,12 +830,12 @@ export const AdminCourseEditorPage: React.FC = () => {
                     next[idx] = e.target.value;
                     setRequirements(next);
                   }}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setRequirements(prev => prev.filter((_, i) => i !== idx))}
-                  className="p-2 text-rose-400 hover:bg-rose-500/10 rounded-lg"
+                  className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -854,8 +849,8 @@ export const AdminCourseEditorPage: React.FC = () => {
       {activeTab === 'curriculum' && (
         <div className="space-y-6 max-w-4xl">
           {!isEditing ? (
-            <div className="p-8 text-center rounded-2xl bg-slate-900 border border-slate-800">
-              <p className="text-sm text-slate-300">
+            <div className="p-8 text-center rounded-2xl bg-white border border-slate-200/90 shadow-card">
+              <p className="text-sm text-slate-600">
                 Please click <strong>"Save Course"</strong> above to initialize the course before adding curriculum modules and lessons.
               </p>
             </div>
@@ -863,12 +858,12 @@ export const AdminCourseEditorPage: React.FC = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-white">Course Modules & Lessons</h3>
-                  <p className="text-xs text-slate-400">Build interactive lectures, video streams, resources, and quizzes</p>
+                  <h3 className="text-base font-bold text-slate-900">Course Modules & Lessons</h3>
+                  <p className="text-xs text-slate-500">Build interactive lectures, video streams, resources, and quizzes</p>
                 </div>
                 <button
                   onClick={() => setShowAddModuleModal(true)}
-                  className="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                 >
                   <PlusCircle className="w-4 h-4" />
                   <span>Add Module</span>
@@ -878,23 +873,23 @@ export const AdminCourseEditorPage: React.FC = () => {
               {/* Modules List */}
               <div className="space-y-4">
                 {curriculum.map((mod) => (
-                  <div key={mod.id} className="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden">
-                    <div className="p-4 bg-slate-850 flex items-center justify-between border-b border-slate-800">
+                  <div key={mod.id} className="rounded-2xl bg-white border border-slate-200/90 shadow-card overflow-hidden">
+                    <div className="p-4 bg-slate-50 flex items-center justify-between border-b border-slate-200">
                       <div>
-                        <h4 className="text-sm font-bold text-white">{mod.title}</h4>
-                        {mod.description && <p className="text-xs text-slate-400">{mod.description}</p>}
+                        <h4 className="text-sm font-bold text-slate-900">{mod.title}</h4>
+                        {mod.description && <p className="text-xs text-slate-500">{mod.description}</p>}
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => openAddLessonModal(mod.id)}
-                          className="px-3 py-1.5 rounded-lg bg-brand-500/20 text-brand-300 hover:bg-brand-500/30 text-xs font-semibold flex items-center gap-1 transition-colors"
+                          className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                         >
                           <PlusCircle className="w-3.5 h-3.5" />
                           <span>Add Lesson</span>
                         </button>
                         <button
                           onClick={() => handleDeleteModule(mod.id)}
-                          className="p-1.5 text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                          className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                           title="Delete Module"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -903,28 +898,28 @@ export const AdminCourseEditorPage: React.FC = () => {
                     </div>
 
                     {/* Lessons list under this module */}
-                    <div className="divide-y divide-slate-800/60 p-2">
+                    <div className="divide-y divide-slate-100 p-2">
                       {mod.lessons?.map((lsn: any) => (
-                        <div key={lsn.id} className="p-3 flex items-center justify-between hover:bg-slate-850/50 rounded-xl transition-colors">
+                        <div key={lsn.id} className="p-3 flex items-center justify-between hover:bg-slate-50 rounded-xl transition-colors">
                           <div className="flex items-center gap-3 min-w-0">
-                            <PlayCircle className="w-4 h-4 text-brand-400 flex-shrink-0" />
+                            <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                             <div className="truncate">
-                              <p className="text-xs font-semibold text-white truncate">{lsn.title}</p>
-                              <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
+                              <p className="text-xs font-semibold text-slate-900 truncate">{lsn.title}</p>
+                              <div className="flex items-center gap-2 text-[10px] text-slate-500 mt-0.5">
                                 <span>{lsn.video_duration || '12:00'}</span>
                                 <span>•</span>
                                 {lsn.media_type === 'file' || (lsn.video_url && lsn.video_url.startsWith('/uploads/')) ? (
-                                  <span className="text-teal-400 font-semibold flex items-center gap-0.5">
+                                  <span className="text-teal-600 font-semibold flex items-center gap-0.5">
                                     <Film className="w-2.5 h-2.5" /> Uploaded File
                                   </span>
                                 ) : (
-                                  <span className="text-sky-400 font-semibold flex items-center gap-0.5">
+                                  <span className="text-sky-600 font-semibold flex items-center gap-0.5">
                                     <LinkIcon className="w-2.5 h-2.5" /> URL Stream
                                   </span>
                                 )}
                                 <span>•</span>
                                 {lsn.is_preview ? (
-                                  <span className="text-amber-400 font-bold">PREVIEWABLE</span>
+                                  <span className="text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-bold border border-amber-200">PREVIEWABLE</span>
                                 ) : (
                                   <span className="text-slate-500">PAID ACCESS</span>
                                 )}
@@ -935,7 +930,7 @@ export const AdminCourseEditorPage: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => openEditLessonModal(mod.id, lsn)}
-                              className="p-1.5 text-slate-400 hover:text-brand-400 hover:bg-slate-800 rounded-lg transition-colors"
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                               title="Edit Lesson & Video"
                             >
                               <Edit className="w-3.5 h-3.5" />
@@ -943,7 +938,7 @@ export const AdminCourseEditorPage: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handleDeleteLesson(mod.id, lsn.id)}
-                              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors"
+                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                               title="Delete Lesson"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -952,7 +947,7 @@ export const AdminCourseEditorPage: React.FC = () => {
                         </div>
                       ))}
                       {(!mod.lessons || mod.lessons.length === 0) && (
-                        <p className="text-xs text-slate-500 italic p-3">No lessons created yet in this module.</p>
+                        <p className="text-xs text-slate-400 italic p-3">No lessons created yet in this module.</p>
                       )}
                     </div>
                   </div>
@@ -965,46 +960,46 @@ export const AdminCourseEditorPage: React.FC = () => {
 
       {/* Add Module Modal */}
       {showAddModuleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <form onSubmit={handleAddModule} className="w-full max-w-md p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+          <form onSubmit={handleAddModule} className="w-full max-w-md p-6 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-2xl animate-in fade-in duration-150">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-white">Add Curriculum Module</h3>
-              <button type="button" onClick={() => setShowAddModuleModal(false)}>
-                <X className="w-4 h-4 text-slate-400" />
+              <h3 className="text-base font-bold text-slate-900">Add Curriculum Module</h3>
+              <button type="button" onClick={() => setShowAddModuleModal(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-4 h-4" />
               </button>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Module Title *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Module Title *</label>
               <input
                 type="text"
                 required
                 value={moduleTitle}
                 onChange={(e) => setModuleTitle(e.target.value)}
                 placeholder="e.g. Module 1: Foundational Architecture"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Short Description</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Short Description</label>
               <input
                 type="text"
                 value={moduleDesc}
                 onChange={(e) => setModuleDesc(e.target.value)}
                 placeholder="What this module covers"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setShowAddModuleModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-800 text-xs text-white"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs text-slate-700 font-semibold cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-brand-500 text-slate-950 font-bold text-xs"
+                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs cursor-pointer"
               >
                 Create Module
               </button>
@@ -1015,22 +1010,22 @@ export const AdminCourseEditorPage: React.FC = () => {
 
       {/* Add / Edit Lesson Modal */}
       {showLessonModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm overflow-y-auto">
           <form
             onSubmit={handleSaveLesson}
-            className="w-full max-w-xl p-6 sm:p-7 rounded-2xl bg-slate-900 border border-slate-750 space-y-5 shadow-2xl my-8 animate-in fade-in duration-200"
+            className="w-full max-w-xl p-6 sm:p-7 rounded-2xl bg-white border border-slate-200 space-y-5 shadow-2xl my-8 animate-in fade-in duration-200"
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20">
+                <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200">
                   <Video className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">
+                  <h3 className="text-base font-bold text-slate-900">
                     {editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     Upload your own video media file or enter a video stream URL
                   </p>
                 </div>
@@ -1038,7 +1033,7 @@ export const AdminCourseEditorPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowLessonModal(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1046,8 +1041,8 @@ export const AdminCourseEditorPage: React.FC = () => {
 
             {/* Field 1: Lesson Title */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                Lesson Title <span className="text-rose-400">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                Lesson Title <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -1055,25 +1050,25 @@ export const AdminCourseEditorPage: React.FC = () => {
                 value={lessonTitle}
                 onChange={(e) => setLessonTitle(e.target.value)}
                 placeholder="e.g. 1.1 Transformer Architecture Explained"
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
               />
             </div>
 
             {/* Field 2: Media Source Selector (Upload File vs Stream URL) */}
             <div className="space-y-2.5">
-              <label className="block text-xs font-bold text-slate-300">
-                Lesson Video Source <span className="text-rose-400">*</span>
+              <label className="block text-xs font-bold text-slate-700">
+                Lesson Video Source <span className="text-rose-500">*</span>
               </label>
 
               {/* Source Toggle Tabs */}
-              <div className="grid grid-cols-2 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-bold">
+              <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold">
                 <button
                   type="button"
                   onClick={() => setLessonMediaType('file')}
-                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-all ${
+                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     lessonMediaType === 'file'
-                      ? 'bg-brand-500 text-slate-950 shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
                   <Upload className="w-4 h-4" />
@@ -1082,10 +1077,10 @@ export const AdminCourseEditorPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setLessonMediaType('url')}
-                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-all ${
+                  className={`py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     lessonMediaType === 'url'
-                      ? 'bg-brand-500 text-slate-950 shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
                   <LinkIcon className="w-4 h-4" />
@@ -1105,30 +1100,30 @@ export const AdminCourseEditorPage: React.FC = () => {
                   />
 
                   {uploadingLessonVideo ? (
-                    <div className="p-8 rounded-xl border border-dashed border-brand-500/50 bg-brand-500/5 flex flex-col items-center justify-center text-center space-y-2">
-                      <Loader2 className="w-8 h-8 text-brand-400 animate-spin" />
-                      <p className="text-xs font-bold text-white">Uploading video file to server...</p>
-                      <p className="text-[11px] text-slate-400">Please wait while your media is securely processed.</p>
+                    <div className="p-8 rounded-xl border border-dashed border-emerald-300 bg-emerald-50/50 flex flex-col items-center justify-center text-center space-y-2">
+                      <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+                      <p className="text-xs font-bold text-slate-900">Uploading video file to server...</p>
+                      <p className="text-[11px] text-slate-500">Please wait while your media is securely processed.</p>
                     </div>
                   ) : lessonVideoUrl && (lessonVideoUrl.startsWith('/uploads/') || lessonMediaType === 'file') ? (
-                    <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/80 space-y-3">
+                    <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0">
+                          <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0">
                             <Film className="w-4 h-4" />
                           </div>
                           <div className="truncate">
                             <div className="flex items-center gap-2">
-                              <p className="text-xs font-bold text-white truncate max-w-xs">
+                              <p className="text-xs font-bold text-slate-900 truncate max-w-xs">
                                 {lessonMediaName || lessonVideoUrl.split('/').pop()}
                               </p>
                               {lessonMediaSize && (
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono flex-shrink-0">
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-mono flex-shrink-0">
                                   {lessonMediaSize}
                                 </span>
                               )}
                             </div>
-                            <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-semibold mt-0.5">
+                            <span className="text-[10px] text-emerald-600 flex items-center gap-1 font-semibold mt-0.5">
                               <CheckCircle2 className="w-3 h-3" /> Video ready for students
                             </span>
                           </div>
@@ -1137,7 +1132,7 @@ export const AdminCourseEditorPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => lessonVideoInputRef.current?.click()}
-                          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors flex-shrink-0"
+                          className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors flex-shrink-0 cursor-pointer"
                         >
                           <Upload className="w-3.5 h-3.5" />
                           <span>Replace File</span>
@@ -1145,7 +1140,7 @@ export const AdminCourseEditorPage: React.FC = () => {
                       </div>
 
                       {/* Video Player Preview */}
-                      <div className="relative rounded-xl overflow-hidden bg-black aspect-video max-h-48 border border-slate-800">
+                      <div className="relative rounded-xl overflow-hidden bg-black aspect-video max-h-48 border border-slate-200 shadow-xs">
                         <video
                           key={lessonVideoUrl}
                           src={lessonVideoUrl}
@@ -1165,16 +1160,16 @@ export const AdminCourseEditorPage: React.FC = () => {
                   ) : (
                     <div
                       onClick={() => lessonVideoInputRef.current?.click()}
-                      className="p-6 rounded-xl border-2 border-dashed border-slate-750 hover:border-brand-500/60 bg-slate-950/60 hover:bg-slate-950 cursor-pointer flex flex-col items-center justify-center text-center space-y-2 transition-all group"
+                      className="p-6 rounded-xl border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-white cursor-pointer flex flex-col items-center justify-center text-center space-y-2 transition-all group"
                     >
-                      <div className="p-3 rounded-full bg-slate-850 group-hover:bg-brand-500/10 text-slate-400 group-hover:text-brand-400 transition-colors">
+                      <div className="p-3 rounded-full bg-white group-hover:bg-emerald-50 text-slate-500 group-hover:text-emerald-600 border border-slate-200 transition-colors">
                         <Upload className="w-6 h-6" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-white group-hover:text-brand-400 transition-colors">
+                        <p className="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
                           Click to browse or drop your video file here
                         </p>
-                        <p className="text-[11px] text-slate-400 mt-0.5">
+                        <p className="text-[11px] text-slate-500 mt-0.5">
                           Supports MP4, WebM, MOV, MKV, MP3 (Up to 1 GB)
                         </p>
                       </div>
@@ -1182,7 +1177,7 @@ export const AdminCourseEditorPage: React.FC = () => {
                   )}
 
                   {uploadError && (
-                    <p className="text-xs text-rose-400 flex items-center gap-1">
+                    <p className="text-xs text-rose-500 flex items-center gap-1">
                       <AlertCircle className="w-3.5 h-3.5" /> {uploadError}
                     </p>
                   )}
@@ -1197,14 +1192,14 @@ export const AdminCourseEditorPage: React.FC = () => {
                     value={lessonVideoUrl}
                     onChange={(e) => setLessonVideoUrl(e.target.value)}
                     placeholder="https://commondatastorage.googleapis.com/... or https://youtube.com/..."
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white font-mono placeholder-slate-600 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-mono placeholder-slate-400 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                   />
-                  <div className="flex items-center justify-between text-[11px] text-slate-400">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500">
                     <span>Supports: Direct MP4, YouTube, Vimeo, Cloud Storage streams</span>
                     <button
                       type="button"
                       onClick={() => setLessonVideoUrl('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')}
-                      className="text-brand-400 hover:underline font-semibold"
+                      className="text-emerald-600 hover:underline font-semibold cursor-pointer"
                     >
                       Paste Sample MP4
                     </button>
@@ -1216,7 +1211,7 @@ export const AdminCourseEditorPage: React.FC = () => {
             {/* Field 3: Duration & Free Preview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center pt-1">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Lesson Duration
                 </label>
                 <input
@@ -1224,39 +1219,39 @@ export const AdminCourseEditorPage: React.FC = () => {
                   value={lessonDuration}
                   onChange={(e) => setLessonDuration(e.target.value)}
                   placeholder="14:30"
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white font-mono focus:outline-none focus:border-brand-500"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-mono focus:bg-white focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div className="sm:pt-6">
-                <label className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-slate-700 transition-colors">
+                <label className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition-colors">
                   <input
                     type="checkbox"
                     checked={lessonIsPreview}
                     onChange={(e) => setLessonIsPreview(e.target.checked)}
-                    className="w-4 h-4 rounded text-brand-500 focus:ring-brand-500 bg-slate-900 border-slate-750"
+                    className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 bg-white border-slate-300"
                   />
                   <div>
-                    <span className="text-xs font-bold text-white block">Allow Free Preview</span>
-                    <span className="text-[10px] text-slate-400 block">Students can sample without purchasing</span>
+                    <span className="text-xs font-bold text-slate-900 block">Allow Free Preview</span>
+                    <span className="text-[10px] text-slate-500 block">Students can sample without purchasing</span>
                   </div>
                 </label>
               </div>
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200">
               <button
                 type="button"
                 onClick={() => setShowLessonModal(false)}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-xs font-semibold text-slate-300 transition-colors"
+                className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={uploadingLessonVideo}
-                className="px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs transition-all shadow-md flex items-center gap-1.5 disabled:opacity-50"
+                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 disabled:opacity-50 cursor-pointer active:scale-95"
               >
                 {uploadingLessonVideo ? (
                   <>

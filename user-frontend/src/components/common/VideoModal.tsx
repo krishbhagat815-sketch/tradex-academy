@@ -20,23 +20,23 @@ export const VideoModal: React.FC<VideoModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-4xl bg-slate-900 border border-slate-750 rounded-2xl overflow-hidden shadow-2xl"
+        className="relative w-full max-w-4xl bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/90">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white">
           <div className="flex items-center gap-2.5">
-            <PlayCircle className="w-5 h-5 text-brand-400" />
+            <PlayCircle className="w-5 h-5 text-emerald-600" />
             <div>
-              <h3 className="text-base font-bold text-white leading-tight">{title}</h3>
-              {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
+              <h3 className="text-base font-bold text-slate-900 leading-tight">{title}</h3>
+              {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -48,14 +48,14 @@ export const VideoModal: React.FC<VideoModalProps> = ({
         </div>
 
         {/* Footer info */}
-        <div className="px-6 py-3.5 bg-slate-950 flex items-center justify-between text-xs text-slate-400 border-t border-slate-850">
-          <div className="flex items-center gap-1.5 text-brand-400 font-medium">
+        <div className="px-6 py-3.5 bg-slate-50 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100">
+          <div className="flex items-center gap-1.5 text-emerald-600 font-semibold">
             <ShieldCheck className="w-4 h-4" />
             <span>Complimentary Course Preview Stream</span>
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium transition-colors"
+            className="px-4 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-medium transition-colors shadow-2xs"
           >
             Close Preview
           </button>
