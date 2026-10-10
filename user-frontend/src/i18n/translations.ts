@@ -390,7 +390,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       levelAll: 'All Levels'
     },
     whyUs: {
-      badge: 'WHY TRADEX ACADEMY',
+      badge: 'WHY THE SAFE TRADING',
       title: 'Gujarati Traders શા માટે અમને પસંદ કરે છે?',
       subtitle: 'અમે tips નથી આપતા — Live Market માં Chart Read કરીને Self-Reliant Trader બનતા શીખવીએ છીએ',
       point1Title: 'સરળ Gujarati + English (Gujlish)',
@@ -429,11 +429,11 @@ export const translations: Record<Language, TranslationDictionary> = {
     },
     whatsapp: {
       tooltip: 'WhatsApp પર Chat કરો',
-      chatTitle: 'TradeX Academy Support',
+      chatTitle: 'The Safe Trading Support',
       chatSubtitle: 'Online - સામાન્ય રીતે 5 મિનિટમાં Reply',
       onlineNow: 'Online Now',
       startChat: 'WhatsApp Open કરો',
-      defaultMessage: 'નમસ્તે TradeX Academy, મારે Trading Courses વિશે માહિતી જોઈએ છે.'
+      defaultMessage: 'નમસ્તે The Safe Trading, મારે Trading Courses વિશે માહિતી જોઈએ છે.'
     },
     courseDetails: {
       overview: 'Course Overview',
@@ -512,7 +512,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     },
     auth: {
       loginTitle: 'Student Login',
-      loginSubtitle: 'તમારા TradeX Account માં Login કરો',
+      loginSubtitle: 'તમારા The Safe Trading Account માં Login કરો',
       registerTitle: 'તમારું Account બનાવો',
       registerSubtitle: 'આજે જ Free Register કરો અને Trading શીખવાનું શરૂ કરો',
       emailLabel: 'Email Address',
@@ -528,14 +528,14 @@ export const translations: Record<Language, TranslationDictionary> = {
       restrictedNotice: 'તમારો Data 100% સુરક્ષિત અને Encrypted છે.'
     },
     footer: {
-      about: 'TradeX Academy વિશે',
-      aboutDesc: 'TradeX Academy એ Gujarat નું premier Trading Education Platform છે, જ્યાં Stock Market, Options Trading, Price Action અને Crypto Trading સરળ Gujlish ભાષામાં શીખવવામાં આવે છે.',
+      about: 'The Safe Trading વિશે',
+      aboutDesc: 'The Safe Trading એ Gujarat નું premier Trading Education Platform છે, જ્યાં Stock Market, Options Trading, Price Action અને Crypto Trading સરળ Gujlish ભાષામાં શીખવવામાં આવે છે.',
       quickLinks: 'Quick Links',
       coursesHeading: 'Trading Courses',
       contactHeading: 'અમારો સંપર્ક કરો (Contact Us)',
       sebiDisclaimerTitle: '⚠️ Regulatory Notice (SEBI Disclaimer):',
-      sebiDisclaimer: 'TradeX Academy ફક્ત Educational Purpose માટે Trading Knowledge પૂરું પાડે છે. અમે કોઈ Stock Tips, Calls કે Advisory Services આપતા નથી. Stock Market માં Investment અને Trading Market Risk ને આધીન છે. કોઈ પણ Trade લેતા પહેલા તમારા SEBI-Registered Financial Advisor ની સલાહ લો.',
-      copyright: '© 2026 TradeX Academy. All Rights Reserved.',
+      sebiDisclaimer: 'The Safe Trading ફક્ત Educational Purpose માટે Trading Knowledge પૂરું પાડે છે. અમે કોઈ Stock Tips, Calls કે Advisory Services આપતા નથી. Stock Market માં Investment અને Trading Market Risk ને આધીન છે. કોઈ પણ Trade લેતા પહેલા તમારા SEBI-Registered Financial Advisor ની સલાહ લો.',
+      copyright: '© 2026 The Safe Trading. All Rights Reserved.',
       privacyPolicy: 'Privacy Policy',
       termsConditions: 'Terms & Conditions',
       refundPolicy: 'Refund Policy'
@@ -645,7 +645,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       levelAll: 'All Levels'
     },
     whyUs: {
-      badge: 'WHY TRADEX ACADEMY?',
+      badge: 'WHY THE SAFE TRADING?',
       title: 'Why Thousands of Traders Trust Us',
       subtitle: 'We don’t sell tips or quick riches — we build disciplined, skilled traders for life',
       point1Title: 'Simple Mother-Tongue Learning',
@@ -684,11 +684,11 @@ export const translations: Record<Language, TranslationDictionary> = {
     },
     whatsapp: {
       tooltip: 'Chat on WhatsApp',
-      chatTitle: 'TradeX Academy Support',
+      chatTitle: 'The Safe Trading Support',
       chatSubtitle: 'Online - Usually replies within 5 mins',
       onlineNow: 'Online Now',
       startChat: 'Open WhatsApp Chat',
-      defaultMessage: 'Hello TradeX Academy, I want to know more about your stock market courses.'
+      defaultMessage: 'Hello The Safe Trading, I want to know more about your stock market courses.'
     },
     courseDetails: {
       overview: 'Course Overview',
@@ -783,14 +783,14 @@ export const translations: Record<Language, TranslationDictionary> = {
       restrictedNotice: 'Your credentials and learning progress are securely encrypted.'
     },
     footer: {
-      about: 'About TradeX Academy',
-      aboutDesc: 'TradeX Academy is Gujarat’s premier trading education platform dedicated to empowering traders with practical, honest, and high-discipline education in stock markets, options, price action, and crypto.',
+      about: 'About The Safe Trading',
+      aboutDesc: 'The Safe Trading is Gujarat’s premier trading education platform dedicated to empowering traders with practical, honest, and high-discipline education in stock markets, options, price action, and crypto.',
       quickLinks: 'Quick Links',
       coursesHeading: 'Featured Courses',
       contactHeading: 'Contact & Support',
       sebiDisclaimerTitle: '⚠️ Regulatory Disclaimer (SEBI Compliance):',
-      sebiDisclaimer: 'TradeX Academy is an educational platform designed strictly for skill development. We do not provide trading tips, stock recommendations, or financial advisory services. Trading and investments in securities markets are subject to market risks. Please consult a SEBI-registered financial advisor before trading.',
-      copyright: '© 2026 TradeX Academy. All rights reserved.',
+      sebiDisclaimer: 'The Safe Trading is an educational platform designed strictly for skill development. We do not provide trading tips, stock recommendations, or financial advisory services. Trading and investments in securities markets are subject to market risks. Please consult a SEBI-registered financial advisor before trading.',
+      copyright: '© 2026 The Safe Trading. All rights reserved.',
       privacyPolicy: 'Privacy Policy',
       termsConditions: 'Terms & Conditions',
       refundPolicy: 'Refund Policy'

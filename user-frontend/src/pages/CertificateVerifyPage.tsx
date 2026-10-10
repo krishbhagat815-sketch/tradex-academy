@@ -122,7 +122,7 @@ export const CertificateVerifyPage: React.FC = () => {
                   <Award className="w-12 h-12 text-amber-400" />
                 </div>
                 <h2 className="text-xs uppercase tracking-[0.3em] font-extrabold text-amber-400">
-                  TradeX Academy Gujarat
+                  The Safe Trading
                 </h2>
                 <h3 className="text-3xl sm:text-4xl font-serif font-bold text-white mt-4">
                   {language === 'gu' ? 'કોર્સ પૂર્ણતા પ્રમાણપત્ર' : 'Certificate of Completion'}

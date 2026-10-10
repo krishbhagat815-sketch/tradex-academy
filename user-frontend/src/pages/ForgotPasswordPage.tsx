@@ -50,7 +50,7 @@ export const ForgotPasswordPage: React.FC = () => {
               <TrendingUp className="w-6 h-6 text-slate-950 stroke-[2.2]" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">
-              TradeX<span className="text-brand-400">Academy</span>
+              The Safe<span className="text-brand-400">Trading</span>
             </span>
           </Link>
           <h2 className="text-2xl font-extrabold text-white">

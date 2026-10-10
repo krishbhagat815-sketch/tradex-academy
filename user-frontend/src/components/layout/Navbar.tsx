@@ -54,8 +54,8 @@ export const Navbar: React.FC = () => {
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-              TradeX
-              <span className="text-brand-400 font-extrabold">Academy</span>
+              The Safe
+              <span className="text-brand-400 font-extrabold">Trading</span>
             </span>
             <span className="text-[10px] tracking-wider text-slate-400 font-medium -mt-1 font-gujarati">
               {dict.nav.tagline}
@@ -66,16 +66,25 @@ export const Navbar: React.FC = () => {
         {/* Global Search Bar (Desktop) */}
         <form
           onSubmit={handleSearch}
-          className="hidden md:flex flex-1 max-w-sm lg:max-w-md mx-2 relative"
+          className="hidden md:flex flex-1 max-w-lg lg:max-w-xl mx-4 relative"
         >
           <input
             type="text"
             placeholder={dict.nav.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-900/90 border border-slate-750 rounded-full text-xs lg:text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all shadow-inner"
+            className="w-full pl-12 pr-12 py-2.5 bg-slate-900/90 border border-slate-700 rounded-full text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all shadow-inner"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4.5 h-4.5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </form>
 
         {/* Desktop Navigation Links */}
@@ -125,7 +134,7 @@ export const Navbar: React.FC = () => {
 
           {/* Quick WhatsApp Support Link */}
           <a
-            href="https://wa.me/919876543210?text=%E0%AA%A8%E0%AA%AE%E0%AA%B8%E0%AB%8D%E0%AA%A4%E0%AB%87%20TradeX%20Academy%2C%20%E0%AA%AE%E0%AA%BE%E0%AA%B0%E0%AB%87%20%E0%AA%9F%E0%AB%8D%E0%AA%B0%E0% his%87%E0%AA%A1%E0%AA%BF%E0%AA%82%E0%AA%97%20%E0%AA%95%E0%AB%8B%E0%AA%B0%E0%AB%8D%E0%AA%B8%20%E0%AA%B5%E0%AA%BF%E0%AA%B7%E0%AB%87%20%E0%AA%AE%E0%AA%BE%E0%AA%B9%E0%AA%BF%E0%AA%A4%E0%AA%BF%20%E0%AA%9C%E0%AB%8B%E0%AA%88%E0%AA%8F%20%E0%AA%9B%E0%AB%87."
+            href="https://wa.me/919876543210?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-full text-emerald-400 hover:bg-emerald-950/40 border border-emerald-500/20 hover:border-emerald-500/40 transition-all"
