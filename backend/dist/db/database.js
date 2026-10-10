@@ -12,8 +12,8 @@ const sql_js_1 = __importDefault(require("sql.js"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 let dbInstance = null;
-const dbDir = path_1.default.resolve(process.cwd(), 'data');
-const dbFilePath = path_1.default.join(dbDir, 'lms.sqlite');
+const dbDir = path_1.default.resolve(process.cwd(), "data");
+const dbFilePath = path_1.default.join(dbDir, "lms.sqlite");
 async function getDb() {
     if (dbInstance)
         return dbInstance;
@@ -40,25 +40,47 @@ function saveDb() {
 function query(sql, params = []) {
     if (!dbInstance)
         throw new Error("Database not initialized");
-    const stmt = dbInstance.prepare(sql);
-    if (params && params.length > 0) {
-        stmt.bind(params);
+    try {
+        const stmt = dbInstance.prepare(sql);
+        try {
+            if (params && params.length > 0) {
+                stmt.bind(params);
+            }
+            const rows = [];
+            while (stmt.step()) {
+                rows.push(stmt.getAsObject());
+            }
+            return rows;
+        }
+        finally {
+            stmt.free();
+        }
     }
-    const rows = [];
-    while (stmt.step()) {
-        rows.push(stmt.getAsObject());
+    catch (error) {
+        console.error(`Database query error: ${sql}`, error);
+        throw error;
     }
-    stmt.free();
-    return rows;
 }
 function queryOne(sql, params = []) {
-    const rows = query(sql, params);
-    return rows.length > 0 ? rows[0] : null;
+    try {
+        const rows = query(sql, params);
+        return rows.length > 0 ? rows[0] : null;
+    }
+    catch (error) {
+        console.error("Database queryOne error:", error);
+        throw error;
+    }
 }
 function execute(sql, params = []) {
     if (!dbInstance)
         throw new Error("Database not initialized");
-    dbInstance.run(sql, params);
-    saveDb();
-    return { changes: 1 };
+    try {
+        dbInstance.run(sql, params);
+        saveDb();
+        return { changes: 1 };
+    }
+    catch (error) {
+        console.error(`Database execute error: ${sql}`, error);
+        throw error;
+    }
 }

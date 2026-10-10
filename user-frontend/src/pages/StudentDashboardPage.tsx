@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import {
   LayoutDashboard,
   BookOpen,
@@ -24,6 +25,7 @@ import {
 
 export const StudentDashboardPage: React.FC = () => {
   const { user, updateUser } = useAuth();
+  const { language, dict, formatPrice } = useLanguage();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get("tab") || "courses";
@@ -241,21 +243,23 @@ export const StudentDashboardPage: React.FC = () => {
         <div className="mt-8 pt-8 border-t border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-850">
             <p className="text-xs text-slate-400 font-medium">
-              Enrolled Courses
+              {dict.dashboard.statsEnrolled}
             </p>
             <p className="text-2xl font-extrabold text-white mt-1">
               {stats.totalEnrolled}
             </p>
           </div>
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-850">
-            <p className="text-xs text-slate-400 font-medium">In Progress</p>
+            <p className="text-xs text-slate-400 font-medium">
+              {language === 'gu' ? 'ચાલુ કોર્સ' : 'In Progress'}
+            </p>
             <p className="text-2xl font-extrabold text-brand-400 mt-1">
               {stats.inProgressCourses}
             </p>
           </div>
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-850">
             <p className="text-xs text-slate-400 font-medium">
-              Completed Courses
+              {dict.dashboard.statsCompleted}
             </p>
             <p className="text-2xl font-extrabold text-cyan-400 mt-1">
               {stats.completedCourses}
@@ -263,7 +267,7 @@ export const StudentDashboardPage: React.FC = () => {
           </div>
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-850">
             <p className="text-xs text-slate-400 font-medium">
-              Certificates Earned
+              {dict.dashboard.statsCertificates}
             </p>
             <p className="text-2xl font-extrabold text-amber-400 mt-1">
               {stats.certificatesEarned}
@@ -283,7 +287,7 @@ export const StudentDashboardPage: React.FC = () => {
           }`}
         >
           <BookOpen className="w-4 h-4" />
-          <span>My Enrolled Courses ({enrolledCourses.length})</span>
+          <span>{dict.dashboard.tabEnrolled} ({enrolledCourses.length})</span>
         </button>
 
         <button
@@ -295,7 +299,7 @@ export const StudentDashboardPage: React.FC = () => {
           }`}
         >
           <Award className="w-4 h-4" />
-          <span>Certificates ({certificates.length})</span>
+          <span>{dict.dashboard.tabCertificates} ({certificates.length})</span>
         </button>
 
         <button
@@ -307,7 +311,7 @@ export const StudentDashboardPage: React.FC = () => {
           }`}
         >
           <Heart className="w-4 h-4" />
-          <span>Wishlist ({wishlist.length})</span>
+          <span>{dict.dashboard.tabWishlist} ({wishlist.length})</span>
         </button>
 
         <button
@@ -319,7 +323,7 @@ export const StudentDashboardPage: React.FC = () => {
           }`}
         >
           <ShoppingBag className="w-4 h-4" />
-          <span>Purchase History</span>
+          <span>{dict.dashboard.tabOrders}</span>
         </button>
 
         <button
@@ -331,7 +335,7 @@ export const StudentDashboardPage: React.FC = () => {
           }`}
         >
           <Settings className="w-4 h-4" />
-          <span>Account Settings</span>
+          <span>{dict.dashboard.tabSettings}</span>
         </button>
       </div>
 
@@ -560,11 +564,7 @@ export const StudentDashboardPage: React.FC = () => {
                     </p>
                     <div className="mt-2 flex items-baseline gap-2">
                       <span className="text-lg font-extrabold text-white">
-                        $
-                        {(c.discount_price != null
-                          ? c.discount_price
-                          : c.price
-                        ).toFixed(2)}
+                        {formatPrice(c.discount_price != null ? c.discount_price : c.price)}
                       </span>
                     </div>
                   </div>
@@ -638,7 +638,7 @@ export const StudentDashboardPage: React.FC = () => {
                         {new Date(o.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 font-bold text-white">
-                        ${Number(o.amount).toFixed(2)}
+                        {formatPrice(o.amount)}
                       </td>
                       <td className="px-6 py-4">
                         <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20">

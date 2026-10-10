@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 
@@ -14,6 +15,7 @@ import { CertificateVerifyPage } from './pages/CertificateVerifyPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { WhatsAppWidget } from './components/common/WhatsAppWidget';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -25,6 +27,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       {!isPlayer && <Navbar />}
       <main className="flex-1">{children}</main>
       {!isPlayer && <Footer />}
+      {!isPlayer && <WhatsAppWidget />}
     </div>
   );
 };
@@ -32,22 +35,24 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 export function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/course/:id" element={<CourseDetailsPage />} />
-            <Route path="/checkout/:courseId" element={<CheckoutPage />} />
-            <Route path="/dashboard" element={<StudentDashboardPage />} />
-            <Route path="/learn/:courseId" element={<CoursePlayerPage />} />
-            <Route path="/verify-certificate" element={<CertificateVerifyPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          </Routes>
-        </Layout>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/courses" element={<CoursesPage />} />
+              <Route path="/course/:id" element={<CourseDetailsPage />} />
+              <Route path="/checkout/:courseId" element={<CheckoutPage />} />
+              <Route path="/dashboard" element={<StudentDashboardPage />} />
+              <Route path="/learn/:courseId" element={<CoursePlayerPage />} />
+              <Route path="/verify-certificate" element={<CertificateVerifyPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            </Routes>
+          </Layout>
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

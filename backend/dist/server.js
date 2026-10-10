@@ -41,6 +41,20 @@ app.get('/api/health', (_req, res) => {
         service: 'TradeX Academy API Server'
     });
 });
+// Root welcome route
+app.get('/', (_req, res) => {
+    res.send(`
+    <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 50px auto; padding: 30px; background: #0f172a; color: #f8fafc; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); text-align: center;">
+      <h1 style="color: #38bdf8; margin-bottom: 8px;">🚀 TradeX Academy API</h1>
+      <p style="color: #94a3b8; font-size: 16px;">Backend server is live and running successfully on Render!</p>
+      <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left;">
+        <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #4ade80;">Active (200 OK)</span></p>
+        <p style="margin: 5px 0;"><strong>Health Endpoint:</strong> <a href="/api/health" style="color: #38bdf8;">/api/health</a></p>
+      </div>
+      <p style="color: #64748b; font-size: 13px;">Next: Deploy the frontend static sites to connect with this API.</p>
+    </div>
+  `);
+});
 // Route registration
 app.use('/api/auth', auth_routes_js_1.default);
 app.use('/api/courses', course_routes_js_1.default);
@@ -65,10 +79,10 @@ async function startServer() {
     try {
         await (0, database_js_1.getDb)();
         await (0, schema_js_1.initSchema)();
-        // Check if courses exist; if not, seed automatically
-        const courseCount = (0, database_js_1.queryOne)('SELECT COUNT(*) as count FROM courses')?.count || 0;
-        if (courseCount === 0) {
-            console.log('No courses found in database. Auto-seeding initial data...');
+        // Check if Gujarati trading courses exist; if not, seed automatically
+        const gujjuCourse = (0, database_js_1.queryOne)("SELECT id FROM courses WHERE slug = 'gujarati-stock-market-basics'");
+        if (!gujjuCourse) {
+            console.log('Gujarati Trading courses not found in database. Auto-seeding initial data...');
             await (0, seed_js_1.runSeed)();
         }
         app.listen(PORT, () => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { api } from '../services/api';
 import { CourseCard, Course } from '../components/courses/CourseCard';
+import { useLanguage } from '../context/LanguageContext';
 import {
   Search,
   SlidersHorizontal,
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react';
 
 export const CoursesPage: React.FC = () => {
+  const { language, dict } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -83,14 +85,17 @@ export const CoursesPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 mb-3">
-          <BookOpen className="w-3.5 h-3.5" /> Full Curriculum Catalog
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-3">
+          <BookOpen className="w-3.5 h-3.5" />
+          <span>{language === 'gu' ? 'સંપૂર્ણ ટ્રેડિંગ અભ્યાસક્રમ' : 'Full Curriculum Catalog'}</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Explore Online Courses
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          {language === 'gu' ? 'તમામ ટ્રેડિંગ કોર્સ' : 'Explore Trading Courses'}
         </h1>
-        <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-2xl">
-          Discover comprehensive masterclasses led by elite tech veterans. Pick your domain, master production tools, and earn verified credentials.
+        <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-2xl leading-relaxed">
+          {language === 'gu'
+            ? 'શેર બજાર, પ્રાઇસ એક્શન, નિફ્ટી/બેંકનિફ્ટી ઓપ્શન્સ અને ક્રિપ્ટોકરન્સીના વ્યવહારુ વિડિયો કોર્સ. તમારા અનુભવ મુજબ કોર્સ પસંદ કરો.'
+            : 'Discover comprehensive stock market, price action, and options trading masterclasses designed for Gujarati investors.'}
         </p>
       </div>
 
@@ -100,7 +105,7 @@ export const CoursesPage: React.FC = () => {
         <div className="relative w-full md:w-96">
           <input
             type="text"
-            placeholder="Search by title, technology, skill..."
+            placeholder={dict.courses.filterSearch}
             value={search}
             onChange={(e) => updateFilter('search', e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -118,17 +123,17 @@ export const CoursesPage: React.FC = () => {
 
         {/* Sort Select */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-          <span className="text-xs text-slate-400 font-medium">Sort By:</span>
+          <span className="text-xs text-slate-400 font-medium">{dict.courses.filterSort}:</span>
           <select
             value={sort}
             onChange={(e) => updateFilter('sort', e.target.value)}
-            className="px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"
+            className="px-4 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"
           >
-            <option value="popular">Most Popular</option>
-            <option value="newest">Newest Releases</option>
-            <option value="rating">Highest Rated</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
+            <option value="popular">{dict.courses.sortPopular}</option>
+            <option value="newest">{dict.courses.sortNewest}</option>
+            <option value="rating">{dict.courses.sortHighestRated}</option>
+            <option value="price-asc">{dict.courses.sortPriceLow}</option>
+            <option value="price-desc">{dict.courses.sortPriceHigh}</option>
           </select>
         </div>
       </div>
@@ -137,13 +142,13 @@ export const CoursesPage: React.FC = () => {
       <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
         <button
           onClick={() => updateFilter('category', 'all')}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap ${
             category === 'all'
               ? 'bg-brand-500 text-slate-950 shadow-md shadow-brand-500/20'
               : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
           }`}
         >
-          All Categories
+          {language === 'gu' ? 'બધી કેટેગરીઝ' : 'All Categories'}
         </button>
         {categories.map((c) => (
           <button
@@ -164,7 +169,7 @@ export const CoursesPage: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800/80">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="text-slate-400 font-medium mr-1 flex items-center gap-1">
-            <SlidersHorizontal className="w-3.5 h-3.5" /> Filters:
+            <SlidersHorizontal className="w-3.5 h-3.5" /> {language === 'gu' ? 'ફિલ્ટર્સ:' : 'Filters:'}
           </span>
 
           {/* Level Filter */}
@@ -173,11 +178,11 @@ export const CoursesPage: React.FC = () => {
             onChange={(e) => updateFilter('level', e.target.value)}
             className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 text-xs font-medium focus:ring-1 focus:ring-brand-500"
           >
-            <option value="all">Level: All</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-            <option value="All Levels">All Levels</option>
+            <option value="all">{dict.courses.filterLevel}: {dict.courses.levelAll}</option>
+            <option value="Beginner">{dict.courses.levelBeginner}</option>
+            <option value="Intermediate">{dict.courses.levelIntermediate}</option>
+            <option value="Advanced">{dict.courses.levelAdvanced}</option>
+            <option value="All Levels">{dict.courses.levelAll}</option>
           </select>
 
           {/* Price Filter */}
@@ -186,9 +191,9 @@ export const CoursesPage: React.FC = () => {
             onChange={(e) => updateFilter('price', e.target.value)}
             className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 text-xs font-medium focus:ring-1 focus:ring-brand-500"
           >
-            <option value="all">Price: All</option>
-            <option value="paid">Paid Courses</option>
-            <option value="free">Free Courses</option>
+            <option value="all">{dict.courses.filterPrice}: {dict.courses.filterAll}</option>
+            <option value="paid">{language === 'gu' ? 'પેઇડ કોર્સ (Paid)' : 'Paid Courses'}</option>
+            <option value="free">{language === 'gu' ? 'મફત કોર્સ (Free ₹0)' : 'Free Courses (₹0)'}</option>
           </select>
 
           {/* Rating Filter */}
@@ -197,7 +202,7 @@ export const CoursesPage: React.FC = () => {
             onChange={(e) => updateFilter('rating', e.target.value)}
             className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 text-xs font-medium focus:ring-1 focus:ring-brand-500"
           >
-            <option value="">Rating: All</option>
+            <option value="">{language === 'gu' ? 'રેટિંગ: બધા' : 'Rating: All'}</option>
             <option value="4.9">4.9 & Above</option>
             <option value="4.8">4.8 & Above</option>
             <option value="4.5">4.5 & Above</option>
@@ -208,13 +213,13 @@ export const CoursesPage: React.FC = () => {
               onClick={clearAllFilters}
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-colors ml-2 font-medium"
             >
-              <RotateCcw className="w-3 h-3" /> Reset Filters
+              <RotateCcw className="w-3 h-3" /> {dict.courses.resetFilters}
             </button>
           )}
         </div>
 
         <p className="text-xs text-slate-400 font-medium">
-          Showing <span className="font-bold text-white">{courses.length}</span> courses
+          {language === 'gu' ? 'કુલ' : 'Showing'} <span className="font-bold text-white">{courses.length}</span> {dict.courses.title}
         </p>
       </div>
 
@@ -234,15 +239,17 @@ export const CoursesPage: React.FC = () => {
       ) : (
         <div className="py-20 text-center rounded-2xl bg-slate-900/40 border border-slate-800 max-w-xl mx-auto p-8">
           <BookOpen className="w-12 h-12 text-slate-500 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-white">No courses match your filter criteria</h3>
+          <h3 className="text-lg font-bold text-white">{dict.courses.noCoursesFound}</h3>
           <p className="mt-2 text-sm text-slate-400">
-            Try adjusting your search query, difficulty level, or category filter to discover available courses.
+            {language === 'gu'
+              ? 'કૃપા કરીને અન્ય ફિલ્ટર પસંદ કરો અથવા સર્ચ બદલો.'
+              : 'Try adjusting your search query, difficulty level, or category filter.'}
           </p>
           <button
             onClick={clearAllFilters}
             className="mt-6 px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-sm transition-all shadow-md shadow-brand-500/20"
           >
-            Clear All Filters
+            {dict.courses.resetFilters}
           </button>
         </div>
       )}

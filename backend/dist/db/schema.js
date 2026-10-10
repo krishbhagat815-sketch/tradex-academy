@@ -226,18 +226,5 @@ async function initSchema() {
     (0, database_js_1.execute)(`CREATE INDEX IF NOT EXISTS idx_progress_user_course ON lesson_progress (user_id, course_id);`);
     (0, database_js_1.execute)(`CREATE INDEX IF NOT EXISTS idx_reviews_course ON reviews (course_id);`);
     (0, database_js_1.execute)(`CREATE INDEX IF NOT EXISTS idx_orders_user ON orders (user_id);`);
-    // Safe migrations for newly added columns
-    try {
-        (0, database_js_1.execute)(`ALTER TABLE lessons ADD COLUMN media_type TEXT DEFAULT 'url';`);
-    }
-    catch { }
-    try {
-        (0, database_js_1.execute)(`ALTER TABLE lessons ADD COLUMN media_name TEXT;`);
-    }
-    catch { }
-    try {
-        (0, database_js_1.execute)(`ALTER TABLE lessons ADD COLUMN media_size TEXT;`);
-    }
-    catch { }
-    console.log('Database schema initialized successfully.');
+    console.log("Database schema initialized successfully.");
 }

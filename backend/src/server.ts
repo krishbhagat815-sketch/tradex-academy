@@ -86,10 +86,10 @@ async function startServer() {
     await getDb();
     await initSchema();
 
-    // Check if courses exist; if not, seed automatically
-    const courseCount = queryOne('SELECT COUNT(*) as count FROM courses')?.count || 0;
-    if (courseCount === 0) {
-      console.log('No courses found in database. Auto-seeding initial data...');
+    // Check if Gujarati trading courses exist; if not, seed automatically
+    const gujjuCourse = queryOne("SELECT id FROM courses WHERE slug = 'gujarati-stock-market-basics'");
+    if (!gujjuCourse) {
+      console.log('Gujarati Trading courses not found in database. Auto-seeding initial data...');
       await runSeed();
     }
 

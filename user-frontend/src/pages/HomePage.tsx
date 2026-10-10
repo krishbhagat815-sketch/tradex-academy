@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { CourseCard, Course } from '../components/courses/CourseCard';
 import { PromoBanner } from '../components/layout/PromoBanner';
+import { useLanguage } from '../context/LanguageContext';
 import {
   ArrowRight,
   Sparkles,
@@ -14,21 +15,26 @@ import {
   BookOpen,
   TrendingUp,
   Cpu,
-  Database,
-  Code,
-  Layout,
-  Cloud,
+  BarChart3,
+  CandlestickChart,
+  Coins,
+  ShieldAlert,
   ChevronDown,
   Quote,
-  Compass
+  MessageCircle,
+  PlayCircle,
+  Check,
+  HelpCircle
 } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
+  const { language, dict } = useLanguage();
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [cmsContent, setCmsContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'all' | 'free' | 'options' | 'price-action' | 'crypto'>('all');
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
     async function loadData() {
@@ -52,255 +58,565 @@ export const HomePage: React.FC = () => {
     loadData();
   }, []);
 
-  const hero = cmsContent?.hero || {
-    badge: '🚀 NEW: NEXT-GENERATION CAREER ROADMAPS 2026',
-    headline: 'Master High-Income Tech Skills with Industry Veterans',
-    subheadline: 'Learn data analytics, full-stack engineering, AI agents, and quantitative finance through production-ready projects, guided curriculums, and verifiable certificates.',
-    ctaPrimaryText: 'Explore All Courses',
-    ctaPrimaryLink: '/courses',
-    ctaSecondaryText: 'Start Learning Free',
-    ctaSecondaryLink: '/register',
-    stats: [
-      { label: 'Active Students', value: '45,000+' },
-      { label: 'Course Completion Rate', value: '94.8%' },
-      { label: 'Instructor Quality Score', value: '4.9/5' },
-      { label: 'Global Alumni Network', value: '80+ Countries' }
-    ]
-  };
-
-  const getCategoryIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'Database': return <Database className="w-6 h-6 text-emerald-400" />;
-      case 'Code': return <Code className="w-6 h-6 text-cyan-400" />;
-      case 'Cpu': return <Cpu className="w-6 h-6 text-purple-400" />;
-      case 'TrendingUp': return <TrendingUp className="w-6 h-6 text-amber-400" />;
-      case 'Cloud': return <Cloud className="w-6 h-6 text-blue-400" />;
-      case 'Layout': return <Layout className="w-6 h-6 text-rose-400" />;
-      default: return <BookOpen className="w-6 h-6 text-brand-400" />;
+  // Filter courses based on active tab
+  const filteredCourses = courses.filter((c: any) => {
+    const isFree = (c.discount_price != null ? c.discount_price : c.price) <= 0;
+    if (activeTab === 'free') return isFree;
+    if (activeTab === 'options') {
+      return c.category_slug?.includes('options') || c.title?.toLowerCase().includes('option') || c.title?.includes('ઓપ્શન્સ');
     }
-  };
+    if (activeTab === 'price-action') {
+      return c.category_slug?.includes('price-action') || c.title?.toLowerCase().includes('price') || c.title?.includes('પ્રાઇસ');
+    }
+    if (activeTab === 'crypto') {
+      return c.category_slug?.includes('crypto') || c.title?.toLowerCase().includes('crypto') || c.title?.includes('ક્રિપ્ટો');
+    }
+    return true;
+  });
 
-  const featuredCourses = courses.filter((c: any) => c.featured);
-  const popularCourses = courses.filter((c: any) => c.popular);
+  // 6 Trading Highlights Data
+  const highlightPillars = [
+    {
+      title: dict.highlights.pillar1Title,
+      desc: dict.highlights.pillar1Desc,
+      icon: <BarChart3 className="w-7 h-7 text-emerald-400" />,
+      color: 'from-emerald-500/20 to-teal-500/5',
+      borderColor: 'border-emerald-500/30',
+      tag: language === 'gu' ? 'બેઝિકથી શરૂઆત' : 'Beginner Friendly',
+      link: '/courses?category=cat-stock-basics'
+    },
+    {
+      title: dict.highlights.pillar2Title,
+      desc: dict.highlights.pillar2Desc,
+      icon: <TrendingUp className="w-7 h-7 text-cyan-400" />,
+      color: 'from-cyan-500/20 to-blue-500/5',
+      borderColor: 'border-cyan-500/30',
+      tag: language === 'gu' ? 'પ્યોર ચાર્ટ રીડિંગ' : 'Zero Indicators',
+      link: '/courses?category=cat-price-action'
+    },
+    {
+      title: dict.highlights.pillar3Title,
+      desc: dict.highlights.pillar3Desc,
+      icon: <Sparkles className="w-7 h-7 text-amber-400" />,
+      color: 'from-amber-500/20 to-orange-500/5',
+      borderColor: 'border-amber-500/30',
+      tag: language === 'gu' ? 'નિફ્ટી / બેંકનિફ્ટી' : 'Nifty & BankNifty',
+      link: '/courses?category=cat-options-trading'
+    },
+    {
+      title: dict.highlights.pillar4Title,
+      desc: dict.highlights.pillar4Desc,
+      icon: <CandlestickChart className="w-7 h-7 text-rose-400" />,
+      color: 'from-rose-500/20 to-pink-500/5',
+      borderColor: 'border-rose-500/30',
+      tag: language === 'gu' ? 'કેન્ડલ સિક્રેટ્સ' : 'Price Secrets',
+      link: '/courses?category=cat-price-action'
+    },
+    {
+      title: dict.highlights.pillar5Title,
+      desc: dict.highlights.pillar5Desc,
+      icon: <Coins className="w-7 h-7 text-purple-400" />,
+      color: 'from-purple-500/20 to-indigo-500/5',
+      borderColor: 'border-purple-500/30',
+      tag: language === 'gu' ? 'ગ્લોબલ માર્કેટ' : 'Crypto & Futures',
+      link: '/courses?category=cat-crypto-trading'
+    },
+    {
+      title: dict.highlights.pillar6Title,
+      desc: dict.highlights.pillar6Desc,
+      icon: <ShieldAlert className="w-7 h-7 text-emerald-400" />,
+      color: 'from-emerald-500/20 to-teal-500/5',
+      borderColor: 'border-emerald-500/30',
+      tag: language === 'gu' ? 'કેપિટલ પ્રોટેક્શન' : 'Capital Safety',
+      link: '/courses?category=cat-psychology-risk'
+    }
+  ];
+
+  // Why Choose Us Points
+  const whyUsPoints = [
+    {
+      title: dict.whyUs.point1Title,
+      desc: dict.whyUs.point1Desc,
+      badge: '01'
+    },
+    {
+      title: dict.whyUs.point2Title,
+      desc: dict.whyUs.point2Desc,
+      badge: '02'
+    },
+    {
+      title: dict.whyUs.point3Title,
+      desc: dict.whyUs.point3Desc,
+      badge: '03'
+    },
+    {
+      title: dict.whyUs.point4Title,
+      desc: dict.whyUs.point4Desc,
+      badge: '04'
+    },
+    {
+      title: dict.whyUs.point5Title,
+      desc: dict.whyUs.point5Desc,
+      badge: '05'
+    },
+    {
+      title: dict.whyUs.point6Title,
+      desc: dict.whyUs.point6Desc,
+      badge: '06'
+    }
+  ];
+
+  // Testimonials in Gujarati & English
+  const testimonials = language === 'gu' ? [
+    {
+      name: 'પ્રતીક પટેલ',
+      city: 'અમદાવાદ (નવરંગપુરા)',
+      role: 'ફૂલ-ટાઇમ ઓપ્શન્સ ટ્રેડર',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+      rating: 5,
+      content: 'હું પહેલાં ટેલિગ્રામ ટીપ્સના ચક્કરમાં દર મહિને મોટો લોસ કરતો હતો. TradeX Academy ના પ્રાઇસ એક્શન અને રિસ્ક મેનેજમેન્ટ કોર્સે મારી આંખો ખોલી નાખી. હવે મારી પાસે ચોક્કસ સેટઅપ અને સ્ટોપ લોસ છે. અમદાવાદમાં બેસીને પોતાની મહેનતથી પ્રોફિટેબલ ટ્રેડર બનવાનો ગર્વ છે!'
+    },
+    {
+      name: 'હર્ષિલ મહેતા',
+      city: 'સુરત (અડાજણ)',
+      role: 'ટેક્સટાઇલ બિઝનેસમેન & સ્વિંગ ટ્રેડર',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
+      rating: 5,
+      content: 'બિઝનેસની સાથે ટ્રેડિંગ કેવી રીતે કરવું તે મને સ્વિંગ ટ્રેડિંગ કોર્સમાં શીખવા મળ્યું. સૌથી મોટી વાત એ છે કે બધું સરળ ગુજરાતીમાં સમજાવ્યું છે. કોઈ અઘરા અંગ્રેજી શબ્દો વગર લાઈવ ચાર્ટ પર પ્રેક્ટિકલ નોલેજ મળ્યું. ગુજરાતીઓ માટે આ બેસ્ટ પ્લેટફોર્મ છે.'
+    },
+    {
+      name: 'નેહા શાહ',
+      city: 'વડોદરા (અલકાપુરી)',
+      role: 'બેંકિંગ પ્રોફેશનલ & ઓપ્શન્સ બાયર',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
+      rating: 5,
+      content: 'નિફ્ટી અને બેંકનિફ્ટી એક્સપાયરી સ્ટ્રેટેજી કોર્સ અદભુત છે! ઓપ્શન ગ્રીક્સ ડેલ્ટા અને થીટા કેવી રીતે કામ કરે છે તે પહેલીવાર સાચી રીતે સમજાયું. વોટ્સએપ પર જ્યારે પણ શંકા હોય ત્યારે મેન્ટર ટીમ તરફથી તરત જવાબ મળે છે.'
+    }
+  ] : [
+    {
+      name: 'Pratik Patel',
+      city: 'Ahmedabad',
+      role: 'Full-Time Options Trader',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+      rating: 5,
+      content: 'I used to lose capital following random Telegram tip channels. TradeX Academy’s price action and risk management course completely transformed my trading discipline. Now I trade with strict stop losses and high conviction.'
+    },
+    {
+      name: 'Harshil Mehta',
+      city: 'Surat',
+      role: 'Business Owner & Swing Trader',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
+      rating: 5,
+      content: 'Learning in mother tongue Gujarati made all the difference. The swing trading setups let me manage my textile business while building a structured equity portfolio. Highly recommended to every trader in Gujarat.'
+    },
+    {
+      name: 'Neha Shah',
+      city: 'Vadodara',
+      role: 'Banking Professional & Options Trader',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
+      rating: 5,
+      content: 'The Nifty and BankNifty expiry masterclass is phenomenal! Greek mechanics, theta decay, and strike selection are explained with unmatched clarity. Mentor support on WhatsApp is prompt and genuinely helpful.'
+    }
+  ];
+
+  // Mentors Data
+  const mentors = [
+    {
+      name: language === 'gu' ? 'ભાવિક પટેલ' : 'Bhavik Patel',
+      role: language === 'gu' ? 'મુખ્ય મેન્ટર & પ્રાઇસ એક્શન એક્સપર્ટ' : 'Lead Mentor & Price Action Trader',
+      exp: '10+',
+      students: '35,000+',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
+      bio: language === 'gu'
+        ? '૧૦+ વર્ષથી ભારતીય શેર બજારમાં ફૂલ-ટાઇમ ટ્રેડિંગ. હજારો ગુજરાતીઓને સ્વતંત્ર અને શિસ્તબદ્ધ ટ્રેડર બનાવ્યા છે.'
+        : '10+ years of active trading in Indian stock markets. Empowered thousands of traders with disciplined price action rules.'
+    },
+    {
+      name: language === 'gu' ? 'જિજ્ઞેશ શાહ' : 'Jignesh Shah',
+      role: language === 'gu' ? 'ઓપ્શન્સ & ડેરિવેટિવ્સ સ્ટ્રેટેજિસ્ટ' : 'Options & Derivatives Strategist',
+      exp: '8+',
+      students: '20,000+',
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=300',
+      bio: language === 'gu'
+        ? 'નિફ્ટી અને બેંકનિફ્ટી ઓપ્શન્સ ડેટા, ઓપન ઇન્ટરેસ્ટ (OI) અને એક્સપાયરી ડે ટ્રેડિંગના માસ્ટર.'
+        : 'Specialist in Nifty & BankNifty OI analysis, option Greeks, and high-probability expiry day setups.'
+    }
+  ];
+
+  // FAQs Data
+  const faqs = language === 'gu' ? [
+    {
+      q: 'શું સંપૂર્ણ નવો માણસ (Beginner) પણ આ કોર્સથી શેર બજાર શીખી શકે?',
+      a: 'હા, ચોક્કસ! અમારો "બેઝિક શેર બજાર ફાઉન્ડેશન કોર્સ" બિલકુલ શૂન્યથી શરૂ થાય છે. ડીમેટ એકાઉન્ટ શું છે, શેર કેવી રીતે ખરીદવા-વેચવા, અને રિસ્ક કેવી રીતે કંટ્રોલ કરવું તે બધું સરળ ગુજરાતીમાં શીખવવામાં આવે છે.'
+    },
+    {
+      q: 'શું શીખવા માટે મોંઘા લેપટોપની જરૂર છે કે મોબાઈલથી શીખી શકાય?',
+      a: 'તમે કોઈપણ સાધન — તમારા એન્ડ્રોઇડ કે આઈફોન મોબાઈલ, ટેબ્લેટ અથવા લેપટોપ પરથી આરામથી વિડિયો જોઈ શકો છો. અમારું પ્લેટફોર્મ ૧૦૦% મોબાઈલ ફ્રેન્ડલી છે.'
+    },
+    {
+      q: 'કોર્સ ખરીદ્યા પછી વિડિયો કેટલા સમય સુધી જોઈ શકાશે?',
+      a: 'તમામ કોર્સમાં લાઈફટાઈમ (આજીવન) અનલિમિટેડ એક્સેસ મળે છે! તમે ગમે ત્યારે, ગમે તેટલી વાર વિડિયો રિવિઝન કરી શકો છો. ભવિષ્યમાં ઉમેરાતા નવા વિડિયો પણ મફત મળશે.'
+    },
+    {
+      q: 'જો મને કોઈ સવાલ કે શંકા હોય તો માર્ગદર્શન કેવી રીતે મળશે?',
+      a: 'દરેક વિદ્યાર્થીને અમારો ડેડિકેટેડ વોટ્સએપ મેન્ટર સપોર્ટ મળે છે. તમે તમારા ચાર્ટના સ્ક્રીનશોટ મોકલીને મેન્ટર પાસેથી સીધો પ્રતિસાદ મેળવી શકો છો.'
+    },
+    {
+      q: 'શું તમે લાઈવ ટ્રેડિંગ ટીપ્સ કે કોલ્સ આપો છો?',
+      a: 'ના. અમે કોઈ ટીપ્સ આપતા નથી. અમે તમને ૧૦૦% સાચું શિક્ષણ આપીએ છીએ જેથી તમે જાતે ચાર્ટ રીડ કરીને આત્મનિર્ભર બનીને ટ્રેડિંગ કરી શકો.'
+    }
+  ] : [
+    {
+      q: 'Can complete beginners with no financial background learn?',
+      a: 'Yes, absolutely! Our Stock Market Basics course starts from scratch. We explain Demat accounts, how to place orders, and risk management in plain language.'
+    },
+    {
+      q: 'Can I learn using a mobile phone without an expensive laptop?',
+      a: 'Yes. Our learning player is fully mobile-optimized. You can watch lessons, download cheat sheets, and take quizzes on Android, iOS, or laptops.'
+    },
+    {
+      q: 'How long do I have access to course lessons after enrolling?',
+      a: 'You get lifetime unlimited access to all videos, downloadable resources, and future curriculum updates.'
+    },
+    {
+      q: 'How can I clear my doubts while studying?',
+      a: 'Enrolled students receive dedicated WhatsApp mentor support to clarify concepts and review chart patterns directly with educators.'
+    },
+    {
+      q: 'Do you provide stock tips or trading calls?',
+      a: 'No. We strictly adhere to education only. We teach you how to analyze charts independently without depending on external tip channels.'
+    }
+  ];
 
   return (
     <div className="flex flex-col min-h-screen">
       <PromoBanner banner={cmsContent?.promo_banner} />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 border-b border-slate-800/60 bg-gradient-to-b from-slate-950 via-slate-900/60 to-slate-950">
-        {/* Glow ambient effects */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-brand-500/10 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute top-1/3 right-10 w-[400px] h-[300px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
+      <section className="relative overflow-hidden pt-10 pb-20 lg:pt-16 lg:pb-28 border-b border-slate-800/80 bg-gradient-to-b from-slate-950 via-slate-900/60 to-slate-950">
+        {/* Glow ambient background effects */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-emerald-500/10 blur-[130px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 right-10 w-[400px] h-[300px] bg-teal-500/10 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          {/* Top Pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-brand-500/10 border border-brand-500/30 text-brand-300 shadow-sm mb-6 animate-in fade-in">
-            <Sparkles className="w-4 h-4 text-brand-400" />
-            <span>{hero.badge}</span>
+          {/* Top Gujarat Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 shadow-sm mb-6 animate-in fade-in">
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span>{dict.hero.badge}</span>
           </div>
 
-          {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] max-w-5xl mx-auto">
-            Master High-Income Tech Skills with{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-teal-300 to-cyan-400">
-              Industry Veterans
-            </span>
+          {/* Main Headline */}
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.2] max-w-5xl mx-auto">
+            {dict.hero.headlinePart1}{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+              {dict.hero.headlineHighlight}
+            </span>{' '}
+            {dict.hero.headlinePart2}
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-6 text-base sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
-            {hero.subheadline}
+          <p className="mt-6 text-sm sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
+            {dict.hero.description}
           </p>
 
-          {/* CTAs */}
+          {/* Action CTAs */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to={hero.ctaPrimaryLink || '/courses'}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-base transition-all shadow-xl shadow-brand-500/25 flex items-center justify-center gap-2 hover:scale-[1.02]"
+              to="/courses?price=free"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-base transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 hover:scale-[1.02]"
             >
-              <span>{hero.ctaPrimaryText || 'Explore Courses'}</span>
+              <span>{dict.hero.startLearningFree}</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
+
             <Link
-              to={hero.ctaSecondaryLink || '/register'}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white font-semibold text-base border border-slate-700/80 transition-all flex items-center justify-center gap-2 hover:border-slate-600"
+              to="/courses"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white font-bold text-base border border-slate-750 transition-all flex items-center justify-center gap-2"
             >
-              <Compass className="w-5 h-5 text-brand-400" />
-              <span>{hero.ctaSecondaryText || 'Get Started'}</span>
+              <BookOpen className="w-5 h-5 text-brand-400" />
+              <span>{dict.hero.exploreCourses}</span>
+            </Link>
+
+            <a
+              href="https://wa.me/919876543210?text=%E0%AA%A8%E0%AA%AE%E0%AA%B8%E0%AB%8D%E0%AA%A4%E0%AB%87%20TradeX%20Academy%2C%20%E0%AA%AE%E0%AA%BE%E0%AA%B0%E0%AB%87%20%E0%AA%9F%E0%AB%8D%E0%AA%B0%E0%AB%87%E0%AA%A1%E0%AA%BF%E0%AA%82%E0%AA%97%20%E0%AA%95%E0%AB%8B%E0%AA%B0%E0%AB%8D%E0%AA%B8%20%E0%AA%B5%E0%AA%BF%E0%AA%B7%E0%AB%87%20%E0%AA%AE%E0%AA%BE%E0%AA%B9%E0%AA%BF%E0%AA%A4%E0%AA%BF%20%E0%AA%9C%E0%AB%8B%E0%AA%88%E0%AA%8F%20%E0%AA%9B%E0%AB%87."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-6 py-4 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 font-bold text-base border border-emerald-500/30 transition-all flex items-center justify-center gap-2"
+            >
+              <MessageCircle className="w-5 h-5 text-emerald-400" />
+              <span>{dict.hero.chatWhatsApp}</span>
+            </a>
+          </div>
+
+          {/* Trust Stats Bar */}
+          <div className="mt-16 pt-10 border-t border-slate-800/80 grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="flex flex-col items-center">
+              <span className="text-2xl sm:text-3xl font-extrabold text-white">
+                {dict.hero.statStudents}
+              </span>
+              <span className="text-xs sm:text-sm text-slate-400 mt-1">
+                {dict.hero.statStudentsLabel}
+              </span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="flex items-center gap-1">
+                <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                <span className="text-2xl sm:text-3xl font-extrabold text-white">
+                  {dict.hero.statRating}
+                </span>
+              </div>
+              <span className="text-xs sm:text-sm text-slate-400 mt-1">
+                {dict.hero.statRatingLabel}
+              </span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400">
+                {dict.hero.statPractical}
+              </span>
+              <span className="text-xs sm:text-sm text-slate-400 mt-1">
+                {dict.hero.statPracticalLabel}
+              </span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl sm:text-3xl font-extrabold text-teal-300">
+                {dict.hero.statSupport}
+              </span>
+              <span className="text-xs sm:text-sm text-slate-400 mt-1">
+                {dict.hero.statSupportLabel}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6 Core Trading Highlights (Gujju The Trader Inspired) */}
+      <section className="py-20 bg-slate-900/40 border-b border-slate-800/80 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-500/10 text-brand-400 border border-brand-500/20">
+              {dict.highlights.sectionBadge}
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-3 leading-tight">
+              {dict.highlights.sectionTitle}
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-slate-400">
+              {dict.highlights.sectionSubtitle}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {highlightPillars.map((pillar, idx) => (
+              <Link
+                key={idx}
+                to={pillar.link}
+                className={`p-6 rounded-2xl bg-gradient-to-br ${pillar.color} bg-slate-900/90 border ${pillar.borderColor} hover:border-brand-400/60 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between group`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 shadow-md">
+                      {pillar.icon}
+                    </div>
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-950/80 text-slate-300 border border-slate-800">
+                      {pillar.tag}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white group-hover:text-brand-300 transition-colors">
+                    {pillar.title}
+                  </h3>
+                  <p className="mt-2 text-xs sm:text-sm text-slate-400 leading-relaxed">
+                    {pillar.desc}
+                  </p>
+                </div>
+                <div className="mt-5 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs font-bold text-brand-400 group-hover:text-brand-300">
+                  <span>{language === 'gu' ? 'કોર્સ વિશે વધુ જાણો' : 'Explore Curriculum'}</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Courses Section */}
+      <section className="py-20 bg-slate-950 border-b border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-400">
+                {dict.courses.badge}
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-1">
+                {dict.courses.title}
+              </h2>
+              <p className="mt-2 text-sm text-slate-400">
+                {dict.courses.subtitle}
+              </p>
+            </div>
+
+            <Link
+              to="/courses"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-400 hover:text-brand-300 transition-colors"
+            >
+              <span>{dict.courses.viewAll}</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* Stats Bar */}
-          <div className="mt-16 pt-12 border-t border-slate-800/80 grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {hero.stats?.map((stat: any, idx: number) => (
-              <div key={idx} className="flex flex-col items-center">
-                <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                  {stat.value}
-                </span>
-                <span className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">{stat.label}</span>
+          {/* Filter Tabs */}
+          <div className="flex flex-wrap items-center gap-2 mb-8 border-b border-slate-800 pb-4">
+            <button
+              onClick={() => setActiveTab('all')}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                activeTab === 'all'
+                  ? 'bg-brand-500 text-slate-950 shadow-md shadow-brand-500/20'
+                  : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              {dict.courses.tabAll}
+            </button>
+            <button
+              onClick={() => setActiveTab('free')}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'free'
+                  ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                  : 'bg-slate-900 text-emerald-400 hover:bg-slate-800'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              {dict.courses.tabFree}
+            </button>
+            <button
+              onClick={() => setActiveTab('options')}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                activeTab === 'options'
+                  ? 'bg-brand-500 text-slate-950 shadow-md'
+                  : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              {dict.courses.tabOptions}
+            </button>
+            <button
+              onClick={() => setActiveTab('price-action')}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                activeTab === 'price-action'
+                  ? 'bg-brand-500 text-slate-950 shadow-md'
+                  : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              {dict.courses.tabPriceAction}
+            </button>
+            <button
+              onClick={() => setActiveTab('crypto')}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                activeTab === 'crypto'
+                  ? 'bg-brand-500 text-slate-950 shadow-md'
+                  : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              {dict.courses.tabCrypto}
+            </button>
+          </div>
+
+          {/* Courses Grid */}
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="animate-pulse bg-slate-900 rounded-2xl h-80 border border-slate-800" />
+              ))}
+            </div>
+          ) : filteredCourses.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredCourses.map((c) => (
+                <CourseCard key={c.id} course={c} />
+              ))}
+            </div>
+          ) : (
+            <div className="py-16 text-center rounded-2xl bg-slate-900/40 border border-slate-800">
+              <BookOpen className="w-10 h-10 text-slate-500 mx-auto mb-3" />
+              <p className="text-slate-300 font-semibold">{dict.courses.noCoursesFound}</p>
+              <button
+                onClick={() => setActiveTab('all')}
+                className="mt-4 px-4 py-2 rounded-xl bg-brand-500 text-slate-950 font-bold text-xs"
+              >
+                {dict.courses.resetFilters}
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section id="why-us" className="py-24 bg-gradient-to-b from-slate-950 via-slate-900/60 to-slate-950 border-b border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              {dict.whyUs.badge}
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-3">
+              {dict.whyUs.title}
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-slate-400">
+              {dict.whyUs.subtitle}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {whyUsPoints.map((item, idx) => (
+              <div
+                key={idx}
+                className="p-7 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center font-black text-emerald-400 text-sm mb-4">
+                    {item.badge}
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Trust Badges Bar */}
-      <section className="py-8 bg-slate-900/40 border-b border-slate-800/80">
+      {/* Mentors Section */}
+      <section className="py-20 bg-slate-950 border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs uppercase tracking-wider text-slate-400 font-semibold mb-6">
-            Trusted by engineers & analysts at industry leaders worldwide
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-60 grayscale hover:grayscale-0 transition-all">
-            <span className="text-base sm:text-lg font-bold tracking-wider text-slate-300">GOOGLE</span>
-            <span className="text-base sm:text-lg font-bold tracking-wider text-slate-300">AMAZON</span>
-            <span className="text-base sm:text-lg font-bold tracking-wider text-slate-300">META</span>
-            <span className="text-base sm:text-lg font-bold tracking-wider text-slate-300">MICROSOFT</span>
-            <span className="text-base sm:text-lg font-bold tracking-wider text-slate-300">GOLDMAN SACHS</span>
-            <span className="text-base sm:text-lg font-bold tracking-wider text-slate-300">STRIPE</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Course Categories Section */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Curated Disciplines</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">Explore High-Demand Categories</h2>
-          </div>
-          <Link
-            to="/courses"
-            className="text-sm font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1.5 transition-colors"
-          >
-            <span>Browse All Categories</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/courses?category=${cat.slug}`}
-              className="group p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-brand-500/40 hover:bg-slate-900 transition-all hover:shadow-lg hover:shadow-brand-500/5 hover:-translate-y-1 flex items-start gap-4"
-            >
-              <div className="p-3.5 rounded-xl bg-slate-800/90 border border-slate-700/60 group-hover:scale-110 transition-transform">
-                {getCategoryIcon(cat.icon)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-white group-hover:text-brand-300 transition-colors truncate">
-                  {cat.name}
-                </h3>
-                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                  {cat.description}
-                </p>
-                <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-brand-400">
-                  <span>{cat.course_count || 1} Courses available</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Courses Section */}
-      <section className="py-20 bg-slate-900/40 border-y border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Handpicked Excellence</span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">Featured Masterclasses</h2>
-            </div>
-            <Link
-              to="/courses"
-              className="text-sm font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1.5 transition-colors"
-            >
-              <span>View Full Catalog</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredCourses.length > 0
-              ? featuredCourses.slice(0, 3).map((c) => <CourseCard key={c.id} course={c} />)
-              : courses.slice(0, 3).map((c) => <CourseCard key={c.id} course={c} />)}
-          </div>
-        </div>
-      </section>
-
-      {/* Popular & Trending Courses */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">Student Favorites</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-1">Most Popular Courses</h2>
-          </div>
-          <Link
-            to="/courses?sort=popular"
-            className="text-sm font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1.5 transition-colors"
-          >
-            <span>See Top Rated</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {popularCourses.length > 0
-            ? popularCourses.slice(0, 3).map((c) => <CourseCard key={c.id} course={c} />)
-            : courses.slice(3, 6).map((c) => <CourseCard key={c.id} course={c} />)}
-        </div>
-      </section>
-
-      {/* Why Choose Us & Learning Benefits */}
-      <section id="why-us" className="py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 border-t border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-400">
-              Why TradeX Academy
+              {dict.mentors.badge}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-2 tracking-tight">
-              Engineered for Real-World Career Acceleration
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-1">
+              {dict.mentors.title}
             </h2>
-            <p className="mt-4 text-base text-slate-400 leading-relaxed">
-              We ditched shallow 10-minute tutorials to build deep, production-grade curriculums that prepare you for senior roles.
+            <p className="mt-2 text-sm text-slate-400">
+              {dict.mentors.subtitle}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                title: 'Industry-Standard Curriculums',
-                description: 'Built directly around what tier-1 tech firms and modern startups hire for today. Zero obsolete theories.',
-                icon: <TargetIcon className="w-6 h-6 text-brand-400" />
-              },
-              {
-                title: 'Real-World Production Projects',
-                description: 'Build genuine GitHub-ready portfolio applications and executive business intelligence pipelines.',
-                icon: <Code className="w-6 h-6 text-cyan-400" />
-              },
-              {
-                title: 'Interactive Knowledge Checkpoints',
-                description: 'Quizzes, downloadable code templates, cheat sheets, and hands-on drills embedded into every module.',
-                icon: <CheckCircle className="w-6 h-6 text-purple-400" />
-              },
-              {
-                title: 'Verifiable Digital Credentials',
-                description: 'Earn cryptographic certificate codes that can be shared on LinkedIn or verified by prospective employers.',
-                icon: <Award className="w-6 h-6 text-amber-400" />
-              }
-            ].map((item, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {mentors.map((m, idx) => (
               <div
                 key={idx}
-                className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between"
+                className="p-8 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:border-slate-700 transition-all"
               >
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center mb-6">
-                    {item.icon}
+                <img
+                  src={m.avatar}
+                  alt={m.name}
+                  className="w-24 h-24 rounded-2xl object-cover ring-2 ring-emerald-500/40 flex-shrink-0"
+                />
+                <div className="text-center sm:text-left">
+                  <h3 className="text-xl font-bold text-white">{m.name}</h3>
+                  <p className="text-xs font-semibold text-emerald-400 mt-0.5">{m.role}</p>
+                  <p className="text-xs text-slate-400 mt-3 leading-relaxed">{m.bio}</p>
+                  <div className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-center sm:justify-start gap-6 text-xs text-slate-300">
+                    <div>
+                      <span className="font-bold text-white">{m.exp}</span> {dict.mentors.experience}
+                    </div>
+                    <div>
+                      <span className="font-bold text-white">{m.students}</span> {dict.mentors.studentsTrained}
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -309,65 +625,48 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Student Testimonials */}
-      <section id="testimonials" className="py-24 border-t border-slate-800/80 bg-slate-950">
+      <section id="testimonials" className="py-24 border-b border-slate-800/80 bg-slate-900/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Student Success</span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-2">What Our Alumni Say</h2>
-            <p className="mt-4 text-base text-slate-400">
-              Thousands of students and working professionals have elevated their career trajectories with TradeX Academy.
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+              {dict.testimonials.badge}
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-1">
+              {dict.testimonials.title}
+            </h2>
+            <p className="mt-3 text-sm text-slate-400">
+              {dict.testimonials.subtitle}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {(cmsContent?.testimonials || [
-              {
-                name: 'James Rodriguez',
-                role: 'Senior Data Analyst @ FinTech Global',
-                avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200',
-                rating: 5,
-                content: 'The Data Analytics Masterclass directly helped me transition from a spreadsheet reporting analyst to leading our product analytics team. The course player and curriculum quality are second to none.'
-              },
-              {
-                name: 'Amara Chen',
-                role: 'Staff Software Engineer @ CloudScale',
-                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
-                rating: 5,
-                content: 'The Next.js 15 and Distributed Cloud Architecture course gave me the exact mental model needed for enterprise microfrontends. Sarah teaching style is crisp, precise, and delightfully practical.'
-              },
-              {
-                name: 'Liam O’Connor',
-                role: 'Quantitative Analyst @ Alpha Capital',
-                avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200',
-                rating: 5,
-                content: 'Marcus Vance breaks down market microstructure and statistical arbitrage better than most university graduate courses. The backtesting engine we built in class is running live strategies today.'
-              }
-            ]).map((t: any, idx: number) => (
+            {testimonials.map((t, idx) => (
               <div
                 key={idx}
-                className="p-8 rounded-2xl bg-slate-900/70 border border-slate-800 flex flex-col justify-between relative hover:border-slate-700 transition-all"
+                className="p-8 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between relative hover:border-emerald-500/30 transition-all"
               >
                 <div>
-                  <Quote className="w-8 h-8 text-brand-500/20 mb-4" />
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
+                  <Quote className="w-7 h-7 text-emerald-500/30 mb-3" />
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(t.rating)].map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <p className="text-sm text-slate-300 leading-relaxed italic">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
                     "{t.content}"
                   </p>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-slate-800/80 flex items-center gap-3">
+                <div className="mt-6 pt-5 border-t border-slate-800/80 flex items-center gap-3">
                   <img
                     src={t.avatar}
                     alt={t.name}
-                    className="w-11 h-11 rounded-full object-cover ring-2 ring-brand-500/30"
+                    className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30"
                   />
                   <div>
                     <h4 className="text-sm font-bold text-white">{t.name}</h4>
-                    <p className="text-xs text-slate-400">{t.role}</p>
+                    <p className="text-[11px] text-emerald-400">{t.city}</p>
+                    <p className="text-[10px] text-slate-400">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -377,37 +676,22 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Frequently Asked Questions */}
-      <section className="py-24 border-t border-slate-800/80 bg-slate-900/30">
+      <section className="py-24 border-b border-slate-800/80 bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Clear Answers</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-2">Frequently Asked Questions</h2>
-            <p className="mt-3 text-sm text-slate-400">Everything you need to know about enrollments, access, and certificates.</p>
+          <div className="text-center mb-14">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-400">
+              {dict.faqs.badge}
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-1">
+              {dict.faqs.title}
+            </h2>
+            <p className="mt-2 text-sm text-slate-400">
+              {dict.faqs.subtitle}
+            </p>
           </div>
 
           <div className="space-y-4">
-            {(cmsContent?.faqs || [
-              {
-                question: 'Do I get lifetime access to purchased courses?',
-                answer: 'Yes! Once you enroll in any course, you retain permanent lifetime access to all current and future lessons, downloadable files, code repositories, and quizzes.'
-              },
-              {
-                question: 'Will I receive a completion certificate?',
-                answer: 'Absolutely. Upon finishing 100% of a course curriculum, our system generates an official, verifiable digital certificate featuring your name, the instructor signature, and a unique cryptographic verification ID.'
-              },
-              {
-                question: 'Can I preview lessons before buying?',
-                answer: 'Yes! Every course includes complimentary preview lessons marked in the curriculum list so you can inspect the teaching style and depth before purchasing.'
-              },
-              {
-                question: 'Can I apply promotional coupons at checkout?',
-                answer: 'Yes. Simply enter your coupon code (such as LAUNCH50 or EDTECH20) at checkout for an instant discount calculation.'
-              },
-              {
-                question: 'What if I am a beginner in programming or analytics?',
-                answer: 'Each course has a clearly marked difficulty level (Beginner, Intermediate, Advanced, All Levels). Beginner courses require zero prior coding experience and walk you step-by-step from zero.'
-              }
-            ]).map((faq: any, idx: number) => (
+            {faqs.map((faq, idx) => (
               <div
                 key={idx}
                 className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden transition-colors"
@@ -416,45 +700,72 @@ export const HomePage: React.FC = () => {
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   className="w-full px-6 py-5 flex items-center justify-between text-left font-semibold text-white hover:text-brand-300 transition-colors"
                 >
-                  <span className="text-base">{faq.question}</span>
+                  <span className="text-sm sm:text-base pr-4">{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${
+                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${
                       openFaq === idx ? 'rotate-180 text-brand-400' : ''
                     }`}
                   />
                 </button>
                 {openFaq === idx && (
-                  <div className="px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 pt-4">
-                    {faq.answer}
+                  <div className="px-6 pb-5 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 pt-4">
+                    {faq.a}
                   </div>
                 )}
               </div>
             ))}
           </div>
+
+          {/* Additional Help Prompt */}
+          <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/20 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-left">
+              <h4 className="text-white font-bold text-sm sm:text-base">
+                {dict.faqs.haveQuestions}
+              </h4>
+              <p className="text-xs text-slate-400 mt-0.5">
+                {language === 'gu'
+                  ? 'અમારા ગુજરાતી ટ્રેડિંગ મેન્ટર સાથે વોટ્સએપ પર સીધી વાત કરો.'
+                  : 'Chat directly with our Gujarati trading mentor on WhatsApp.'}
+              </p>
+            </div>
+            <a
+              href="https://wa.me/919876543210"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-950/50"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>{dict.faqs.whatsappUs}</span>
+            </a>
+          </div>
         </div>
       </section>
 
       {/* Pre-Footer Action Banner */}
-      <section className="py-20 bg-gradient-to-r from-brand-900/30 via-slate-900 to-cyan-950/30 border-t border-slate-800/80 relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-r from-emerald-950/30 via-slate-900 to-teal-950/30 border-t border-slate-800/80 relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            Ready to Accelerate Your Career?
+            {language === 'gu'
+              ? 'આજે જ શરૂ કરો તમારી ટ્રેડિંગ સફર'
+              : 'Ready to Master Indian Stock Markets?'}
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">
-            Join over 45,000 students learning production-ready technical skills from proven engineering leaders today.
+          <p className="mt-4 text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            {language === 'gu'
+              ? 'હજારો ગુજરાતી વિદ્યાર્થીઓ સાથે જોડાઈને શેર બજાર, ઓપ્શન્સ અને પ્રાઇસ એક્શનનું વ્યવહારુ શિક્ષણ મેળવો.'
+              : 'Join thousands of traders mastering stock markets, options, and price action in Gujarati today.'}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to="/courses"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-base transition-all shadow-xl shadow-brand-500/20"
+              to="/courses?price=free"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base transition-all shadow-xl shadow-emerald-500/20"
             >
-              Browse All Courses
+              {dict.hero.startLearningFree}
             </Link>
             <Link
               to="/register"
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-base border border-slate-700 transition-all"
             >
-              Create Free Student Account
+              {dict.auth.registerBtn}
             </Link>
           </div>
         </div>
@@ -462,13 +773,3 @@ export const HomePage: React.FC = () => {
     </div>
   );
 };
-
-function TargetIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" />
-      <circle cx="12" cy="12" r="2" />
-    </svg>
-  );
-}

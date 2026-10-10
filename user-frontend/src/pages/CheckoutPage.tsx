@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import {
   ShieldCheck,
   CreditCard,
@@ -12,12 +13,16 @@ import {
   CheckCircle2,
   Clock,
   Award,
-  AlertCircle
+  AlertCircle,
+  Smartphone,
+  Building2,
+  Sparkles
 } from 'lucide-react';
 
 export const CheckoutPage: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const { user } = useAuth();
+  const { language, dict, formatPrice } = useLanguage();
   const navigate = useNavigate();
 
   const [course, setCourse] = useState<any>(null);
@@ -33,11 +38,13 @@ export const CheckoutPage: React.FC = () => {
   // Billing & Payment form
   const [fullName, setFullName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [country, setCountry] = useState('United States');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'paypal'>('card');
-  const [cardNumber, setCardNumber] = useState('4242 •••• •••• 4242');
-  const [expiry, setExpiry] = useState('12/28');
-  const [cvv, setCvv] = useState('888');
+  const [phone, setPhone] = useState('');
+  const [city, setCity] = useState(language === 'gu' ? 'અમદાવાદ' : 'Ahmedabad');
+  const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'netbanking'>('upi');
+  const [upiId, setUpiId] = useState('');
+  const [cardNumber, setCardNumber] = useState('4532 •••• •••• 8821');
+  const [expiry, setExpiry] = useState('08/28');
+  const [cvv, setCvv] = useState('786');
 
   // Processing state
   const [processing, setProcessing] = useState(false);
@@ -58,7 +65,7 @@ export const CheckoutPage: React.FC = () => {
             navigate(`/learn/${res.course.id}`);
           }
         } else {
-          setError('Course not found.');
+          setError(language === 'gu' ? 'કોર્સ મળ્યો નથી.' : 'Course not found.');
         }
       } catch (err: any) {
         setError(err.message || 'Failed to load course details.');
@@ -68,7 +75,7 @@ export const CheckoutPage: React.FC = () => {
     }
 
     fetchCourse();
-  }, [courseId, user, navigate]);
+  }, [courseId, user, navigate, language]);
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,10 +93,10 @@ export const CheckoutPage: React.FC = () => {
       if (res.success && res.coupon) {
         setAppliedCoupon(res.coupon);
       } else {
-        setCouponError(res.message || 'Invalid coupon code');
+        setCouponError(res.message || (language === 'gu' ? 'અમાન્ય કુપન કોડ' : 'Invalid coupon code'));
       }
     } catch (err: any) {
-      setCouponError(err.message || 'Failed to apply coupon.');
+      setCouponError(err.message || (language === 'gu' ? 'કુપન લાગુ કરવામાં ભૂલ આવી.' : 'Failed to apply coupon.'));
     } finally {
       setValidatingCoupon(false);
     }
@@ -109,7 +116,8 @@ export const CheckoutPage: React.FC = () => {
         billingInfo: {
           fullName,
           email,
-          country
+          phone,
+          city
         },
         paymentMethod
       });
@@ -126,7 +134,7 @@ export const CheckoutPage: React.FC = () => {
           // ignore if canvas-confetti fails
         }
       } else {
-        setError(res.message || 'Payment processing failed.');
+        setError(res.message || (language === 'gu' ? 'પેમેન્ટ પ્રોસેસ કરવામાં ભૂલ આવી.' : 'Payment processing failed.'));
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during checkout.');
@@ -138,358 +146,410 @@ export const CheckoutPage: React.FC = () => {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 min-h-screen">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-slate-800 rounded w-1/4" />
-          <div className="h-64 bg-slate-800 rounded-2xl" />
+        <div className="animate-pulse space-y-8">
+          <div className="h-10 bg-slate-800 rounded w-1/2" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-2 h-96 bg-slate-800 rounded-2xl" />
+            <div className="h-64 bg-slate-800 rounded-2xl" />
+          </div>
         </div>
       </div>
     );
   }
 
+  if (error && !course) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-24 text-center">
+        <AlertCircle className="w-12 h-12 text-rose-500 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold text-white">
+          {language === 'gu' ? 'ઓર્ડર શરૂ થઈ શક્યો નથી' : 'Unable to Proceed with Checkout'}
+        </h2>
+        <p className="mt-2 text-slate-400">{error}</p>
+        <Link
+          to="/courses"
+          className="mt-6 inline-flex px-6 py-2.5 rounded-xl bg-brand-500 text-slate-950 font-bold text-sm"
+        >
+          {dict.courses.viewAll}
+        </Link>
+      </div>
+    );
+  }
+
+  const basePrice = course?.discount_price != null ? course.discount_price : (course?.price || 0);
+  let discountAmount = 0;
+  if (appliedCoupon) {
+    discountAmount = appliedCoupon.discount_amount || 0;
+  }
+  const finalPrice = Math.max(0, basePrice - discountAmount);
+
+  // Success Confirmation Screen
   if (orderComplete) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 min-h-[70vh] flex items-center justify-center">
-        <div className="p-8 sm:p-12 rounded-3xl bg-slate-900 border border-brand-500/40 text-center shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
-          <div className="w-20 h-20 rounded-full bg-brand-500/20 text-brand-400 flex items-center justify-center mx-auto mb-6 ring-8 ring-brand-500/10">
-            <CheckCircle2 className="w-10 h-10" />
-          </div>
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <div className="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-6 ring-4 ring-emerald-500/30">
+          <CheckCircle2 className="w-12 h-12" />
+        </div>
 
-          <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Payment Successful</span>
-          <h2 className="text-3xl font-extrabold text-white mt-1">Enrollment Confirmed!</h2>
-          <p className="mt-2 text-sm text-slate-300">
-            Order Reference: <span className="font-mono font-bold text-white">{orderComplete.order?.order_number}</span>
-          </p>
-          <p className="text-xs text-slate-400 mt-1">
-            A confirmation receipt has been issued to <span className="text-white">{email}</span>.
-          </p>
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+          {dict.checkout.orderSuccessTitle}
+        </h1>
+        <p className="mt-3 text-sm sm:text-base text-slate-300">
+          {dict.checkout.orderSuccessDesc}
+        </p>
 
-          <div className="mt-8 p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-left flex items-center gap-4">
-            <img
-              src={course.thumbnail}
-              alt={course.title}
-              className="w-16 h-12 rounded-lg object-cover flex-shrink-0"
-            />
-            <div className="min-w-0 flex-1">
-              <h4 className="text-sm font-bold text-white truncate">{course.title}</h4>
-              <p className="text-xs text-brand-400 font-medium">Ready to start immediately</p>
-            </div>
+        {/* Order Details Card */}
+        <div className="mt-8 p-6 rounded-2xl bg-slate-900 border border-slate-800 text-left space-y-3">
+          <div className="flex justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
+            <span>{dict.dashboard.orderNumber}:</span>
+            <span className="font-mono text-white font-bold">{orderComplete.order?.order_number}</span>
           </div>
+          <div className="flex justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
+            <span>{language === 'gu' ? 'કોર્સનું નામ:' : 'Enrolled Course:'}</span>
+            <span className="text-white font-bold text-right truncate max-w-xs">{course.title}</span>
+          </div>
+          <div className="flex justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
+            <span>{language === 'gu' ? 'ચૂકવેલ રકમ:' : 'Amount Paid:'}</span>
+            <span className="text-emerald-400 font-extrabold text-sm">{formatPrice(orderComplete.order?.amount)}</span>
+          </div>
+          <div className="flex justify-between text-xs text-slate-400">
+            <span>{language === 'gu' ? 'સ્થિતિ:' : 'Status:'}</span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs uppercase">
+              {language === 'gu' ? 'સફળ (Active)' : 'Completed'}
+            </span>
+          </div>
+        </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={() => navigate(`/learn/${course.id}`)}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2"
-            >
-              <span>Go to Course Player</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <Link
-              to="/dashboard"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm transition-all"
-            >
-              Learning Dashboard
-            </Link>
-          </div>
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            to={`/learn/${course.id}`}
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-sm shadow-xl shadow-emerald-500/20 hover:scale-105 transition-all"
+          >
+            {dict.checkout.startCourseNow}
+          </Link>
+          <Link
+            to="/dashboard"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm border border-slate-800 transition-all"
+          >
+            {dict.nav.dashboard}
+          </Link>
         </div>
       </div>
     );
   }
 
-  const basePrice = course.discount_price != null ? course.discount_price : course.price;
-  const discountAmount = appliedCoupon ? appliedCoupon.discount_amount : 0;
-  const finalPrice = Math.max(0, Math.round((basePrice - discountAmount) * 100) / 100);
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-screen">
       <div className="mb-8">
-        <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Secure Checkout</span>
-        <h1 className="text-3xl font-extrabold text-white mt-1">Complete Your Enrollment</h1>
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          {dict.checkout.title}
+        </h1>
+        <p className="mt-2 text-sm text-slate-400">
+          {dict.checkout.subtitle}
+        </p>
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm flex items-center gap-2">
+        <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm flex items-center gap-3">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left Form: Billing & Payment */}
-        <div className="lg:col-span-7 space-y-8">
-          {/* Billing Form */}
-          <div className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-6">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-brand-500 text-slate-950 text-xs font-bold flex items-center justify-center">
-                1
-              </span>
-              Billing Details
-            </h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        {/* Left 2 Cols: Billing & Payment form */}
+        <div className="lg:col-span-2 space-y-6">
+          <form onSubmit={handleProcessPayment} className="space-y-6">
+            {/* Student Details Box */}
+            <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                {dict.checkout.billingDetails}
+              </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                  Country
-                </label>
-                <select
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium"
-                >
-                  <option value="United States">United States</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="Canada">Canada</option>
-                  <option value="Germany">Germany</option>
-                  <option value="India">India</option>
-                  <option value="Australia">Australia</option>
-                  <option value="Singapore">Singapore</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Payment Method */}
-          <div className="p-8 rounded-2xl bg-slate-900 border border-slate-800 space-y-6">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-brand-500 text-slate-950 text-xs font-bold flex items-center justify-center">
-                2
-              </span>
-              Payment Method
-            </h3>
-
-            {/* Selector tabs */}
-            <div className="grid grid-cols-3 gap-3">
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('card')}
-                className={`p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-2 transition-all ${
-                  paymentMethod === 'card'
-                    ? 'border-brand-500 bg-brand-500/10 text-white'
-                    : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-white'
-                }`}
-              >
-                <CreditCard className="w-5 h-5 text-brand-400" />
-                <span>Credit/Debit Card</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('upi')}
-                className={`p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-2 transition-all ${
-                  paymentMethod === 'upi'
-                    ? 'border-brand-500 bg-brand-500/10 text-white'
-                    : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-white'
-                }`}
-              >
-                <span className="font-bold text-cyan-400 text-base">UPI</span>
-                <span>Instant Transfer</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('paypal')}
-                className={`p-3 rounded-xl border text-xs font-semibold flex flex-col items-center gap-2 transition-all ${
-                  paymentMethod === 'paypal'
-                    ? 'border-brand-500 bg-brand-500/10 text-white'
-                    : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-white'
-                }`}
-              >
-                <span className="font-bold text-amber-400 text-base">PayPal</span>
-                <span>Express Checkout</span>
-              </button>
-            </div>
-
-            {/* Simulated Card Fields */}
-            {paymentMethod === 'card' && (
-              <div className="space-y-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                    Card Number
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    {dict.checkout.fullName} *
                   </label>
-                  <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    {dict.checkout.email} *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    {dict.checkout.phone}
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    {dict.checkout.city}
+                  </label>
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Method Selector */}
+            <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-emerald-400" />
+                {dict.checkout.paymentMethod}
+              </h3>
+
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('upi')}
+                  className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 transition-all ${
+                    paymentMethod === 'upi'
+                      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/20'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
+                  }`}
+                >
+                  <Smartphone className="w-5 h-5 text-emerald-400" />
+                  <span>UPI / GPay</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('card')}
+                  className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 transition-all ${
+                    paymentMethod === 'card'
+                      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/20'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
+                  }`}
+                >
+                  <CreditCard className="w-5 h-5 text-cyan-400" />
+                  <span>Debit / Card</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('netbanking')}
+                  className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 transition-all ${
+                    paymentMethod === 'netbanking'
+                      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-300 ring-2 ring-emerald-500/20'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
+                  }`}
+                >
+                  <Building2 className="w-5 h-5 text-amber-400" />
+                  <span>Net Banking</span>
+                </button>
+              </div>
+
+              {/* Payment Fields according to selection */}
+              {paymentMethod === 'upi' && (
+                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                  <label className="block text-xs font-semibold text-slate-300">
+                    {dict.checkout.upiPlaceholder}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="example@okaxis / mobile@upi"
+                    value={upiId}
+                    onChange={(e) => setUpiId(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-750 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  />
+                  <p className="text-[11px] text-slate-500">
+                    {language === 'gu'
+                      ? 'GPay, PhonePe, Paytm કે BHIM એપ વડે ચુકવણી કરો.'
+                      : 'Pay securely using Google Pay, PhonePe, Paytm, or any UPI app.'}
+                  </p>
+                </div>
+              )}
+
+              {paymentMethod === 'card' && (
+                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                      {language === 'gu' ? 'કાર્ડ નંબર' : 'Card Number'}
+                    </label>
                     <input
                       type="text"
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white font-mono"
-                    />
-                    <CreditCard className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                      Expiry Date
-                    </label>
-                    <input
-                      type="text"
-                      value={expiry}
-                      onChange={(e) => setExpiry(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white font-mono"
+                      className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-750 rounded-xl text-sm text-white font-mono"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                      CVV / CVC
-                    </label>
-                    <input
-                      type="text"
-                      value={cvv}
-                      onChange={(e) => setCvv(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-750 rounded-xl text-sm text-white font-mono"
-                    />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        {language === 'gu' ? 'એક્સપાયરી (MM/YY)' : 'Expiry (MM/YY)'}
+                      </label>
+                      <input
+                        type="text"
+                        value={expiry}
+                        onChange={(e) => setExpiry(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-750 rounded-xl text-sm text-white font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">CVV</label>
+                      <input
+                        type="password"
+                        maxLength={4}
+                        value={cvv}
+                        onChange={(e) => setCvv(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-750 rounded-xl text-sm text-white font-mono"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 text-xs text-slate-400 pt-2">
-              <Lock className="w-4 h-4 text-brand-400" />
-              <span>Payments are processed with 256-bit bank-level TLS encryption</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Order Summary & Coupon */}
-        <div className="lg:col-span-5">
-          <div className="p-8 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-6 sticky top-28">
-            <h3 className="text-lg font-bold text-white">Order Summary</h3>
-
-            {/* Course Summary Item */}
-            <div className="flex items-start gap-4 pb-6 border-b border-slate-800">
-              <img
-                src={course.thumbnail}
-                alt={course.title}
-                className="w-24 h-16 rounded-xl object-cover flex-shrink-0"
-              />
-              <div className="min-w-0 flex-1">
-                <span className="text-[10px] uppercase font-bold text-brand-400">{course.category_name}</span>
-                <h4 className="text-sm font-bold text-white line-clamp-2 leading-snug">{course.title}</h4>
-                <p className="text-xs text-slate-400 mt-1">{course.instructor_name}</p>
-              </div>
-            </div>
-
-            {/* Coupon Code Input */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Have a Promotional Coupon?
-              </label>
-              <form onSubmit={handleApplyCoupon} className="flex gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    placeholder="e.g. LAUNCH50"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="w-full pl-9 pr-3 py-2.5 bg-slate-950 border border-slate-750 rounded-xl text-xs uppercase font-mono text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  />
-                  <Tag className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                </div>
-                <button
-                  type="submit"
-                  disabled={validatingCoupon || !couponCode.trim()}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-brand-300 font-bold text-xs transition-colors disabled:opacity-50"
-                >
-                  {validatingCoupon ? 'Checking...' : 'Apply'}
-                </button>
-              </form>
-
-              {couponError && (
-                <p className="mt-2 text-xs text-rose-400">{couponError}</p>
               )}
 
-              {appliedCoupon && (
-                <div className="mt-2 p-2.5 rounded-lg bg-brand-500/10 border border-brand-500/30 flex items-center justify-between text-xs text-brand-300">
-                  <div className="flex items-center gap-1.5 font-semibold">
-                    <CheckCircle2 className="w-4 h-4 text-brand-400" />
-                    <span>Coupon {appliedCoupon.code} applied!</span>
-                  </div>
-                  <button
-                    onClick={() => setAppliedCoupon(null)}
-                    className="text-slate-400 hover:text-white"
-                  >
-                    Remove
-                  </button>
+              {paymentMethod === 'netbanking' && (
+                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    {language === 'gu' ? 'બેંક પસંદ કરો' : 'Select Bank'}
+                  </label>
+                  <select className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-750 rounded-xl text-sm text-white">
+                    <option>HDFC Bank</option>
+                    <option>State Bank of India (SBI)</option>
+                    <option>ICICI Bank</option>
+                    <option>Kotak Mahindra Bank</option>
+                    <option>Axis Bank</option>
+                    <option>Bank of Baroda</option>
+                  </select>
                 </div>
               )}
-            </div>
-
-            {/* Breakdown */}
-            <div className="space-y-3 pt-4 border-t border-slate-800 text-sm">
-              <div className="flex items-center justify-between text-slate-400">
-                <span>Original Price</span>
-                <span>${course.price.toFixed(2)}</span>
-              </div>
-
-              {course.discount_price != null && (
-                <div className="flex items-center justify-between text-brand-400">
-                  <span>Course Sale Discount</span>
-                  <span>-${(course.price - course.discount_price).toFixed(2)}</span>
-                </div>
-              )}
-
-              {appliedCoupon && (
-                <div className="flex items-center justify-between text-cyan-400 font-medium">
-                  <span>Coupon Discount ({appliedCoupon.code})</span>
-                  <span>-${discountAmount.toFixed(2)}</span>
-                </div>
-              )}
-
-              <div className="flex items-center justify-between text-slate-400">
-                <span>Platform Taxes</span>
-                <span className="text-brand-400 font-medium">FREE ($0.00)</span>
-              </div>
-
-              <div className="pt-3 border-t border-slate-800 flex items-baseline justify-between text-white font-extrabold text-lg">
-                <span>Total Due</span>
-                <span className="text-2xl text-brand-400 font-extrabold">
-                  ${finalPrice.toFixed(2)}
-                </span>
-              </div>
             </div>
 
             {/* Submit Button */}
             <button
-              onClick={handleProcessPayment}
+              type="submit"
               disabled={processing}
-              className="w-full py-4 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-base transition-all shadow-xl shadow-brand-500/20 flex items-center justify-center gap-2 hover:scale-[1.01] disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-base transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 hover:scale-[1.01]"
             >
-              {processing ? (
-                <span>Securing Your Enrollment...</span>
-              ) : (
-                <>
-                  <span>Enroll & Pay ${finalPrice.toFixed(2)}</span>
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
+              <Lock className="w-5 h-5" />
+              <span>
+                {processing
+                  ? (language === 'gu' ? 'ચુકવણી પ્રોસેસ થઈ રહી છે...' : 'Processing...')
+                  : `${dict.checkout.payNow} — ${formatPrice(finalPrice)}`}
+              </span>
             </button>
 
-            <div className="pt-2 text-center text-xs text-slate-400">
-              <p>Instant access to all modules, videos, and source code immediately upon checkout completion.</p>
+            <p className="text-center text-xs text-slate-500 flex items-center justify-center gap-1.5">
+              <span>{dict.checkout.secureNotice}</span>
+            </p>
+          </form>
+        </div>
+
+        {/* Right Col: Course Order Summary */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5 sticky top-28 shadow-xl">
+            <h3 className="text-base font-bold text-white border-b border-slate-800 pb-3">
+              {dict.checkout.orderSummary}
+            </h3>
+
+            {/* Course Snippet */}
+            <div className="flex gap-3">
+              <img
+                src={course.thumbnail}
+                alt={course.title}
+                className="w-20 h-14 rounded-xl object-cover flex-shrink-0"
+              />
+              <div className="min-w-0">
+                <h4 className="text-xs font-bold text-white line-clamp-2 leading-snug">
+                  {course.title}
+                </h4>
+                <p className="text-[11px] text-emerald-400 mt-1">{course.instructor_name}</p>
+              </div>
+            </div>
+
+            {/* Coupon Code Section */}
+            <form onSubmit={handleApplyCoupon} className="pt-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder={dict.checkout.couponPlaceholder}
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  className="flex-1 px-3 py-2 bg-slate-950 border border-slate-750 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                />
+                <button
+                  type="submit"
+                  disabled={validatingCoupon || !couponCode.trim()}
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 text-xs font-bold transition-all disabled:opacity-50"
+                >
+                  {validatingCoupon ? '...' : dict.checkout.applyCoupon}
+                </button>
+              </div>
+              {appliedCoupon && (
+                <p className="text-xs text-emerald-400 mt-1.5 font-semibold flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {dict.checkout.couponApplied} ({appliedCoupon.code})
+                </p>
+              )}
+              {couponError && (
+                <p className="text-xs text-rose-400 mt-1.5 font-medium">{couponError}</p>
+              )}
+            </form>
+
+            {/* Price Calculations */}
+            <div className="border-t border-slate-800/80 pt-4 space-y-2.5 text-xs text-slate-300">
+              <div className="flex justify-between">
+                <span>{dict.checkout.originalPrice}:</span>
+                <span className="font-semibold text-white">{formatPrice(basePrice)}</span>
+              </div>
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-emerald-400 font-semibold">
+                  <span>{dict.checkout.discount}:</span>
+                  <span>- {formatPrice(discountAmount)}</span>
+                </div>
+              )}
+              <div className="border-t border-slate-800 pt-3 flex justify-between text-sm">
+                <span className="font-bold text-white">{dict.checkout.totalAmount}:</span>
+                <span className="font-extrabold text-emerald-400 text-lg">
+                  {formatPrice(finalPrice)}
+                </span>
+              </div>
+            </div>
+
+            {/* Perks */}
+            <div className="pt-4 border-t border-slate-800/80 space-y-2 text-[11px] text-slate-400">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>{dict.courseDetails.lifetimeAccess}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>{dict.courseDetails.certificateIncluded}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>{dict.courseDetails.mentorSupport}</span>
+              </div>
             </div>
           </div>
         </div>
