@@ -7,22 +7,29 @@ import crypto from 'crypto';
 
 const router = Router();
 
-// Configure Razorpay client
-const razorpayKeyId = process.env.RAZORPAY_KEY_ID || '';
-const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || '';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const isRealKey = Boolean(
-  razorpayKeyId &&
-  !razorpayKeyId.includes('placeholder') &&
-  razorpayKeyId !== 'your_razorpay_key_id' &&
-  razorpayKeySecret &&
-  !razorpayKeySecret.includes('placeholder')
-);
+// Helper to get active Razorpay client and keys dynamically
+function getRazorpayConfig() {
+  const keyId = process.env.RAZORPAY_KEY_ID?.trim() || '';
+  const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim() || '';
 
-const razorpay = new Razorpay({
-  key_id: isRealKey ? razorpayKeyId : 'rzp_test_placeholder',
-  key_secret: isRealKey ? razorpayKeySecret : 'rzp_test_secret_placeholder',
-});
+  const isReal = Boolean(
+    keyId &&
+    !keyId.includes('placeholder') &&
+    keyId !== 'your_razorpay_key_id' &&
+    keySecret &&
+    !keySecret.includes('placeholder')
+  );
+
+  const client = new Razorpay({
+    key_id: isReal ? keyId : 'rzp_test_placeholder',
+    key_secret: isReal ? keySecret : 'rzp_test_secret_placeholder',
+  });
+
+  return { keyId, keySecret, isReal, client };
+}
 
 // Validate Coupon
 router.post('/validate-coupon', async (req, res: Response) => {
@@ -155,11 +162,12 @@ router.post('/create-razorpay-order', authenticateToken, async (req: AuthRequest
     const amountInPaise = Math.round(finalAmount * 100);
     const receipt = `receipt_${uuidv4().slice(0, 8)}`;
 
+    const { keyId, keySecret, isReal, client } = getRazorpayConfig();
     let orderId = `order_sim_${uuidv4().replace(/-/g, '').slice(0, 14)}`;
     let isRealRazorpayOrder = false;
 
     // Check if real key is present and try creating real Razorpay order
-    if (isRealKey) {
+    if (isReal) {
       try {
         const options = {
           amount: amountInPaise,
@@ -167,7 +175,7 @@ router.post('/create-razorpay-order', authenticateToken, async (req: AuthRequest
           receipt: receipt,
           payment_capture: 1
         };
-        const order = await razorpay.orders.create(options);
+        const order = await client.orders.create(options);
         orderId = order.id;
         isRealRazorpayOrder = true;
       } catch (liveErr: any) {
@@ -180,7 +188,7 @@ router.post('/create-razorpay-order', authenticateToken, async (req: AuthRequest
       orderId,
       amount: finalAmount,
       currency: "INR",
-      keyId: isRealKey ? razorpayKeyId : 'rzp_test_placeholder',
+      keyId: isReal ? keyId : 'rzp_test_placeholder',
       isRealRazorpay: isRealRazorpayOrder,
       paymentMethod,
       courseTitle: course.title
@@ -207,12 +215,13 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
       paymentMethod = 'UPI'
     } = req.body;
 
+    const { keySecret, isReal } = getRazorpayConfig();
     const isSimulated = !razorpay_order_id || razorpay_order_id.startsWith('order_sim_') || razorpay_order_id.startsWith('order_test_');
 
     // Verify signature only for live/real Razorpay orders
-    if (!isSimulated && isRealKey && razorpay_signature) {
+    if (!isSimulated && isReal && razorpay_signature) {
       const generated_signature = crypto
-        .createHmac('sha256', razorpayKeySecret)
+        .createHmac('sha256', keySecret)
         .update(razorpay_order_id + "|" + razorpay_payment_id)
         .digest('hex');
 
