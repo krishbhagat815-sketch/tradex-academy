@@ -289,7 +289,7 @@ export const translations: Record<Language, TranslationDictionary> = {
   gu: {
     nav: {
       home: 'Home',
-      courses: 'Trading Courses',
+      courses: 'Courses',
       freeCourses: 'Free Courses',
       whyUs: 'Why Choose Us',
       testimonials: 'Student Reviews',
@@ -544,7 +544,7 @@ export const translations: Record<Language, TranslationDictionary> = {
   en: {
     nav: {
       home: 'Home',
-      courses: 'All Courses',
+      courses: 'Courses',
       freeCourses: 'Free Learning',
       whyUs: 'Why Us',
       testimonials: 'Testimonials',

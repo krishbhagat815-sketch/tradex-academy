@@ -269,63 +269,140 @@ export const HomePage: React.FC = () => {
       <PromoBanner banner={cmsContent?.promo_banner} />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-10 pb-20 lg:pt-16 lg:pb-28 border-b border-slate-800/80 bg-gradient-to-b from-slate-950 via-slate-900/60 to-slate-950">
+      <section className="relative overflow-hidden pt-8 pb-20 lg:pt-14 lg:pb-28 border-b border-slate-800/80 bg-gradient-to-b from-slate-950 via-slate-900/70 to-slate-950">
         {/* Glow ambient background effects */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-emerald-500/10 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute top-1/3 right-10 w-[400px] h-[300px] bg-teal-500/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 right-10 w-[450px] h-[350px] bg-teal-500/10 blur-[130px] rounded-full pointer-events-none" />
+        <div className="absolute top-12 left-10 w-[350px] h-[300px] bg-emerald-600/5 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          {/* Top Gujarat Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 shadow-sm mb-6 animate-in fade-in">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <span>{dict.hero.badge}</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Top Gujarat Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 shadow-sm mb-6 animate-in fade-in">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span>{dict.hero.badge}</span>
+            </div>
+
+            {/* Main Headline */}
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.18]">
+              {dict.hero.headlinePart1}{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+                {dict.hero.headlineHighlight}
+              </span>{' '}
+              {dict.hero.headlinePart2}
+            </h1>
+
+            {/* Subtitle */}
+            <p className="mt-6 text-sm sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
+              {dict.hero.description}
+            </p>
+
+            {/* Trust Pill Highlights */}
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs text-slate-300">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-emerald-400">
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                {language === 'gu' ? 'સરળ Gujlish ભાષા' : 'Simple Gujlish Language'}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-teal-300">
+                <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+                {language === 'gu' ? 'No Tips • Pure Learning' : 'No Tips • Pure Learning'}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-amber-300">
+                <Award className="w-3.5 h-3.5 text-amber-400" />
+                {language === 'gu' ? 'Digital Certificate Included' : 'Digital Certificate Included'}
+              </span>
+            </div>
+
+            {/* Action CTAs */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                to="/courses?price=free"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-base transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 hover:scale-[1.02]"
+              >
+                <span>{dict.hero.startLearningFree}</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+
+              <Link
+                to="/courses"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white font-bold text-base border border-slate-750 transition-all flex items-center justify-center gap-2"
+              >
+                <BookOpen className="w-5 h-5 text-brand-400" />
+                <span>{dict.hero.exploreCourses}</span>
+              </Link>
+
+              <a
+                href="https://wa.me/919876543210?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-6 py-4 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 font-bold text-base border border-emerald-500/30 transition-all flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-5 h-5 text-emerald-400" />
+                <span>{dict.hero.chatWhatsApp}</span>
+              </a>
+            </div>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.2] max-w-5xl mx-auto">
-            {dict.hero.headlinePart1}{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
-              {dict.hero.headlineHighlight}
-            </span>{' '}
-            {dict.hero.headlinePart2}
-          </h1>
+          {/* Hero Visual Feature Dashboard Mockup */}
+          <div className="mt-14 max-w-5xl mx-auto rounded-3xl p-2 bg-gradient-to-b from-slate-800/80 via-slate-900/60 to-slate-950 border border-slate-750 shadow-2xl relative">
+            <div className="rounded-2xl bg-slate-950/95 border border-slate-800/80 p-5 sm:p-7 overflow-hidden">
+              {/* Header Bar Mockup */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800/80 text-xs text-slate-400">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                  <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                  <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                  <span className="ml-2 font-mono text-[11px] text-slate-400">thesafetrading.in / live-classroom</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Live Market Ready
+                  </span>
+                  <span className="hidden sm:inline text-slate-400">• High Accuracy Price Action</span>
+                </div>
+              </div>
 
-          {/* Subtitle */}
-          <p className="mt-6 text-sm sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
-            {dict.hero.description}
-          </p>
+              {/* Internal Grid Inside Visual */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-5">
+                {/* Visual Card 1 */}
+                <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+                    <CandlestickChart className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Pure Price Action</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Support, Resistance & Chart Patterns</p>
+                  </div>
+                </div>
 
-          {/* Action CTAs */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/courses?price=free"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-base transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 hover:scale-[1.02]"
-            >
-              <span>{dict.hero.startLearningFree}</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+                {/* Visual Card 2 */}
+                <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 flex-shrink-0">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Nifty & BankNifty Options</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Greeks (Delta/Theta) & Expiry Rules</p>
+                  </div>
+                </div>
 
-            <Link
-              to="/courses"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white font-bold text-base border border-slate-750 transition-all flex items-center justify-center gap-2"
-            >
-              <BookOpen className="w-5 h-5 text-brand-400" />
-              <span>{dict.hero.exploreCourses}</span>
-            </Link>
-
-            <a
-              href="https://wa.me/919876543210?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-6 py-4 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 font-bold text-base border border-emerald-500/30 transition-all flex items-center justify-center gap-2"
-            >
-              <MessageCircle className="w-5 h-5 text-emerald-400" />
-              <span>{dict.hero.chatWhatsApp}</span>
-            </a>
+                {/* Visual Card 3 */}
+                <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 flex-shrink-0">
+                    <ShieldCheck className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Capital Protection First</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Strict Stop Loss & 1:2 Risk-Reward</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Trust Stats Bar */}
-          <div className="mt-16 pt-10 border-t border-slate-800/80 grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="mt-14 pt-10 border-t border-slate-800/80 grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="flex flex-col items-center">
               <span className="text-2xl sm:text-3xl font-extrabold text-white">
                 {dict.hero.statStudents}
