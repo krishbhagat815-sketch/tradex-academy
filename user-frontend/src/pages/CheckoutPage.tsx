@@ -8,16 +8,21 @@ import {
   ShieldCheck,
   CreditCard,
   Lock,
-  Tag,
-  ArrowRight,
   CheckCircle2,
-  Clock,
-  Award,
   AlertCircle,
   Smartphone,
   Building2,
-  Sparkles
 } from 'lucide-react';
+
+function loadRazorpayScript(src: string) {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
 
 export const CheckoutPage: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -35,16 +40,11 @@ export const CheckoutPage: React.FC = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
 
-  // Billing & Payment form
+  // Billing form
   const [fullName, setFullName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState(language === 'gu' ? 'અમદાવાદ' : 'Ahmedabad');
-  const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'netbanking'>('upi');
-  const [upiId, setUpiId] = useState('');
-  const [cardNumber, setCardNumber] = useState('4532 •••• •••• 8821');
-  const [expiry, setExpiry] = useState('08/28');
-  const [cvv, setCvv] = useState('786');
 
   // Processing state
   const [processing, setProcessing] = useState(false);
@@ -109,35 +109,113 @@ export const CheckoutPage: React.FC = () => {
     setProcessing(true);
     setError(null);
 
+    const basePrice = course?.discount_price != null ? course.discount_price : (course?.price || 0);
+    const discountAmountLocal = appliedCoupon ? (appliedCoupon.discount_amount || 0) : 0;
+    const finalPriceLocal = Math.max(0, basePrice - discountAmountLocal);
+    
+    if (finalPriceLocal === 0) {
+      try {
+        const res = await api.post('/checkout/process', {
+          courseId: course.id,
+          couponCode: appliedCoupon ? appliedCoupon.code : null,
+          billingInfo: { fullName, email, phone, city },
+          paymentMethod: 'free'
+        });
+        if (res.success) {
+          setOrderComplete(res);
+          try {
+            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+          } catch {}
+        } else {
+          setError(res.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Payment failed. Please try again.'));
+        }
+      } catch (err: any) {
+        setError(err.message || 'An error occurred during checkout.');
+      } finally {
+        setProcessing(false);
+      }
+      return;
+    }
+
     try {
-      const res = await api.post('/checkout/process', {
+      const res = await loadRazorpayScript("https://checkout.razorpay.com/v1/checkout.js");
+      if (!res) {
+        setError(language === 'gu' ? 'Razorpay લોડ થઈ શક્યું નથી.' : 'Failed to load Razorpay.');
+        setProcessing(false);
+        return;
+      }
+
+      // 1. Create order
+      const orderRes = await api.post('/checkout/create-razorpay-order', {
         courseId: course.id,
         couponCode: appliedCoupon ? appliedCoupon.code : null,
-        billingInfo: {
-          fullName,
-          email,
-          phone,
-          city
-        },
-        paymentMethod
       });
 
-      if (res.success) {
-        setOrderComplete(res);
-        try {
-          confetti({
-            particleCount: 120,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
-        } catch {
-          // ignore if canvas-confetti fails
-        }
-      } else {
-        setError(res.message || (language === 'gu' ? 'પેમેન્ટ પ્રોસેસ કરવામાં ભૂલ આવી.' : 'Payment processing failed.'));
+      if (!orderRes.success) {
+        setError(orderRes.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Order creation failed.'));
+        setProcessing(false);
+        return;
       }
+
+      // 2. Initialize Razorpay
+      const options = {
+        key: orderRes.keyId,
+        amount: orderRes.amount * 100,
+        currency: orderRes.currency,
+        name: "The Safe Trading",
+        description: course.title,
+        order_id: orderRes.orderId,
+        handler: async function (response: any) {
+          // 3. Verify Payment
+          try {
+            const verifyRes = await api.post('/checkout/verify-payment', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              courseId: course.id,
+              couponCode: appliedCoupon ? appliedCoupon.code : null,
+              billingInfo: { fullName, email, phone, city }
+            });
+
+            if (verifyRes.success) {
+              setOrderComplete(verifyRes);
+              try {
+                confetti({
+                  particleCount: 120,
+                  spread: 70,
+                  origin: { y: 0.6 }
+                });
+              } catch {}
+            } else {
+              setError(verifyRes.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Payment failed. Please try again.'));
+            }
+          } catch (err: any) {
+            setError(err.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Verification failed.'));
+          }
+        },
+        prefill: {
+          name: fullName,
+          email: email,
+          contact: phone,
+        },
+        theme: {
+          color: "#059669"
+        },
+        modal: {
+          ondismiss: function() {
+            setProcessing(false);
+          }
+        }
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.on('payment.failed', function () {
+        setError(language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Payment failed. Please try again.');
+      });
+      paymentObject.open();
+
     } catch (err: any) {
-      setError(err.message || 'An error occurred during checkout.');
+      setError(err.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'An error occurred.'));
     } finally {
       setProcessing(false);
     }
@@ -191,7 +269,7 @@ export const CheckoutPage: React.FC = () => {
         </div>
 
         <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
-          {dict.checkout.orderSuccessTitle}
+          {language === 'gu' ? 'Payment સફળ થયું!' : 'Payment Successful!'}
         </h1>
         <p className="mt-3 text-sm sm:text-base text-slate-600">
           {dict.checkout.orderSuccessDesc}
@@ -327,122 +405,25 @@ export const CheckoutPage: React.FC = () => {
                 {dict.checkout.paymentMethod}
               </h3>
 
-              <div className="grid grid-cols-3 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('upi')}
-                  className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 transition-all ${
-                    paymentMethod === 'upi'
-                      ? 'bg-emerald-50 border-emerald-500 text-emerald-800 ring-2 ring-emerald-100 shadow-xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-xl border bg-emerald-50 border-emerald-500 text-emerald-800 text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 text-center">
                   <Smartphone className="w-5 h-5 text-emerald-600" />
-                  <span>UPI / GPay</span>
-                </button>
+                  <span>{language === 'gu' ? 'UPI થી Payment કરો' : 'Pay via UPI'}</span>
+                </div>
+                
+                <div className="p-3.5 rounded-xl border bg-emerald-50 border-emerald-500 text-emerald-800 text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 text-center">
+                  <div className="w-5 h-5 text-teal-600 font-bold border-2 border-teal-600 rounded flex items-center justify-center text-[10px]">QR</div>
+                  <span>{language === 'gu' ? 'QR Code Scan કરીને Pay કરો' : 'Pay via QR Code'}</span>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('card')}
-                  className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 transition-all ${
-                    paymentMethod === 'card'
-                      ? 'bg-emerald-50 border-emerald-500 text-emerald-800 ring-2 ring-emerald-100 shadow-xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
-                  <CreditCard className="w-5 h-5 text-teal-600" />
-                  <span>Debit / Card</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('netbanking')}
-                  className={`p-3.5 rounded-xl border text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 transition-all ${
-                    paymentMethod === 'netbanking'
-                      ? 'bg-emerald-50 border-emerald-500 text-emerald-800 ring-2 ring-emerald-100 shadow-xs'
-                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
+                <div className="p-3.5 rounded-xl border bg-emerald-50 border-emerald-500 text-emerald-800 text-xs sm:text-sm font-bold flex flex-col items-center justify-center gap-2 text-center">
                   <Building2 className="w-5 h-5 text-amber-600" />
-                  <span>Net Banking</span>
-                </button>
+                  <span>{language === 'gu' ? 'Net Banking પસંદ કરો' : 'Select Net Banking'}</span>
+                </div>
               </div>
-
-              {/* Payment Fields according to selection */}
-              {paymentMethod === 'upi' && (
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                  <label className="block text-xs font-semibold text-slate-700">
-                    {dict.checkout.upiPlaceholder}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="example@okaxis / mobile@upi"
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                  />
-                  <p className="text-[11px] text-slate-500">
-                    {language === 'gu'
-                      ? 'GPay, PhonePe, Paytm કે BHIM એપ વડે ચુકવણી કરો.'
-                      : 'Pay securely using Google Pay, PhonePe, Paytm, or any UPI app.'}
-                  </p>
-                </div>
-              )}
-
-              {paymentMethod === 'card' && (
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      {language === 'gu' ? 'કાર્ડ નંબર' : 'Card Number'}
-                    </label>
-                    <input
-                      type="text"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        {language === 'gu' ? 'એક્સપાયરી (MM/YY)' : 'Expiry (MM/YY)'}
-                      </label>
-                      <input
-                        type="text"
-                        value={expiry}
-                        onChange={(e) => setExpiry(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">CVV</label>
-                      <input
-                        type="password"
-                        maxLength={4}
-                        value={cvv}
-                        onChange={(e) => setCvv(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {paymentMethod === 'netbanking' && (
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    {language === 'gu' ? 'બેંક પસંદ કરો' : 'Select Bank'}
-                  </label>
-                  <select className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
-                    <option>HDFC Bank</option>
-                    <option>State Bank of India (SBI)</option>
-                    <option>ICICI Bank</option>
-                    <option>Kotak Mahindra Bank</option>
-                    <option>Axis Bank</option>
-                    <option>Bank of Baroda</option>
-                  </select>
-                </div>
-              )}
+              <p className="text-[11px] text-slate-500 text-center mt-2">
+                {language === 'gu' ? 'Razorpay દ્વારા સુરક્ષિત પેમેન્ટ' : 'Secure payments powered by Razorpay'}
+              </p>
             </div>
 
             {/* Submit Button */}
@@ -454,8 +435,8 @@ export const CheckoutPage: React.FC = () => {
               <Lock className="w-5 h-5" />
               <span>
                 {processing
-                  ? (language === 'gu' ? 'ચુકવણી પ્રોસેસ થઈ રહી છે...' : 'Processing...')
-                  : `${dict.checkout.payNow} — ${formatPrice(finalPrice)}`}
+                  ? (language === 'gu' ? 'પ્રોસેસ થઈ રહ્યું છે...' : 'Processing...')
+                  : `${language === 'gu' ? 'તમારો Course ખરીદો' : 'Buy Your Course'} — ${formatPrice(finalPrice)}`}
               </span>
             </button>
 

@@ -130,10 +130,10 @@ export const AdminOrdersPage: React.FC = () => {
                       {ord.course_title}
                     </td>
                     <td className="px-6 py-4 font-mono font-bold text-slate-900 text-sm">
-                      ${Number(ord.amount).toFixed(2)}
+                      ₹{Number(ord.amount).toFixed(2)}
                       {ord.discount_amount > 0 && (
                         <span className="block text-[10px] text-emerald-600 font-normal">
-                          Saved ${Number(ord.discount_amount).toFixed(2)}
+                          Saved ₹{Number(ord.discount_amount).toFixed(2)}
                         </span>
                       )}
                     </td>
@@ -212,8 +212,16 @@ export const AdminOrdersPage: React.FC = () => {
                 <span className="font-semibold text-slate-900 max-w-xs text-right">{selectedOrder.course_title}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Transaction ID:</span>
+                <span className="text-slate-500">Transaction/Payment ID:</span>
                 <span className="font-mono text-slate-700">{selectedOrder.transaction_id || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Razorpay Order ID:</span>
+                <span className="font-mono text-slate-700">
+                  {(selectedOrder.billing_info && typeof selectedOrder.billing_info === 'string') 
+                    ? (JSON.parse(selectedOrder.billing_info).razorpay_order_id || 'N/A')
+                    : (selectedOrder.billing_info?.razorpay_order_id || 'N/A')}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Coupon Used:</span>
@@ -225,7 +233,7 @@ export const AdminOrdersPage: React.FC = () => {
               </div>
               <div className="flex justify-between pt-3 border-t border-slate-200 text-sm font-bold text-slate-900">
                 <span>Total Amount Charged:</span>
-                <span className="text-emerald-600">${Number(selectedOrder.amount).toFixed(2)}</span>
+                <span className="text-emerald-600">₹{Number(selectedOrder.amount).toFixed(2)}</span>
               </div>
             </div>
 
