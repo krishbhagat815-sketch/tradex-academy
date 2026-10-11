@@ -189,27 +189,43 @@ export const CheckoutPage: React.FC = () => {
     setError(null);
 
     try {
-      const verifyRes = await api.post('/checkout/verify-payment', {
-        ...payload,
-        courseId: course.id,
-        couponCode: appliedCoupon ? appliedCoupon.code : null,
-        billingInfo: { fullName, email, phone, city, bank: selectedBank, upiId: customUpiId },
-        paymentMethod:
-          selectedMethod === 'upi'
-            ? 'UPI'
-            : selectedMethod === 'qr'
-            ? 'QR Code'
-            : `Net Banking (${selectedBank})`
-      });
+      let verifyRes: any = null;
+      try {
+        verifyRes = await api.post('/payments/verify', {
+          ...payload,
+          courseId: course.id,
+          couponCode: appliedCoupon ? appliedCoupon.code : null,
+          billingInfo: { fullName, email, phone, city, bank: selectedBank, upiId: customUpiId },
+          paymentMethod:
+            selectedMethod === 'upi'
+              ? 'UPI'
+              : selectedMethod === 'qr'
+              ? 'QR Code'
+              : `Net Banking (${selectedBank})`
+        });
+      } catch {
+        verifyRes = await api.post('/checkout/verify-payment', {
+          ...payload,
+          courseId: course.id,
+          couponCode: appliedCoupon ? appliedCoupon.code : null,
+          billingInfo: { fullName, email, phone, city, bank: selectedBank, upiId: customUpiId },
+          paymentMethod:
+            selectedMethod === 'upi'
+              ? 'UPI'
+              : selectedMethod === 'qr'
+              ? 'QR Code'
+              : `Net Banking (${selectedBank})`
+        });
+      }
 
-      if (verifyRes.success) {
+      if (verifyRes && verifyRes.success) {
         setOrderComplete(verifyRes);
         setShowSimulatedModal(false);
         try {
           confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
         } catch {}
       } else {
-        setError(verifyRes.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Payment failed. Please try again.'));
+        setError(verifyRes?.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Payment failed. Please try again.'));
       }
     } catch (err: any) {
       setError(err.message || (language === 'gu' ? 'Payment પૂર્ણ થયું નથી. ફરી પ્રયાસ કરો.' : 'Verification failed.'));
@@ -251,15 +267,24 @@ export const CheckoutPage: React.FC = () => {
     }
 
     try {
-      // 1. Create order on backend (graceful fallback handles test/sandbox)
-      const orderRes = await api.post('/checkout/create-razorpay-order', {
-        courseId: course.id,
-        couponCode: appliedCoupon ? appliedCoupon.code : null,
-        paymentMethod: selectedMethod
-      });
+      // 1. Create order on backend (payments/create-order with fallback)
+      let orderRes: any = null;
+      try {
+        orderRes = await api.post('/payments/create-order', {
+          courseId: course.id,
+          couponCode: appliedCoupon ? appliedCoupon.code : null,
+          paymentMethod: selectedMethod
+        });
+      } catch {
+        orderRes = await api.post('/checkout/create-razorpay-order', {
+          courseId: course.id,
+          couponCode: appliedCoupon ? appliedCoupon.code : null,
+          paymentMethod: selectedMethod
+        });
+      }
 
-      if (!orderRes.success) {
-        setError(orderRes.message || (language === 'gu' ? 'Payment ઓર્ડર શરૂ થઈ શક્યો નથી. ફરી પ્રયાસ કરો.' : 'Failed to create payment order.'));
+      if (!orderRes || !orderRes.success) {
+        setError(orderRes?.message || (language === 'gu' ? 'Payment ઓર્ડર શરૂ થઈ શક્યો નથી. ફરી પ્રયાસ કરો.' : 'Failed to create payment order.'));
         setProcessing(false);
         return;
       }
@@ -425,9 +450,18 @@ export const CheckoutPage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-3 animate-shake">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
-          <span>{error}</span>
+        <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-shake">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0" />
+            <span className="font-medium">{error}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => { setError(null); setProcessing(false); }}
+            className="self-start sm:self-auto px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-colors cursor-pointer shadow-2xs"
+          >
+            {language === 'gu' ? 'ફરી પ્રયાસ કરો (Retry)' : 'Retry Payment'}
+          </button>
         </div>
       )}
 

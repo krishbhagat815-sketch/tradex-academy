@@ -3,6 +3,10 @@ import { api } from '../services/api';
 import {
   Search,
   X,
+  CreditCard,
+  CheckCircle2,
+  Clock,
+  RotateCcw,
 } from 'lucide-react';
 
 export const AdminOrdersPage: React.FC = () => {
@@ -49,12 +53,19 @@ export const AdminOrdersPage: React.FC = () => {
     }
   };
 
+  const completedOrders = orders.filter(o => o.payment_status === 'completed');
+  const pendingOrders = orders.filter(o => o.payment_status === 'pending');
+  const refundedOrders = orders.filter(o => o.payment_status === 'refunded' || o.payment_status === 'failed');
+
+  const totalRevenue = completedOrders.reduce((sum, o) => sum + Number(o.amount || 0), 0);
+
   const filtered = orders.filter(o => {
     const term = search.toLowerCase();
     const matchesSearch =
       o.order_number?.toLowerCase().includes(term) ||
       o.student_name?.toLowerCase().includes(term) ||
-      o.course_title?.toLowerCase().includes(term);
+      o.course_title?.toLowerCase().includes(term) ||
+      o.transaction_id?.toLowerCase().includes(term);
     const matchesStatus = statusFilter === 'all' || o.payment_status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -67,8 +78,63 @@ export const AdminOrdersPage: React.FC = () => {
           Orders & Transactions
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Review payments, manage refund requests, and inspect transaction invoices.
+          Review verified payments, inspect Razorpay transaction IDs, and reconcile student purchases.
         </p>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-card">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500">Verified Revenue</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <CreditCard className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="text-2xl font-extrabold text-emerald-700 mt-2">
+            ₹{totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+          </p>
+          <span className="text-[11px] text-slate-400 mt-1 block">From successful payments</span>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-card">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500">Successful Orders</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="text-2xl font-extrabold text-slate-900 mt-2">
+            {completedOrders.length}
+          </p>
+          <span className="text-[11px] text-emerald-600 mt-1 block">Active enrollments granted</span>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-card">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500">Pending Orders</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="text-2xl font-extrabold text-slate-900 mt-2">
+            {pendingOrders.length}
+          </p>
+          <span className="text-[11px] text-amber-600 mt-1 block">Awaiting payment</span>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-card">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500">Refunded / Failed</span>
+            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+              <RotateCcw className="w-4 h-4" />
+            </div>
+          </div>
+          <p className="text-2xl font-extrabold text-slate-900 mt-2">
+            {refundedOrders.length}
+          </p>
+          <span className="text-[11px] text-rose-500 mt-1 block">Access revoked / cancelled</span>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}
@@ -76,7 +142,7 @@ export const AdminOrdersPage: React.FC = () => {
         <div className="relative w-full sm:w-80">
           <input
             type="text"
-            placeholder="Search order number or student..."
+            placeholder="Search order #, student, or transaction ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
@@ -91,9 +157,10 @@ export const AdminOrdersPage: React.FC = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
           >
-            <option value="all">All</option>
-            <option value="completed">Completed</option>
-            <option value="refunded">Refunded</option>
+            <option value="all">All Statuses ({orders.length})</option>
+            <option value="completed">Completed ({completedOrders.length})</option>
+            <option value="pending">Pending ({pendingOrders.length})</option>
+            <option value="refunded">Refunded / Failed ({refundedOrders.length})</option>
           </select>
         </div>
       </div>
@@ -111,7 +178,7 @@ export const AdminOrdersPage: React.FC = () => {
                   <th className="px-6 py-3.5">Student</th>
                   <th className="px-6 py-3.5">Course</th>
                   <th className="px-6 py-3.5">Amount</th>
-                  <th className="px-6 py-3.5">Payment</th>
+                  <th className="px-6 py-3.5">Method</th>
                   <th className="px-6 py-3.5">Status</th>
                   <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
@@ -137,14 +204,16 @@ export const AdminOrdersPage: React.FC = () => {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 uppercase text-slate-500 font-medium">
-                      {ord.payment_method}
+                    <td className="px-6 py-4 uppercase text-slate-600 font-medium">
+                      {ord.payment_method || 'UPI'}
                     </td>
                     <td className="px-6 py-4">
                       <span
                         className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
                           ord.payment_status === 'completed'
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : ord.payment_status === 'pending'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
                             : 'bg-rose-50 text-rose-700 border-rose-200'
                         }`}
                       >
@@ -193,7 +262,15 @@ export const AdminOrdersPage: React.FC = () => {
                 <h3 className="text-lg font-bold text-slate-900">Invoice Details</h3>
                 <p className="text-xs font-mono text-emerald-600 font-semibold">{selectedOrder.order_number}</p>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span
+                className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
+                  selectedOrder.payment_status === 'completed'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : selectedOrder.payment_status === 'pending'
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'bg-rose-50 text-rose-700 border-rose-200'
+                }`}
+              >
                 {selectedOrder.payment_status.toUpperCase()}
               </span>
             </div>
@@ -212,7 +289,11 @@ export const AdminOrdersPage: React.FC = () => {
                 <span className="font-semibold text-slate-900 max-w-xs text-right">{selectedOrder.course_title}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Transaction/Payment ID:</span>
+                <span className="text-slate-500">Payment Method:</span>
+                <span className="font-semibold text-slate-800 uppercase">{selectedOrder.payment_method || 'UPI'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Razorpay Payment ID:</span>
                 <span className="font-mono text-slate-700">{selectedOrder.transaction_id || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
@@ -225,7 +306,9 @@ export const AdminOrdersPage: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Coupon Used:</span>
-                <span className="font-mono text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">{selectedOrder.coupon_code || 'None'}</span>
+                <span className="font-mono text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                  {selectedOrder.coupon_code || 'None'}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Date:</span>

@@ -5,11 +5,13 @@ import dotenv from 'dotenv';
 import { getDb, queryOne } from './db/database.js';
 import { initSchema } from './db/schema.js';
 import { runSeed } from './seed/seed.js';
+import { connectMongoDB, isMongoConnected } from './db/mongodb.js';
 
 import authRoutes from './routes/auth.routes.js';
 import courseRoutes from './routes/course.routes.js';
 import studentRoutes from './routes/student.routes.js';
 import checkoutRoutes from './routes/checkout.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import instructorRoutes from './routes/instructor.routes.js';
@@ -28,19 +30,29 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json({ limit: '20mb' }));
+// Body parser with rawBody capture for Razorpay webhook verification
+app.use(express.json({
+  limit: '20mb',
+  verify: (req: any, _res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Static file serving for uploads
 const uploadsDir = path.resolve(process.cwd(), 'uploads');
 app.use('/uploads', express.static(uploadsDir));
 
-// Health Check
+// Health Check & Database Status
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'TradeX Academy API Server'
+    service: 'The Safe Trading & TradeX Academy API Server',
+    database: {
+      sqlite: 'active',
+      mongodb: isMongoConnected() ? 'connected (Atlas)' : 'disconnected / fallback'
+    }
   });
 });
 
@@ -48,13 +60,14 @@ app.get('/api/health', (_req, res) => {
 app.get('/', (_req, res) => {
   res.send(`
     <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 50px auto; padding: 30px; background: #0f172a; color: #f8fafc; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); text-align: center;">
-      <h1 style="color: #38bdf8; margin-bottom: 8px;">🚀 TradeX Academy API</h1>
-      <p style="color: #94a3b8; font-size: 16px;">Backend server is live and running successfully on Render!</p>
+      <h1 style="color: #10b981; margin-bottom: 8px;">🚀 The Safe Trading API</h1>
+      <p style="color: #94a3b8; font-size: 16px;">Backend server is live and running successfully!</p>
       <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left;">
         <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #4ade80;">Active (200 OK)</span></p>
+        <p style="margin: 5px 0;"><strong>MongoDB Atlas:</strong> <span style="color: ${isMongoConnected() ? '#4ade80' : '#f59e0b'};">${isMongoConnected() ? 'Connected' : 'Fallback / Not configured'}</span></p>
+        <p style="margin: 5px 0;"><strong>Razorpay Payments:</strong> <span style="color: #4ade80;">Integrated & Active</span></p>
         <p style="margin: 5px 0;"><strong>Health Endpoint:</strong> <a href="/api/health" style="color: #38bdf8;">/api/health</a></p>
       </div>
-      <p style="color: #64748b; font-size: 13px;">Next: Deploy the frontend static sites to connect with this API.</p>
     </div>
   `);
 });
@@ -63,6 +76,7 @@ app.get('/', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/student', studentRoutes);
+app.use('/api/payments', paymentRoutes);
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -71,6 +85,9 @@ app.use('/api/certificates', certificateRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
+
+// Direct root endpoint support (e.g. /api/my-courses)
+app.use('/api', paymentRoutes);
 
 // Error Handling Middleware
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -83,10 +100,14 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
 
 async function startServer() {
   try {
+    // 1. Initialize SQLite storage
     await getDb();
     await initSchema();
 
-    // Check if Gujarati trading courses exist; if not, seed automatically
+    // 2. Connect to MongoDB Atlas (if MONGODB_URI is provided)
+    await connectMongoDB();
+
+    // Check if initial Gujarati trading courses exist; if not, seed automatically
     const gujjuCourse = queryOne("SELECT id FROM courses WHERE slug = 'stock-market-basics-for-beginners-gujarati'");
     if (!gujjuCourse) {
       console.log('Gujarati Trading courses not found in database. Auto-seeding initial data...');
@@ -94,7 +115,7 @@ async function startServer() {
     }
 
     app.listen(PORT, () => {
-      console.log(`🚀 TradeX Academy Backend running on http://localhost:${PORT}`);
+      console.log(`🚀 The Safe Trading Backend running on http://localhost:${PORT}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);

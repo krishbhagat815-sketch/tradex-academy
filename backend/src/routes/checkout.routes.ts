@@ -5,6 +5,9 @@ import { authenticateToken, AuthRequest } from '../middleware/auth.js';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
+import { isMongoConnected } from '../db/mongodb.js';
+import { OrderModel, PaymentModel, EnrollmentModel, CourseModel } from '../models/index.js';
+
 const router = Router();
 
 import dotenv from 'dotenv';
@@ -314,6 +317,84 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
 
     // 5. Remove from wishlist if exists
     execute('DELETE FROM wishlist WHERE user_id = ? AND course_id = ?', [userId, courseId]);
+
+    // 6. Sync to MongoDB Atlas
+    if (isMongoConnected()) {
+      try {
+        await OrderModel.findOneAndUpdate(
+          { razorpay_order_id: razorpay_order_id },
+          {
+            $set: {
+              payment_status: 'completed',
+              transaction_id: effectivePaymentId,
+              razorpay_payment_id: effectivePaymentId,
+              razorpay_signature: razorpay_signature || null,
+              billing_info: billingInfo || {},
+              payment_method: paymentMethod,
+              updated_at: new Date()
+            },
+            $setOnInsert: {
+              id: orderId,
+              order_number: orderNumber,
+              user_id: userId,
+              course_id: courseId,
+              amount: finalAmount,
+              discount_amount: discountAmount,
+              coupon_code: appliedCoupon ? appliedCoupon.code : null,
+              currency: 'INR',
+              created_at: new Date()
+            }
+          },
+          { upsert: true, new: true }
+        );
+
+        await PaymentModel.findOneAndUpdate(
+          { razorpay_payment_id: effectivePaymentId },
+          {
+            id: `pay_rec_${uuidv4().slice(0, 8)}`,
+            order_id: orderId,
+            razorpay_order_id: razorpay_order_id,
+            razorpay_payment_id: effectivePaymentId,
+            razorpay_signature: razorpay_signature || null,
+            amount: finalAmount,
+            currency: 'INR',
+            status: 'captured',
+            method: paymentMethod,
+            user_id: userId,
+            course_id: courseId,
+            captured: true,
+            raw_payload: { billingInfo },
+            updated_at: new Date()
+          },
+          { upsert: true, new: true }
+        );
+
+        await EnrollmentModel.findOneAndUpdate(
+          { user_id: userId, course_id: courseId },
+          {
+            $setOnInsert: {
+              id: enrollmentId,
+              user_id: userId,
+              course_id: courseId,
+              order_id: orderId,
+              enrolled_at: new Date(),
+              progress_percent: 0,
+              status: 'active',
+              created_at: new Date(),
+              updated_at: new Date()
+            }
+          },
+          { upsert: true, new: true }
+        );
+
+        await CourseModel.updateOne(
+          { id: courseId },
+          { $inc: { enrolled_count: 1 } }
+        );
+      } catch (mongoErr: any) {
+        console.warn('⚠️ [MongoDB] checkout route persistence warning:', mongoErr?.message || mongoErr);
+      }
+    }
 
     res.status(201).json({
       success: true,
