@@ -1,7 +1,10 @@
 import { Router, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcryptjs';
 import { query, queryOne, execute } from '../db/database.js';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth.js';
+import { UserModel, EnrollmentModel } from '../models/index.js';
+import { isMongoConnected } from '../db/mongodb.js';
 
 const router = Router();
 
@@ -645,9 +648,62 @@ router.delete('/enrollments/:id', async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     execute("UPDATE enrollments SET status = 'revoked' WHERE id = ?", [id]);
+    if (isMongoConnected()) {
+      await EnrollmentModel.findOneAndUpdate({ id }, { status: 'revoked' }).catch(() => {});
+    }
     res.json({ success: true, message: 'Enrollment revoked successfully.' });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Failed to revoke enrollment.' });
+  }
+});
+
+// Update Enrollment (e.g. Reactivate, Mark Completed, Update Progress)
+router.put('/enrollments/:id', async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status, progress_percent } = req.body;
+
+    const existing = queryOne('SELECT * FROM enrollments WHERE id = ?', [id]);
+    if (!existing) {
+      res.status(404).json({ success: false, message: 'Enrollment not found.' });
+      return;
+    }
+
+    const newStatus = status || existing.status;
+    const newProgress = progress_percent !== undefined
+      ? Math.min(100, Math.max(0, Number(progress_percent)))
+      : Math.min(100, Math.max(0, Number(existing.progress_percent || 0)));
+    const completedAt = newStatus === 'completed'
+      ? (existing.completed_at || new Date().toISOString())
+      : (newStatus !== 'completed' ? null : existing.completed_at);
+
+    execute(`
+      UPDATE enrollments
+      SET status = ?,
+          progress_percent = ?,
+          completed_at = ?
+      WHERE id = ?
+    `, [newStatus, newProgress, completedAt, id]);
+
+    if (isMongoConnected()) {
+      await EnrollmentModel.findOneAndUpdate(
+        { id },
+        { status: newStatus, progress_percent: newProgress, completed_at: completedAt }
+      ).catch(() => {});
+    }
+
+    res.json({
+      success: true,
+      message: `Enrollment updated to ${newStatus}.`,
+      enrollment: {
+        id,
+        status: newStatus,
+        progress_percent: newProgress,
+        completed_at: completedAt
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Failed to update enrollment.' });
   }
 });
 
@@ -862,11 +918,140 @@ router.get('/students', async (req: AuthRequest, res: Response) => {
   }
 });
 
+// Get single student details with enrolled courses and orders
+router.get('/students/:id', async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const student = queryOne(`
+      SELECT id, name, email, avatar, headline, bio, status, created_at, updated_at
+      FROM users
+      WHERE id = ? AND role = 'student'
+    `, [id]);
+
+    if (!student) {
+      res.status(404).json({ success: false, message: 'Student not found.' });
+      return;
+    }
+
+    const enrollments = query(`
+      SELECT e.*, c.title as course_title, c.thumbnail as course_thumbnail
+      FROM enrollments e
+      JOIN courses c ON e.course_id = c.id
+      WHERE e.user_id = ?
+      ORDER BY e.enrolled_at DESC
+    `, [id]);
+
+    const orders = query(`
+      SELECT o.*, c.title as course_title
+      FROM orders o
+      JOIN courses c ON o.course_id = c.id
+      WHERE o.user_id = ?
+      ORDER BY o.created_at DESC
+    `, [id]);
+
+    res.json({
+      success: true,
+      student: {
+        ...student,
+        enrollments,
+        orders
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Failed to fetch student details.' });
+  }
+});
+
+// Update student profile and credentials
+router.put('/students/:id', async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, email, password, status, headline, bio, avatar } = req.body;
+
+    const existing = queryOne('SELECT id, email, password, avatar FROM users WHERE id = ? AND role = "student"', [id]);
+    if (!existing) {
+      res.status(404).json({ success: false, message: 'Student not found.' });
+      return;
+    }
+
+    if (!name || !email) {
+      res.status(400).json({ success: false, message: 'Name and email are required.' });
+      return;
+    }
+
+    // Check email uniqueness if email changed
+    const emailConflict = queryOne('SELECT id FROM users WHERE LOWER(email) = LOWER(?) AND id != ?', [email.trim(), id]);
+    if (emailConflict) {
+      res.status(400).json({ success: false, message: 'This email is already in use by another user.' });
+      return;
+    }
+
+    const now = new Date().toISOString();
+    let newPasswordHash = existing.password;
+    if (password && password.trim().length >= 6) {
+      newPasswordHash = bcrypt.hashSync(password.trim(), 10);
+    } else if (password && password.trim().length > 0 && password.trim().length < 6) {
+      res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
+      return;
+    }
+
+    const newStatus = status === 'suspended' ? 'suspended' : 'active';
+    const newAvatar = avatar !== undefined && avatar !== null && avatar.trim() !== '' ? avatar.trim() : existing.avatar;
+
+    execute(`
+      UPDATE users
+      SET name = ?,
+          email = ?,
+          password = ?,
+          status = ?,
+          headline = COALESCE(?, headline),
+          bio = COALESCE(?, bio),
+          avatar = COALESCE(?, avatar),
+          updated_at = ?
+      WHERE id = ?
+    `, [name.trim(), email.trim().toLowerCase(), newPasswordHash, newStatus, headline ?? '', bio ?? '', newAvatar, now, id]);
+
+    // Dual-write to MongoDB if connected
+    if (isMongoConnected()) {
+      const updateDoc: any = {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        status: newStatus,
+        updated_at: new Date()
+      };
+      if (password && password.trim().length >= 6) {
+        updateDoc.password = newPasswordHash;
+      }
+      if (headline !== undefined) updateDoc.headline = headline;
+      if (bio !== undefined) updateDoc.bio = bio;
+      if (newAvatar !== undefined) updateDoc.avatar = newAvatar;
+      await UserModel.findOneAndUpdate({ id }, updateDoc).catch(e => console.error('Mongo student update error:', e));
+    }
+
+    const updated = queryOne(`
+      SELECT id, name, email, avatar, headline, bio, status, created_at, updated_at
+      FROM users WHERE id = ?
+    `, [id]);
+
+    res.json({
+      success: true,
+      message: 'Student updated successfully.',
+      student: updated
+    });
+  } catch (error: any) {
+    console.error('Update student error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update student.' });
+  }
+});
+
 router.put('/students/:id/status', async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { status } = req.body; // 'active' | 'suspended'
     execute('UPDATE users SET status = ? WHERE id = ?', [status, id]);
+    if (isMongoConnected()) {
+      await UserModel.findOneAndUpdate({ id }, { status }).catch(() => {});
+    }
     res.json({ success: true, message: `Student status updated to ${status}.` });
   } catch (error: any) {
     res.status(500).json({ success: false, message: 'Failed to update student status.' });

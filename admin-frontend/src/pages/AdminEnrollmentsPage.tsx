@@ -4,7 +4,10 @@ import {
   Search,
   UserPlus,
   X,
+  Pencil,
+  RotateCcw
 } from 'lucide-react';
+import { EditStudentModal } from '../components/EditStudentModal';
 
 export const AdminEnrollmentsPage: React.FC = () => {
   const [enrollments, setEnrollments] = useState<any[]>([]);
@@ -19,6 +22,10 @@ export const AdminEnrollmentsPage: React.FC = () => {
   const [selectedCourseId, setSelectedCourseId] = useState('');
   const [enrolling, setEnrolling] = useState(false);
   const [modalMsg, setModalMsg] = useState<string | null>(null);
+
+  // Edit student modal
+  const [editingStudent, setEditingStudent] = useState<any | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -91,6 +98,50 @@ export const AdminEnrollmentsPage: React.FC = () => {
     }
   };
 
+  const handleReactivate = async (enrollmentId: string) => {
+    try {
+      const res = await api.put(`/admin/enrollments/${enrollmentId}`, { status: 'active' });
+      if (res.success) {
+        setEnrollments(prev =>
+          prev.map(e => (e.id === enrollmentId ? { ...e, status: 'active' } : e))
+        );
+      }
+    } catch (err: any) {
+      alert(err.message || 'Failed to reactivate enrollment');
+    }
+  };
+
+  const handleOpenEditStudent = (enr: any) => {
+    const existing = students.find(s => s.id === enr.user_id);
+    setEditingStudent(existing || {
+      id: enr.user_id,
+      name: enr.student_name,
+      email: enr.student_email,
+      avatar: enr.student_avatar,
+      status: 'active'
+    });
+    setShowEditModal(true);
+  };
+
+  const handleStudentUpdated = (updated: any) => {
+    setEnrollments(prev =>
+      prev.map(e => {
+        if (e.user_id === updated.id) {
+          return {
+            ...e,
+            student_name: updated.name,
+            student_email: updated.email,
+            student_avatar: updated.avatar
+          };
+        }
+        return e;
+      })
+    );
+    setStudents(prev =>
+      prev.map(s => (s.id === updated.id ? { ...s, ...updated } : s))
+    );
+  };
+
   const filtered = enrollments.filter(e => {
     const term = search.toLowerCase();
     return (
@@ -158,14 +209,23 @@ export const AdminEnrollmentsPage: React.FC = () => {
                 {filtered.map((enr) => (
                   <tr key={enr.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
+                      <div
+                        onClick={() => handleOpenEditStudent(enr)}
+                        className="flex items-center gap-3 cursor-pointer group"
+                        title="Click to edit student profile"
+                      >
                         <img
                           src={enr.student_avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${enr.student_name}`}
                           alt={enr.student_name}
-                          className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500/20 bg-slate-100"
+                          className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500/20 group-hover:ring-emerald-500 bg-slate-100 transition-all"
                         />
                         <div>
-                          <p className="font-bold text-slate-900 text-sm">{enr.student_name}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition-colors">
+                              {enr.student_name}
+                            </p>
+                            <Pencil className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 transition-colors" />
+                          </div>
                           <p className="text-[11px] text-slate-500">{enr.student_email}</p>
                         </div>
                       </div>
@@ -199,14 +259,35 @@ export const AdminEnrollmentsPage: React.FC = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      {enr.status !== 'revoked' && (
+                      <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => handleRevoke(enr.id, enr.student_name)}
-                          className="text-xs text-rose-600 hover:text-rose-700 font-semibold hover:underline cursor-pointer"
+                          onClick={() => handleOpenEditStudent(enr)}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-200"
+                          title="Edit student profile & password"
                         >
-                          Revoke Access
+                          <Pencil className="w-3.5 h-3.5 text-slate-500" />
+                          <span>Edit Student</span>
                         </button>
-                      )}
+
+                        {enr.status === 'revoked' ? (
+                          <button
+                            onClick={() => handleReactivate(enr.id)}
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer border border-emerald-200"
+                            title="Reactivate course access"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>Reactivate</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleRevoke(enr.id, enr.student_name)}
+                            className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 text-xs font-semibold transition-colors cursor-pointer border border-rose-200"
+                            title="Revoke course access"
+                          >
+                            Revoke
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -284,6 +365,17 @@ export const AdminEnrollmentsPage: React.FC = () => {
           </form>
         </div>
       )}
+
+      {/* Edit Student Modal */}
+      <EditStudentModal
+        isOpen={showEditModal}
+        student={editingStudent}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingStudent(null);
+        }}
+        onSuccess={handleStudentUpdated}
+      />
     </div>
   );
 };
