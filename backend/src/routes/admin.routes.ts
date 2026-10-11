@@ -643,10 +643,25 @@ router.post('/enrollments/manual', async (req: AuthRequest, res: Response) => {
   }
 });
 
-// Revoke Enrollment
+// Revoke or Permanently Delete Enrollment
 router.delete('/enrollments/:id', async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const { permanent } = req.query;
+
+    if (permanent === 'true') {
+      const existing = queryOne('SELECT course_id FROM enrollments WHERE id = ?', [id]);
+      execute('DELETE FROM enrollments WHERE id = ?', [id]);
+      if (existing?.course_id) {
+        execute('UPDATE courses SET enrolled_count = MAX(0, enrolled_count - 1) WHERE id = ?', [existing.course_id]);
+      }
+      if (isMongoConnected()) {
+        await EnrollmentModel.deleteOne({ id }).catch(() => {});
+      }
+      res.json({ success: true, message: 'Enrollment removed completely.' });
+      return;
+    }
+
     execute("UPDATE enrollments SET status = 'revoked' WHERE id = ?", [id]);
     if (isMongoConnected()) {
       await EnrollmentModel.findOneAndUpdate({ id }, { status: 'revoked' }).catch(() => {});
