@@ -18,6 +18,7 @@ build/
 # Database (SQLite)
 backend/data/*.sqlite
 backend/data/*.db
+backend/data/*.sqbpro
 
 # Uploaded files
 backend/uploads/*

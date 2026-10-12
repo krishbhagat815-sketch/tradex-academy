@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 import { query, queryOne, execute } from '../db/database.js';
 import { authenticateToken, requireAdmin, AuthRequest } from '../middleware/auth.js';
-import { UserModel, EnrollmentModel, CounselingBookingModel } from '../models/index.js';
+import { UserModel, EnrollmentModel, CounselingBookingModel, OrderModel } from '../models/index.js';
 import { isMongoConnected, syncSingleCourseToMongo } from '../db/mongodb.js';
 
 const router = Router();
@@ -24,7 +24,17 @@ router.get('/stats', async (_req: AuthRequest, res: Response) => {
     const totalEnrollments = queryOne("SELECT COUNT(*) as count FROM enrollments WHERE status != 'revoked'")?.count || 0;
     const completedEnrollments = queryOne("SELECT COUNT(*) as count FROM enrollments WHERE status = 'completed'")?.count || 0;
 
-    const totalRevenueRow = queryOne("SELECT SUM(amount) as sum FROM orders WHERE payment_status = 'completed'");
+    const totalRevenueRow = queryOne(`
+      SELECT COALESCE(SUM(o.amount), 0) as sum 
+      FROM orders o 
+      JOIN users u ON o.user_id = u.id 
+      WHERE o.payment_status = 'completed'
+      AND NOT EXISTS (
+        SELECT 1 FROM enrollments e 
+        WHERE (e.order_id = o.id OR (e.user_id = o.user_id AND e.course_id = o.course_id)) 
+        AND e.status = 'revoked'
+      )
+    `);
     const totalRevenue = Number(totalRevenueRow?.sum || 0);
 
     const pendingOrdersRow = queryOne("SELECT COUNT(*) as count FROM orders WHERE payment_status = 'pending'");
@@ -34,11 +44,16 @@ router.get('/stats', async (_req: AuthRequest, res: Response) => {
     const salesByCategory = query(`
       SELECT 
         cat.name as category_name,
-        COUNT(o.id) as sales_count,
+        COUNT(DISTINCT o.id) as sales_count,
         COALESCE(SUM(o.amount), 0) as revenue
       FROM categories cat
       JOIN courses c ON c.category_id = cat.id
       LEFT JOIN orders o ON o.course_id = c.id AND o.payment_status = 'completed'
+        AND NOT EXISTS (
+          SELECT 1 FROM enrollments e 
+          WHERE (e.order_id = o.id OR (e.user_id = o.user_id AND e.course_id = o.course_id)) 
+          AND e.status = 'revoked'
+        )
       GROUP BY cat.id, cat.name
       ORDER BY revenue DESC
     `);
@@ -51,6 +66,11 @@ router.get('/stats', async (_req: AuthRequest, res: Response) => {
         COALESCE(SUM(o.amount), 0) as total_revenue
       FROM courses c
       LEFT JOIN orders o ON o.course_id = c.id AND o.payment_status = 'completed'
+        AND NOT EXISTS (
+          SELECT 1 FROM enrollments e 
+          WHERE (e.order_id = o.id OR (e.user_id = o.user_id AND e.course_id = o.course_id)) 
+          AND e.status = 'revoked'
+        )
       GROUP BY c.id
       ORDER BY total_revenue DESC, c.enrolled_count DESC
       LIMIT 5
@@ -99,11 +119,17 @@ router.get('/stats', async (_req: AuthRequest, res: Response) => {
     // Dynamic Monthly Revenue Trend from Real Orders
     const dbMonthly = query(`
       SELECT 
-        substr(created_at, 1, 7) as month_key,
-        COALESCE(SUM(amount), 0) as revenue,
-        COUNT(id) as orders_count
-      FROM orders
-      WHERE payment_status = 'completed'
+        substr(o.created_at, 1, 7) as month_key,
+        COALESCE(SUM(o.amount), 0) as revenue,
+        COUNT(DISTINCT o.id) as orders_count
+      FROM orders o
+      JOIN users u ON o.user_id = u.id
+      WHERE o.payment_status = 'completed'
+      AND NOT EXISTS (
+        SELECT 1 FROM enrollments e 
+        WHERE (e.order_id = o.id OR (e.user_id = o.user_id AND e.course_id = o.course_id)) 
+        AND e.status = 'revoked'
+      )
       GROUP BY month_key
       ORDER BY month_key ASC
     `);
@@ -727,9 +753,16 @@ router.delete('/enrollments/:id', async (req: AuthRequest, res: Response) => {
       return;
     }
 
+    const existing = queryOne('SELECT user_id, course_id FROM enrollments WHERE id = ?', [id]);
     execute("UPDATE enrollments SET status = 'revoked' WHERE id = ?", [id]);
+    if (existing) {
+      execute("UPDATE orders SET payment_status = 'refunded' WHERE user_id = ? AND course_id = ? AND payment_status = 'completed'", [existing.user_id, existing.course_id]);
+    }
     if (isMongoConnected()) {
       await EnrollmentModel.findOneAndUpdate({ id }, { status: 'revoked' }).catch(() => {});
+      if (existing) {
+        await OrderModel.updateMany({ user_id: existing.user_id, course_id: existing.course_id, payment_status: 'completed' }, { payment_status: 'refunded' }).catch(() => {});
+      }
     }
     res.json({ success: true, message: 'Enrollment revoked successfully.' });
   } catch (error: any) {

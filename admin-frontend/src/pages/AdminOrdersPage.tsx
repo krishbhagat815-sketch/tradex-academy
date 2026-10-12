@@ -55,7 +55,7 @@ export const AdminOrdersPage: React.FC = () => {
 
   const completedOrders = orders.filter(o => o.payment_status === 'completed');
   const pendingOrders = orders.filter(o => o.payment_status === 'pending');
-  const refundedOrders = orders.filter(o => o.payment_status === 'refunded' || o.payment_status === 'failed');
+  const refundedOrders = orders.filter(o => o.payment_status === 'refunded' || o.payment_status === 'failed' || o.payment_status === 'cancelled');
 
   const totalRevenue = completedOrders.reduce((sum, o) => sum + Number(o.amount || 0), 0);
 
@@ -66,7 +66,10 @@ export const AdminOrdersPage: React.FC = () => {
       o.student_name?.toLowerCase().includes(term) ||
       o.course_title?.toLowerCase().includes(term) ||
       o.transaction_id?.toLowerCase().includes(term);
-    const matchesStatus = statusFilter === 'all' || o.payment_status === statusFilter;
+    const matchesStatus =
+      statusFilter === 'all' ||
+      o.payment_status === statusFilter ||
+      (statusFilter === 'refunded' && (o.payment_status === 'refunded' || o.payment_status === 'failed' || o.payment_status === 'cancelled'));
     return matchesSearch && matchesStatus;
   });
 
