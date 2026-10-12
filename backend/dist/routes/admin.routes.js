@@ -77,16 +77,48 @@ router.get('/stats', async (_req, res) => {
       ORDER BY e.enrolled_at DESC
       LIMIT 6
     `);
-        // Monthly Revenue Trend (Mocked dynamically for last 6 months + live orders)
-        const months = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
-        const revenueTrend = [
-            { month: 'Apr', revenue: 4200, enrollments: 58 },
-            { month: 'May', revenue: 6800, enrollments: 89 },
-            { month: 'Jun', revenue: 9400, enrollments: 124 },
-            { month: 'Jul', revenue: 12300, enrollments: 165 },
-            { month: 'Aug', revenue: 16800, enrollments: 210 },
-            { month: 'Sep', revenue: Math.max(18200, Math.round(totalRevenue)), enrollments: Math.max(240, Number(totalEnrollments)) }
-        ];
+        // Real Counseling Bookings Metrics
+        const totalBookings = (0, database_js_1.queryOne)('SELECT COUNT(*) as count FROM counseling_bookings')?.count || 0;
+        const pendingBookings = (0, database_js_1.queryOne)("SELECT COUNT(*) as count FROM counseling_bookings WHERE status = 'pending'")?.count || 0;
+        const confirmedBookings = (0, database_js_1.queryOne)("SELECT COUNT(*) as count FROM counseling_bookings WHERE status = 'confirmed'")?.count || 0;
+        const completedBookings = (0, database_js_1.queryOne)("SELECT COUNT(*) as count FROM counseling_bookings WHERE status = 'completed'")?.count || 0;
+        // Recent 6 Counseling Bookings
+        const recentBookings = (0, database_js_1.query)(`
+      SELECT * FROM counseling_bookings
+      ORDER BY created_at DESC
+      LIMIT 6
+    `);
+        // Dynamic Monthly Revenue Trend from Real Orders
+        const dbMonthly = (0, database_js_1.query)(`
+      SELECT 
+        substr(created_at, 1, 7) as month_key,
+        COALESCE(SUM(amount), 0) as revenue,
+        COUNT(id) as orders_count
+      FROM orders
+      WHERE payment_status = 'completed'
+      GROUP BY month_key
+      ORDER BY month_key ASC
+    `);
+        let revenueTrend = [];
+        if (dbMonthly && dbMonthly.length > 0) {
+            revenueTrend = dbMonthly.map((m) => {
+                const dateObj = new Date(m.month_key + '-01');
+                const monthName = isNaN(dateObj.getTime()) ? m.month_key : dateObj.toLocaleString('default', { month: 'short' });
+                return {
+                    month: monthName,
+                    revenue: Math.round(Number(m.revenue)),
+                    enrollments: Number(m.orders_count)
+                };
+            });
+        }
+        else {
+            // Dynamic baseline reflecting actual database values
+            const currentMonth = new Date().toLocaleString('default', { month: 'short' });
+            revenueTrend = [
+                { month: 'Last Month', revenue: Math.round(totalRevenue * 0.4), enrollments: Math.max(1, Math.round(Number(totalEnrollments) * 0.4)) },
+                { month: currentMonth, revenue: Math.round(totalRevenue), enrollments: Number(totalEnrollments) }
+            ];
+        }
         res.json({
             success: true,
             stats: {
@@ -97,13 +129,22 @@ router.get('/stats', async (_req, res) => {
                 totalEnrollments: Number(totalEnrollments),
                 completedEnrollments: Number(completedEnrollments),
                 totalRevenue: Math.round(totalRevenue * 100) / 100,
-                pendingOrders: Number(pendingOrders)
+                pendingOrders: Number(pendingOrders),
+                totalBookings: Number(totalBookings),
+                pendingBookings: Number(pendingBookings),
+                confirmedBookings: Number(confirmedBookings),
+                completedBookings: Number(completedBookings)
+            },
+            dbHealth: {
+                sqlite: 'connected',
+                mongodb: (0, mongodb_js_1.isMongoConnected)() ? 'connected (Atlas)' : 'fallback'
             },
             revenueTrend,
             salesByCategory,
             topCourses,
             recentOrders,
-            recentEnrollments
+            recentEnrollments,
+            recentBookings
         });
     }
     catch (error) {
@@ -1110,6 +1151,181 @@ router.put('/content/:key', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ success: false, message: 'Failed to update CMS content.' });
+    }
+});
+// ==========================================
+// 12. COUNSELING & MENTORSHIP BOOKINGS (CRUD)
+// ==========================================
+router.get('/bookings', async (req, res) => {
+    try {
+        const { status, search } = req.query;
+        let sql = 'SELECT * FROM counseling_bookings WHERE 1=1';
+        const params = [];
+        if (status && status !== 'all') {
+            sql += ' AND status = ?';
+            params.push(status);
+        }
+        if (search) {
+            sql += ' AND (client_name LIKE ? OR client_email LIKE ? OR client_phone LIKE ? OR counseling_type LIKE ?)';
+            const term = `%${search}%`;
+            params.push(term, term, term, term);
+        }
+        sql += ' ORDER BY created_at DESC';
+        const bookings = (0, database_js_1.query)(sql, params);
+        res.json({ success: true, bookings });
+    }
+    catch (error) {
+        console.error('Admin get bookings error:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch bookings.' });
+    }
+});
+router.post('/bookings', async (req, res) => {
+    try {
+        const { client_name, client_email, client_phone, counseling_type, topic, preferred_date, preferred_time_slot, experience_level, notes, status, meeting_link, admin_notes } = req.body;
+        if (!client_name || !client_email || !client_phone || !counseling_type || !preferred_date || !preferred_time_slot) {
+            res.status(400).json({ success: false, message: 'Required fields missing for booking.' });
+            return;
+        }
+        const bookingId = `bkg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+        const now = new Date().toISOString();
+        (0, database_js_1.execute)(`
+      INSERT INTO counseling_bookings (
+        id, user_id, client_name, client_email, client_phone,
+        counseling_type, topic, preferred_date, preferred_time_slot,
+        experience_level, notes, status, meeting_link, admin_notes,
+        created_at, updated_at
+      )
+      VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+            bookingId,
+            client_name.trim(),
+            client_email.trim().toLowerCase(),
+            client_phone.trim(),
+            counseling_type,
+            topic || '',
+            preferred_date,
+            preferred_time_slot,
+            experience_level || 'Beginner',
+            notes || '',
+            status || 'pending',
+            meeting_link || '',
+            admin_notes || '',
+            now,
+            now
+        ]);
+        if ((0, mongodb_js_1.isMongoConnected)()) {
+            try {
+                await index_js_1.CounselingBookingModel.create({
+                    id: bookingId,
+                    client_name: client_name.trim(),
+                    client_email: client_email.trim().toLowerCase(),
+                    client_phone: client_phone.trim(),
+                    counseling_type,
+                    topic: topic || '',
+                    preferred_date,
+                    preferred_time_slot,
+                    experience_level: experience_level || 'Beginner',
+                    notes: notes || '',
+                    status: status || 'pending',
+                    meeting_link: meeting_link || '',
+                    admin_notes: admin_notes || '',
+                    created_at: new Date(now),
+                    updated_at: new Date(now)
+                });
+            }
+            catch (e) {
+                console.warn('Mongo booking create sync warning:', e);
+            }
+        }
+        const createdBooking = (0, database_js_1.queryOne)('SELECT * FROM counseling_bookings WHERE id = ?', [bookingId]);
+        res.status(201).json({ success: true, booking: createdBooking, message: 'Booking created successfully.' });
+    }
+    catch (error) {
+        console.error('Admin create booking error:', error);
+        res.status(500).json({ success: false, message: error?.message || 'Failed to create booking.' });
+    }
+});
+router.put('/bookings/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status, meeting_link, admin_notes, preferred_date, preferred_time_slot, notes, counseling_type } = req.body;
+        const existing = (0, database_js_1.queryOne)('SELECT * FROM counseling_bookings WHERE id = ?', [id]);
+        if (!existing) {
+            res.status(404).json({ success: false, message: 'Booking not found.' });
+            return;
+        }
+        const now = new Date().toISOString();
+        (0, database_js_1.execute)(`
+      UPDATE counseling_bookings
+      SET 
+        status = COALESCE(?, status),
+        meeting_link = COALESCE(?, meeting_link),
+        admin_notes = COALESCE(?, admin_notes),
+        preferred_date = COALESCE(?, preferred_date),
+        preferred_time_slot = COALESCE(?, preferred_time_slot),
+        notes = COALESCE(?, notes),
+        counseling_type = COALESCE(?, counseling_type),
+        updated_at = ?
+      WHERE id = ?
+    `, [
+            status !== undefined ? status : null,
+            meeting_link !== undefined ? meeting_link : null,
+            admin_notes !== undefined ? admin_notes : null,
+            preferred_date !== undefined ? preferred_date : null,
+            preferred_time_slot !== undefined ? preferred_time_slot : null,
+            notes !== undefined ? notes : null,
+            counseling_type !== undefined ? counseling_type : null,
+            now,
+            id
+        ]);
+        if ((0, mongodb_js_1.isMongoConnected)()) {
+            try {
+                const updateData = { updated_at: new Date(now) };
+                if (status !== undefined)
+                    updateData.status = status;
+                if (meeting_link !== undefined)
+                    updateData.meeting_link = meeting_link;
+                if (admin_notes !== undefined)
+                    updateData.admin_notes = admin_notes;
+                if (preferred_date !== undefined)
+                    updateData.preferred_date = preferred_date;
+                if (preferred_time_slot !== undefined)
+                    updateData.preferred_time_slot = preferred_time_slot;
+                if (notes !== undefined)
+                    updateData.notes = notes;
+                if (counseling_type !== undefined)
+                    updateData.counseling_type = counseling_type;
+                await index_js_1.CounselingBookingModel.updateOne({ id }, { $set: updateData });
+            }
+            catch (e) {
+                console.warn('Mongo booking update sync warning:', e);
+            }
+        }
+        const updatedBooking = (0, database_js_1.queryOne)('SELECT * FROM counseling_bookings WHERE id = ?', [id]);
+        res.json({ success: true, booking: updatedBooking, message: 'Booking updated successfully.' });
+    }
+    catch (error) {
+        console.error('Admin update booking error:', error);
+        res.status(500).json({ success: false, message: 'Failed to update booking.' });
+    }
+});
+router.delete('/bookings/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        (0, database_js_1.execute)('DELETE FROM counseling_bookings WHERE id = ?', [id]);
+        if ((0, mongodb_js_1.isMongoConnected)()) {
+            try {
+                await index_js_1.CounselingBookingModel.deleteOne({ id });
+            }
+            catch (e) {
+                console.warn('Mongo booking delete sync warning:', e);
+            }
+        }
+        res.json({ success: true, message: 'Booking removed successfully.' });
+    }
+    catch (error) {
+        console.error('Admin delete booking error:', error);
+        res.status(500).json({ success: false, message: 'Failed to delete booking.' });
     }
 });
 exports.default = router;

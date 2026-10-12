@@ -18,7 +18,8 @@ import {
   ChevronRight,
   ShieldCheck,
   PlusCircle,
-  Megaphone
+  Megaphone,
+  Calendar
 } from 'lucide-react';
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -30,6 +31,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const menuItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { name: 'Counseling Bookings', path: '/bookings', icon: Calendar },
     { name: 'Courses', path: '/courses', icon: BookOpen },
     { name: 'Enrollments', path: '/enrollments', icon: ShieldCheck },
     { name: 'Orders & Payments', path: '/orders', icon: ShoppingBag },

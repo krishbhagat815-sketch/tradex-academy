@@ -24,6 +24,7 @@ const content_routes_js_1 = __importDefault(require("./routes/content.routes.js"
 const admin_routes_js_1 = __importDefault(require("./routes/admin.routes.js"));
 const upload_routes_js_1 = __importDefault(require("./routes/upload.routes.js"));
 const popup_routes_js_1 = __importDefault(require("./routes/popup.routes.js"));
+const counseling_routes_js_1 = __importDefault(require("./routes/counseling.routes.js"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
@@ -83,6 +84,7 @@ app.use('/api/content', content_routes_js_1.default);
 app.use('/api/admin', admin_routes_js_1.default);
 app.use('/api/upload', upload_routes_js_1.default);
 app.use('/api/popups', popup_routes_js_1.default);
+app.use('/api/counseling', counseling_routes_js_1.default);
 // Direct root endpoint support (e.g. /api/my-courses)
 app.use('/api', payment_routes_js_1.default);
 // Error Handling Middleware

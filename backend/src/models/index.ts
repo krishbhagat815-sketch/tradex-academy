@@ -4,3 +4,4 @@ export * from './Order.model.js';
 export * from './Payment.model.js';
 export * from './Enrollment.model.js';
 export * from './Popup.model.js';
+export * from './CounselingBooking.model.js';

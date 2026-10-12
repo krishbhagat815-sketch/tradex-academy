@@ -87,6 +87,12 @@ export const Footer: React.FC = () => {
           </h4>
           <ul className="space-y-2.5 text-xs sm:text-sm">
             <li>
+              <Link to="/counseling" className="hover:text-red-600 transition-colors text-red-600 font-semibold flex items-center gap-1.5">
+                <span>{language === 'gu' ? '૧-ઓન-૧ કાઉન્સેલિંગ' : '1-on-1 Counseling'}</span>
+                <span className="px-1.5 py-0.2 rounded text-[9px] bg-red-100 text-red-700 font-bold">New</span>
+              </Link>
+            </li>
+            <li>
               <Link to="/courses" className="hover:text-red-600 transition-colors">
                 {dict.courses.viewAll}
               </Link>
@@ -148,10 +154,17 @@ export const Footer: React.FC = () => {
       <div className="border-t border-slate-200 bg-slate-50 py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>{dict.footer.copyright}</p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-5 sm:gap-6">
             <Link to="/#why-us" className="hover:text-slate-800">{dict.footer.privacyPolicy}</Link>
             <Link to="/#why-us" className="hover:text-slate-800">{dict.footer.termsConditions}</Link>
             <Link to="/#why-us" className="hover:text-slate-800">{dict.footer.refundPolicy}</Link>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-cookie-preferences'))}
+              className="text-slate-500 hover:text-red-600 transition-colors font-medium cursor-pointer underline underline-offset-2"
+            >
+              {language === 'gu' ? 'કૂકી પસંદગીઓ' : 'Cookie Preferences'}
+            </button>
           </div>
         </div>
       </div>

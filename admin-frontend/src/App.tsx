@@ -16,6 +16,7 @@ import { AdminInstructorsPage } from './pages/AdminInstructorsPage';
 import { AdminCategoriesPage } from './pages/AdminCategoriesPage';
 import { AdminContentCMSPage } from './pages/AdminContentCMSPage';
 import { AdminPopupsPage } from './pages/AdminPopupsPage';
+import { AdminBookingsPage } from './pages/AdminBookingsPage';
 
 const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAdminAuth();
@@ -57,6 +58,14 @@ export function App() {
             element={
               <ProtectedAdminRoute>
                 <AdminDashboardOverview />
+              </ProtectedAdminRoute>
+            }
+          />
+          <Route
+            path="/bookings"
+            element={
+              <ProtectedAdminRoute>
+                <AdminBookingsPage />
               </ProtectedAdminRoute>
             }
           />

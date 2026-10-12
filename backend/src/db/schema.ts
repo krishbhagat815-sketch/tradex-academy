@@ -260,6 +260,27 @@ export async function initSchema(): Promise<void> {
     );
   `);
 
+  execute(`
+    CREATE TABLE IF NOT EXISTS counseling_bookings (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      client_name TEXT NOT NULL,
+      client_email TEXT NOT NULL,
+      client_phone TEXT NOT NULL,
+      counseling_type TEXT NOT NULL,
+      topic TEXT,
+      preferred_date TEXT NOT NULL,
+      preferred_time_slot TEXT NOT NULL,
+      experience_level TEXT DEFAULT 'Beginner',
+      notes TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      meeting_link TEXT,
+      admin_notes TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+
   // Initialize WhatsApp & Platform settings if missing
   try {
     const existingSettings = queryOne("SELECT key FROM site_content WHERE key = 'settings'");

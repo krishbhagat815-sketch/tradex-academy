@@ -13,7 +13,9 @@ import {
   Star,
   Award,
   BookOpen,
-  MessageCircle
+  MessageCircle,
+  Calendar,
+  Video
 } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -453,6 +455,72 @@ export const HomePage: React.FC = () => {
               </div>
             );
           })()}
+        </div>
+      </section>
+
+      {/* 1-on-1 Counseling & Personal Mentorship Spotlight */}
+      <section className="py-20 bg-gradient-to-b from-white to-slate-50 border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-slate-950 rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-2xl relative overflow-hidden text-white flex flex-col lg:flex-row items-center justify-between gap-10">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="space-y-4 max-w-2xl relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-600/20 text-red-400 border border-red-500/30">
+                <Video className="w-3.5 h-3.5" />
+                <span>{language === 'gu' ? '૧-ઓન-૧ પર્સનલ કાઉન્સેલિંગ' : '1-on-1 Private Mentorship'}</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                {language === 'gu'
+                  ? 'ટ્રેડિંગમાં સતત લોસ થાય છે? સીધા મેન્ટર સાથે લાઈવ ડિસ્કસ કરો'
+                  : 'Stuck with Repeated Trading Losses? Review Your Trades Live With A Pro'}
+              </h2>
+
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                {language === 'gu'
+                  ? 'ગૂગલ મીટ પર તમારા ડિમેટ એકાઉન્ટના ટ્રેડ્સ શેર કરો, તમારી ભૂલો શોધો અને ગુજરાતીમાં ચોક્કસ રિસ્ક-મેનેજમેન્ટ પ્લાન મેળવો.'
+                  : 'Book a dedicated 1-on-1 video consultation. Audit your real trades, fix emotional exits, and design a customized daily trading routine.'}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-300">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Portfolio & Stop-loss Audit</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Options Expiry Strategies</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Psychology & Discipline Mastery</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Available in Gujarati & English</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full lg:w-auto shrink-0 relative z-10 flex flex-col sm:flex-row lg:flex-col gap-3">
+              <Link
+                to="/counseling"
+                className="px-8 py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm sm:text-base transition-all shadow-lg shadow-red-600/30 active:scale-95 text-center flex items-center justify-center gap-2"
+              >
+                <Calendar className="w-4 h-4" />
+                <span>{language === 'gu' ? 'કાઉન્સેલિંગ સ્લોટ બુક કરો' : 'Book 1-on-1 Session'}</span>
+              </Link>
+              <a
+                href="https://wa.me/917435961016?text=Hello%20The%20Safe%20Trading,%20I%20want%20to%20know%20more%20about%201-on-1%20Counseling"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs sm:text-sm font-bold transition-all text-center flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4 text-emerald-400" />
+                <span>WhatsApp Query</span>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 

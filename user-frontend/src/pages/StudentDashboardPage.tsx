@@ -22,6 +22,8 @@ import {
   X,
   User,
   Key,
+  Calendar,
+  Video,
 } from "lucide-react";
 
 export const StudentDashboardPage: React.FC = () => {
@@ -35,6 +37,7 @@ export const StudentDashboardPage: React.FC = () => {
   const [certificates, setCertificates] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
+  const [myBookings, setMyBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Settings form states
@@ -79,17 +82,19 @@ export const StudentDashboardPage: React.FC = () => {
     async function loadData() {
       setLoading(true);
       try {
-        const [dashRes, certRes, wishRes, ordRes] = await Promise.all([
+        const [dashRes, certRes, wishRes, ordRes, bookRes] = await Promise.all([
           api.get("/student/dashboard"),
           api.get("/student/certificates"),
           api.get("/student/wishlist"),
           api.get("/student/orders"),
+          api.get("/counseling/my-bookings").catch(() => ({ success: false, bookings: [] }))
         ]);
 
         if (dashRes.success) setDashboardData(dashRes);
         if (certRes.success) setCertificates(certRes.certificates);
         if (wishRes.success) setWishlist(wishRes.wishlist);
         if (ordRes.success) setOrders(ordRes.orders);
+        if (bookRes.success && bookRes.bookings) setMyBookings(bookRes.bookings);
       } catch (err) {
         console.error("Failed to load student dashboard data:", err);
       } finally {
@@ -331,6 +336,18 @@ export const StudentDashboardPage: React.FC = () => {
         >
           <ShoppingBag className="w-4 h-4" />
           <span>{dict.dashboard.tabOrders}</span>
+        </button>
+
+        <button
+          onClick={() => setTab("counseling")}
+          className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
+            currentTab === "counseling"
+              ? "bg-slate-950 text-white shadow-xs"
+              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+          }`}
+        >
+          <Calendar className="w-4 h-4 text-red-500" />
+          <span>{language === 'gu' ? '૧-ઓન-૧ કાઉન્સેલિંગ' : 'Counseling Sessions'} ({myBookings.length})</span>
         </button>
 
         <button
@@ -661,6 +678,132 @@ export const StudentDashboardPage: React.FC = () => {
           ) : (
             <div className="p-8 text-center text-sm text-slate-500">
               No orders found in your account history.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Tab 5: Counseling Sessions */}
+      {currentTab === "counseling" && (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card">
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-red-600" />
+                <span>{language === 'gu' ? 'મારા ૧-ઓન-૧ કાઉન્સેલિંગ સેશન્સ' : 'My 1-on-1 Mentorship Sessions'}</span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                {language === 'gu'
+                  ? 'તમારા સુનિશ્ચિત કરેલા સેશન્સ, ગૂગલ મીટ લિંક અને મેન્ટર નોંધો.'
+                  : 'Track your scheduled sessions, join video meetings, and review mentor guidance.'}
+              </p>
+            </div>
+            <Link
+              to="/counseling"
+              className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-all shadow-sm shadow-red-600/20 active:scale-95 text-center flex items-center justify-center gap-2"
+            >
+              <Calendar className="w-4 h-4" />
+              <span>{language === 'gu' ? 'નવું સેશન બુક કરો' : 'Book New Session'}</span>
+            </Link>
+          </div>
+
+          {myBookings.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {myBookings.map((b: any) => (
+                <div
+                  key={b.id}
+                  className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition-all space-y-4"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <span className="font-mono text-[10px] text-slate-400 font-semibold">
+                        #{b.id?.slice(0, 8)}
+                      </span>
+                      <h4 className="text-base font-bold text-slate-900 mt-0.5 leading-snug">
+                        {b.counseling_type}
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-0.5">{b.topic}</p>
+                    </div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 capitalize border ${
+                        b.status === 'confirmed'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : b.status === 'completed'
+                          ? 'bg-blue-50 text-blue-700 border-blue-200'
+                          : b.status === 'cancelled'
+                          ? 'bg-rose-50 text-rose-700 border-rose-200'
+                          : 'bg-amber-50 text-amber-700 border-amber-200'
+                      }`}
+                    >
+                      {b.status}
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2 text-xs">
+                    <div className="flex items-center justify-between text-slate-700">
+                      <span className="text-slate-500">Scheduled Date:</span>
+                      <span className="font-bold">{b.preferred_date}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-700">
+                      <span className="text-slate-500">Time Slot:</span>
+                      <span className="font-bold">{b.preferred_time_slot}</span>
+                    </div>
+                    {b.admin_notes && (
+                      <div className="pt-2 border-t border-slate-200/60 text-slate-600">
+                        <span className="font-bold text-slate-800 block mb-0.5">Mentor Note:</span>
+                        <p className="text-[11px] leading-relaxed italic">{b.admin_notes}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                    {b.meeting_link ? (
+                      <a
+                        href={b.meeting_link.startsWith('http') ? b.meeting_link : `https://${b.meeting_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5"
+                      >
+                        <Video className="w-3.5 h-3.5" />
+                        <span>Join Live Video Meeting</span>
+                      </a>
+                    ) : (
+                      <span className="text-xs text-slate-400 italic">
+                        {b.status === 'pending'
+                          ? 'Meeting link will be assigned upon confirmation'
+                          : 'No video link attached'}
+                      </span>
+                    )}
+
+                    <a
+                      href="https://wa.me/917435961016"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold text-emerald-700 hover:text-emerald-800"
+                    >
+                      Help via WhatsApp →
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-12 text-center rounded-2xl bg-white border border-slate-200/90 shadow-card max-w-md mx-auto space-y-3">
+              <Calendar className="w-12 h-12 text-slate-300 mx-auto" />
+              <h4 className="text-base font-bold text-slate-900">
+                {language === 'gu' ? 'કોઈ સેશન બુક થયેલ નથી' : 'No Counseling Sessions Booked'}
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                {language === 'gu'
+                  ? 'તમારા પોર્ટફોલિયોનું ઓડિટ અને ટ્રેડિંગ સાયકોલોજી સુધારવા માટે આજે જ ૧-ઓન-૧ સેશન બુક કરો.'
+                  : 'Get personalized feedback on your trade setup and risk management rules with a professional mentor.'}
+              </p>
+              <Link
+                to="/counseling"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs transition-all shadow-xs"
+              >
+                <span>{language === 'gu' ? 'કાઉન્સેલિંગ સ્લોટ પસંદ કરો' : 'Book First Session'}</span>
+              </Link>
             </div>
           )}
         </div>

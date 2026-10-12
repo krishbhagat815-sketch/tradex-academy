@@ -17,6 +17,8 @@ import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { WhatsAppWidget } from './components/common/WhatsAppWidget';
 import { SmartPopupRenderer } from './components/common/SmartPopupRenderer';
+import { CookieConsentBanner } from './components/common/CookieConsentBanner';
+import { CounselingBookingPage } from './pages/CounselingBookingPage';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -30,6 +32,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       {!isPlayer && <Footer />}
       {!isPlayer && <WhatsAppWidget />}
       <SmartPopupRenderer />
+      <CookieConsentBanner />
     </div>
   );
 };
@@ -43,6 +46,8 @@ export function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/courses" element={<CoursesPage />} />
+              <Route path="/counseling" element={<CounselingBookingPage />} />
+              <Route path="/book-session" element={<CounselingBookingPage />} />
               <Route path="/course/:id" element={<CourseDetailsPage />} />
               <Route path="/checkout/:courseId" element={<CheckoutPage />} />
               <Route path="/dashboard" element={<StudentDashboardPage />} />

@@ -101,6 +101,11 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { name: dict.nav.courses, path: "/courses" },
     {
+      name: language === "gu" ? "૧-ઓન-૧ કાઉન્સેલિંગ" : "1-on-1 Counseling",
+      path: "/counseling",
+      badge: "Live Mentor"
+    },
+    {
       name: dict.nav.myCourses,
       path: user ? "/my-courses" : "/login?redirect=/my-courses",
       badge: user ? "Enrolled" : undefined
@@ -528,8 +533,8 @@ export const Navbar: React.FC = () => {
                 >
                   <span>{link.name}</span>
                   {link.badge && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">
-                      Enrolled
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                      {link.badge}
                     </span>
                   )}
                 </Link>
