@@ -208,7 +208,7 @@ export const StudentDashboardPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-screen">
       {/* Student Welcome Banner */}
       <div className="p-8 sm:p-10 rounded-3xl bg-white border border-slate-200/90 shadow-card relative overflow-hidden mb-10">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100/40 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-red-100/30 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10 text-center sm:text-left">
           <img
@@ -217,14 +217,14 @@ export const StudentDashboardPage: React.FC = () => {
               `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name || "Student")}`
             }
             alt={user?.name}
-            className="w-20 h-20 rounded-2xl object-cover ring-4 ring-emerald-500/20 shadow-md bg-slate-100"
+            className="w-20 h-20 rounded-2xl object-cover ring-4 ring-slate-900/10 shadow-md bg-slate-100"
             onError={(e) => {
               (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name || "Student")}`;
             }}
           />
           <div className="flex-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-2">
-              <Sparkles className="w-3.5 h-3.5" /> Student Learning Portal
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200 mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-red-600" /> Student Learning Portal
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
               {dict.dashboard.welcome} {user?.name}!
@@ -239,7 +239,7 @@ export const StudentDashboardPage: React.FC = () => {
 
           <Link
             to="/courses"
-            className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-xs active:scale-95 flex items-center gap-1.5 flex-shrink-0"
+            className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-all shadow-xs active:scale-95 flex items-center gap-1.5 flex-shrink-0"
           >
             <span>{language === 'gu' ? 'નવા Courses જુઓ' : 'Browse New Courses'}</span>
             <ChevronRight className="w-4 h-4" />
@@ -252,7 +252,7 @@ export const StudentDashboardPage: React.FC = () => {
             <p className="text-xs text-slate-500 font-medium">
               {dict.dashboard.statsEnrolled}
             </p>
-            <p className="text-2xl font-extrabold text-slate-900 mt-1">
+            <p className="text-2xl font-extrabold text-slate-950 mt-1">
               {stats.totalEnrolled}
             </p>
           </div>
@@ -260,7 +260,7 @@ export const StudentDashboardPage: React.FC = () => {
             <p className="text-xs text-slate-500 font-medium">
               {language === 'gu' ? 'In Progress Courses' : 'In Progress'}
             </p>
-            <p className="text-2xl font-extrabold text-emerald-600 mt-1">
+            <p className="text-2xl font-extrabold text-red-600 mt-1">
               {stats.inProgressCourses}
             </p>
           </div>
@@ -268,7 +268,7 @@ export const StudentDashboardPage: React.FC = () => {
             <p className="text-xs text-slate-500 font-medium">
               {dict.dashboard.statsCompleted}
             </p>
-            <p className="text-2xl font-extrabold text-teal-600 mt-1">
+            <p className="text-2xl font-extrabold text-emerald-600 mt-1">
               {stats.completedCourses}
             </p>
           </div>
@@ -289,7 +289,7 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("courses")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "courses"
-              ? "bg-emerald-600 text-white shadow-xs"
+              ? "bg-slate-950 text-white shadow-xs"
               : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
@@ -301,7 +301,7 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("certificates")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "certificates"
-              ? "bg-emerald-600 text-white shadow-xs"
+              ? "bg-slate-950 text-white shadow-xs"
               : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
@@ -313,7 +313,7 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("wishlist")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "wishlist"
-              ? "bg-emerald-600 text-white shadow-xs"
+              ? "bg-slate-950 text-white shadow-xs"
               : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
@@ -325,7 +325,7 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("orders")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "orders"
-              ? "bg-emerald-600 text-white shadow-xs"
+              ? "bg-slate-950 text-white shadow-xs"
               : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
@@ -337,7 +337,7 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("settings")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "settings"
-              ? "bg-emerald-600 text-white shadow-xs"
+              ? "bg-slate-950 text-white shadow-xs"
               : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           }`}
         >
@@ -383,7 +383,7 @@ export const StudentDashboardPage: React.FC = () => {
                         </div>
 
                         <Link to={`/learn/${c.course_id}`}>
-                          <h3 className="text-base font-bold text-slate-900 hover:text-emerald-600 transition-colors line-clamp-2 mt-1 leading-snug">
+                          <h3 className="text-base font-bold text-slate-900 hover:text-red-600 transition-colors line-clamp-2 mt-1 leading-snug">
                             {c.title}
                           </h3>
                         </Link>
@@ -402,8 +402,8 @@ export const StudentDashboardPage: React.FC = () => {
                         <div
                           className={`h-full rounded-full transition-all duration-500 ${
                             isCompleted
-                              ? "bg-gradient-to-r from-emerald-500 to-teal-500"
-                              : "bg-gradient-to-r from-blue-500 to-emerald-500"
+                              ? "bg-gradient-to-r from-emerald-500 to-green-600"
+                              : "bg-gradient-to-r from-red-500 to-red-600"
                           }`}
                           style={{
                             width: `${Math.max(5, c.progress_percent)}%`,
@@ -434,7 +434,7 @@ export const StudentDashboardPage: React.FC = () => {
 
                       <Link
                         to={`/learn/${c.course_id}`}
-                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" />
                         <span>Continue Learning</span>
@@ -457,7 +457,7 @@ export const StudentDashboardPage: React.FC = () => {
               </p>
               <Link
                 to="/courses"
-                className="mt-6 inline-flex px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
+                className="mt-6 inline-flex px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
               >
                 {language === 'gu' ? 'Courses જુઓ' : 'Browse Courses'}
               </Link>
@@ -586,7 +586,7 @@ export const StudentDashboardPage: React.FC = () => {
                     </button>
                     <Link
                       to={`/checkout/${c.id}`}
-                      className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
+                      className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
                     >
                       Enroll Now
                     </Link>
@@ -672,7 +672,7 @@ export const StudentDashboardPage: React.FC = () => {
           {/* Profile settings */}
           <div className="p-8 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-6">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <User className="w-5 h-5 text-emerald-600" />
+              <User className="w-5 h-5 text-red-600" />
               Profile Details
             </h3>
 
@@ -690,7 +690,7 @@ export const StudentDashboardPage: React.FC = () => {
                     `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || "Student")}`
                   }
                   alt="Profile preview"
-                  className="w-16 h-16 rounded-full object-cover border-2 border-emerald-500/30 bg-slate-100 shadow-sm"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-slate-200 bg-slate-100 shadow-sm"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || "Student")}`;
                   }}
@@ -700,7 +700,7 @@ export const StudentDashboardPage: React.FC = () => {
                     Profile Picture
                   </label>
 
-                  <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                  <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-slate-300 bg-slate-100 px-4 py-2.5 text-xs font-semibold text-slate-800 transition hover:bg-slate-200">
                     <input
                       type="file"
                       accept="image/*"
@@ -727,7 +727,7 @@ export const StudentDashboardPage: React.FC = () => {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                 />
               </div>
 
@@ -740,7 +740,7 @@ export const StudentDashboardPage: React.FC = () => {
                   placeholder="e.g. Senior Data Analyst or Frontend Dev"
                   value={headline}
                   onChange={(e) => setHeadline(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                 />
               </div>
 
@@ -752,13 +752,13 @@ export const StudentDashboardPage: React.FC = () => {
                   rows={3}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                  className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
+                className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
               >
                 Save Profile Changes
               </button>
@@ -768,7 +768,7 @@ export const StudentDashboardPage: React.FC = () => {
           {/* Change Password */}
           <div className="p-8 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-6">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Key className="w-5 h-5 text-emerald-600" />
+              <Key className="w-5 h-5 text-red-600" />
               Change Password
             </h3>
 
@@ -794,7 +794,7 @@ export const StudentDashboardPage: React.FC = () => {
                   required
                   value={currPassword}
                   onChange={(e) => setCurrPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                 />
               </div>
 
@@ -807,13 +807,13 @@ export const StudentDashboardPage: React.FC = () => {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
+                className="px-6 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-900 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
               >
                 Update Password
               </button>

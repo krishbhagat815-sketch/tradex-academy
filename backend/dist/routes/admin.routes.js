@@ -400,10 +400,13 @@ router.post('/modules/:moduleId/lessons', async (req, res) => {
     `, [
             lessonId, moduleId, mod.course_id, title.trim(), description || '',
             video_url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            media_type, media_name || null, media_size || null,
-            video_duration, Number(is_preview ? 1 : 0), nextOrder,
+            media_type || 'url', media_name || null, media_size || null,
+            video_duration || '10:00', Number(is_preview ? 1 : 0), nextOrder,
             JSON.stringify(resources || []), JSON.stringify(quizzes || []), now
         ]);
+        if (mod.course_id) {
+            await (0, mongodb_js_1.syncSingleCourseToMongo)(mod.course_id);
+        }
         res.status(201).json({
             success: true,
             message: 'Lesson added successfully.',
@@ -411,7 +414,8 @@ router.post('/modules/:moduleId/lessons', async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to create lesson.' });
+        console.error('Create lesson error:', error);
+        res.status(500).json({ success: false, message: error?.message || 'Failed to create lesson.' });
     }
 });
 router.put('/lessons/:id', async (req, res) => {
@@ -433,27 +437,43 @@ router.put('/lessons/:id', async (req, res) => {
           quizzes = COALESCE(?, quizzes)
       WHERE id = ?
     `, [
-            title, description, video_url, media_type, media_name, media_size, video_duration,
+            title !== undefined ? title : null,
+            description !== undefined ? description : null,
+            video_url !== undefined ? video_url : null,
+            media_type !== undefined ? media_type : null,
+            media_name !== undefined ? media_name : null,
+            media_size !== undefined ? media_size : null,
+            video_duration !== undefined ? video_duration : null,
             is_preview !== undefined ? Number(is_preview ? 1 : 0) : null,
-            order_num,
+            order_num !== undefined ? order_num : null,
             resources ? JSON.stringify(resources) : null,
             quizzes ? JSON.stringify(quizzes) : null,
             id
         ]);
+        const lessonRow = (0, database_js_1.queryOne)('SELECT course_id FROM lessons WHERE id = ?', [id]);
+        if (lessonRow?.course_id) {
+            await (0, mongodb_js_1.syncSingleCourseToMongo)(lessonRow.course_id);
+        }
         res.json({ success: true, message: 'Lesson updated successfully.' });
     }
     catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to update lesson.' });
+        console.error('Update lesson error:', error);
+        res.status(500).json({ success: false, message: error?.message || 'Failed to update lesson.' });
     }
 });
 router.delete('/lessons/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        const lessonRow = (0, database_js_1.queryOne)('SELECT course_id FROM lessons WHERE id = ?', [id]);
         (0, database_js_1.execute)('DELETE FROM lessons WHERE id = ?', [id]);
+        if (lessonRow?.course_id) {
+            await (0, mongodb_js_1.syncSingleCourseToMongo)(lessonRow.course_id);
+        }
         res.json({ success: true, message: 'Lesson deleted.' });
     }
     catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to delete lesson.' });
+        console.error('Delete lesson error:', error);
+        res.status(500).json({ success: false, message: error?.message || 'Failed to delete lesson.' });
     }
 });
 // ==========================================

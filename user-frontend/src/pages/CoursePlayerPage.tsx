@@ -247,7 +247,7 @@ export const CoursePlayerPage: React.FC = () => {
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
               isCurrentLessonCompleted
                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
-                : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs active:scale-95'
+                : 'bg-red-600 hover:bg-red-700 text-white shadow-xs active:scale-95'
             }`}
           >
             <CheckCircle className="w-4 h-4" />
@@ -295,7 +295,7 @@ export const CoursePlayerPage: React.FC = () => {
             <button
               onClick={() => nextLesson && handleSelectLesson(nextLesson)}
               disabled={!nextLesson}
-              className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none shadow-xs active:scale-95 transition-all"
+              className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none shadow-xs active:scale-95 transition-all"
             >
               <span>Next Lesson</span>
               <ChevronRight className="w-4 h-4" />
@@ -315,7 +315,7 @@ export const CoursePlayerPage: React.FC = () => {
                 onClick={() => setActiveTab('overview')}
                 className={`flex items-center gap-1.5 pb-2 transition-colors ${
                   activeTab === 'overview'
-                    ? 'text-emerald-700 border-b-2 border-emerald-600 font-bold'
+                    ? 'text-red-600 border-b-2 border-red-600 font-bold'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -327,7 +327,7 @@ export const CoursePlayerPage: React.FC = () => {
                 onClick={() => setActiveTab('resources')}
                 className={`flex items-center gap-1.5 pb-2 transition-colors ${
                   activeTab === 'resources'
-                    ? 'text-emerald-700 border-b-2 border-emerald-600 font-bold'
+                    ? 'text-red-600 border-b-2 border-red-600 font-bold'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -339,7 +339,7 @@ export const CoursePlayerPage: React.FC = () => {
                 onClick={() => setActiveTab('quiz')}
                 className={`flex items-center gap-1.5 pb-2 transition-colors ${
                   activeTab === 'quiz'
-                    ? 'text-emerald-700 border-b-2 border-emerald-600 font-bold'
+                    ? 'text-red-600 border-b-2 border-red-600 font-bold'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -351,7 +351,7 @@ export const CoursePlayerPage: React.FC = () => {
                 onClick={() => setActiveTab('notes')}
                 className={`flex items-center gap-1.5 pb-2 transition-colors ${
                   activeTab === 'notes'
-                    ? 'text-emerald-700 border-b-2 border-emerald-600 font-bold'
+                    ? 'text-red-600 border-b-2 border-red-600 font-bold'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -467,7 +467,7 @@ export const CoursePlayerPage: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setQuizSubmitted(true)}
-                      className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
+                      className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
                     >
                       Submit Quiz Answers
                     </button>
@@ -502,12 +502,12 @@ export const CoursePlayerPage: React.FC = () => {
                   placeholder="Jot down formulas, code notes, ideas, and lecture insights here..."
                   value={noteContent}
                   onChange={(e) => setNoteContent(e.target.value)}
-                  className="w-full p-4 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full p-4 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
                 <button
                   onClick={handleSaveNote}
                   disabled={savingNote}
-                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-xs active:scale-95"
+                  className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-all shadow-xs active:scale-95"
                 >
                   {savingNote ? 'Saving...' : 'Save Notes'}
                 </button>
@@ -524,7 +524,7 @@ export const CoursePlayerPage: React.FC = () => {
         >
           <div className="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-emerald-600" />
+              <BookOpen className="w-4 h-4 text-red-600" />
               Course Curriculum
             </h3>
             <span className="text-xs text-slate-500 font-mono">
@@ -548,7 +548,7 @@ export const CoursePlayerPage: React.FC = () => {
                         onClick={() => handleSelectLesson(lsn)}
                         className={`w-full px-4 py-3 text-left text-xs transition-all flex items-start gap-3 ${
                           isSelected
-                            ? 'bg-emerald-50 text-emerald-800 border-l-4 border-emerald-600 font-bold'
+                            ? 'bg-red-50 text-red-800 border-l-4 border-red-600 font-bold'
                             : 'hover:bg-slate-50 text-slate-700'
                         }`}
                       >
@@ -556,7 +556,7 @@ export const CoursePlayerPage: React.FC = () => {
                           {isDone ? (
                             <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-100" />
                           ) : (
-                            <PlayCircle className={`w-4 h-4 ${isSelected ? 'text-emerald-600' : 'text-slate-400'}`} />
+                            <PlayCircle className={`w-4 h-4 ${isSelected ? 'text-red-600' : 'text-slate-400'}`} />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -606,7 +606,7 @@ export const CoursePlayerPage: React.FC = () => {
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 to="/dashboard?tab=certificates"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-xs active:scale-95 transition-all"
               >
                 View & Download Certificate
               </Link>

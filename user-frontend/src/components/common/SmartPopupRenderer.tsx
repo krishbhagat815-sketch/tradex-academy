@@ -198,7 +198,7 @@ export const SmartPopupRenderer: React.FC = () => {
               className="w-full h-full object-cover"
             />
             {activePopup.badge_text && (
-              <span className="absolute bottom-3 left-4 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white shadow-md flex items-center gap-1">
+              <span className="absolute bottom-3 left-4 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-red-600 text-white shadow-md flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
                 <span>{activePopup.badge_text}</span>
               </span>
@@ -210,8 +210,8 @@ export const SmartPopupRenderer: React.FC = () => {
         <div className="p-6 sm:p-7 space-y-4 text-center">
           <div>
             {!activePopup.image_url && activePopup.badge_text && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 mb-2">
-                <Tag className="w-3 h-3" />
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-red-100 text-red-800 mb-2">
+                <Tag className="w-3 h-3 text-red-600" />
                 <span>{activePopup.badge_text}</span>
               </span>
             )}
@@ -229,7 +229,7 @@ export const SmartPopupRenderer: React.FC = () => {
           <div className="pt-2">
             <button
               onClick={handleCtaClick}
-              className="w-full py-3 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-emerald-700/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 px-6 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-red-600/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>{activePopup.cta_text || 'Claim Offer Now'}</span>
               <ArrowRight className="w-4 h-4" />

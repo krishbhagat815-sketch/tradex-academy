@@ -69,7 +69,7 @@ export const CertificateVerifyPage: React.FC = () => {
           <ShieldCheck className="w-4 h-4" />
           <span>{language === 'gu' ? 'Official Certificate Registry' : 'Official Credential Registry'}</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
           {language === 'gu' ? 'Certificate Verification' : 'Verify Course Completion Certificate'}
         </h1>
         <p className="mt-3 text-sm text-slate-600">
@@ -87,14 +87,14 @@ export const CertificateVerifyPage: React.FC = () => {
             placeholder="e.g. CERT-TRX-2026-78491"
             value={inputCode}
             onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 shadow-xs"
+            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600 shadow-xs"
           />
           <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         </div>
         <button
           type="submit"
           disabled={loading || !inputCode.trim()}
-          className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-all shadow-xs active:scale-95 disabled:opacity-50"
+          className="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-all shadow-md shadow-red-600/20 active:scale-95 disabled:opacity-50 cursor-pointer"
         >
           {loading ? (language === 'gu' ? 'Verifying...' : 'Verifying...') : (language === 'gu' ? 'Verify કરો' : 'Verify')}
         </button>

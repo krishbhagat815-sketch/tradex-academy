@@ -78,7 +78,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
   };
 
   return (
-    <div className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-emerald-500/50 transition-all duration-300 shadow-card hover:shadow-card-hover hover:-translate-y-1">
+    <div className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-200/90 hover:border-red-500/40 transition-all duration-300 shadow-card hover:shadow-card-hover hover:-translate-y-1">
       {/* Thumbnail Header */}
       <Link to={`/course/${course.slug || course.id}`} className="relative block aspect-[16/9] overflow-hidden bg-slate-100">
         <img
@@ -87,11 +87,11 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-50 group-hover:opacity-30 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-50 group-hover:opacity-30 transition-opacity" />
 
         {/* Level badge */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/95 backdrop-blur-md text-emerald-700 border border-emerald-200/70 shadow-xs">
+          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/95 backdrop-blur-md text-slate-800 border border-slate-200 shadow-xs">
             {getLevelLabel(course.difficulty_level)}
           </span>
           {course.category_name && (
@@ -107,8 +107,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
           disabled={isTogglingWishlist}
           className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all shadow-xs ${
             isWishlisted
-              ? 'bg-rose-500 text-white'
-              : 'bg-white/90 text-slate-600 hover:text-rose-500 hover:bg-white'
+              ? 'bg-red-600 text-white'
+              : 'bg-white/90 text-slate-600 hover:text-red-600 hover:bg-white'
           }`}
           title={isWishlisted ? dict.courseDetails.removeFromWishlist : dict.courseDetails.addToWishlist}
         >
@@ -122,7 +122,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
             {dict.courses.freeBadge}
           </div>
         ) : hasDiscount ? (
-          <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded-md bg-emerald-500 text-white text-xs font-extrabold shadow-md">
+          <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-md bg-red-600 text-white text-xs font-black shadow-md tracking-wider">
             {course.discount_percentage ? `${course.discount_percentage}% OFF` : dict.courses.saleBadge}
           </div>
         ) : null}
@@ -146,7 +146,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
 
           {/* Title */}
           <Link to={`/course/${course.slug || course.id}`}>
-            <h3 className="text-base font-bold text-slate-900 leading-snug line-clamp-2 hover:text-emerald-600 transition-colors">
+            <h3 className="text-base font-bold text-slate-950 leading-snug line-clamp-2 hover:text-red-600 transition-colors">
               {course.title}
             </h3>
           </Link>
@@ -190,7 +190,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
         <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
           <div className="flex flex-col">
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-extrabold text-slate-900">
+              <span className="text-xl font-extrabold text-slate-950">
                 {formatPrice(currentPrice)}
               </span>
               {hasDiscount && (
@@ -203,10 +203,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
 
           <Link
             to={`/course/${course.slug || course.id}`}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 ${
               isFree
-                ? 'bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 border border-emerald-200'
-                : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                ? 'bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 border border-emerald-300'
+                : 'bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/20'
             }`}
           >
             {isFree ? dict.courses.enrollFree : dict.courses.viewDetails}

@@ -773,7 +773,7 @@ export const CheckoutPage: React.FC = () => {
             <button
               type="submit"
               disabled={processing}
-              className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base transition-all shadow-xs active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+              className="w-full py-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-base transition-all shadow-lg shadow-red-600/25 active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
             >
               <Lock className="w-5 h-5" />
               <span>
@@ -796,7 +796,7 @@ export const CheckoutPage: React.FC = () => {
         {/* Right Col: Course Order Summary */}
         <div className="lg:col-span-1 space-y-6">
           <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-5 sticky top-28">
-            <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">
+            <h3 className="text-base font-bold text-slate-950 border-b border-slate-100 pb-3">
               {dict.checkout.orderSummary}
             </h3>
 
@@ -808,10 +808,10 @@ export const CheckoutPage: React.FC = () => {
                 className="w-20 h-14 rounded-xl object-cover flex-shrink-0 bg-slate-100"
               />
               <div className="min-w-0">
-                <h4 className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug">
+                <h4 className="text-xs font-bold text-slate-950 line-clamp-2 leading-snug">
                   {course.title}
                 </h4>
-                <p className="text-[11px] text-emerald-700 font-semibold mt-1">{course.instructor_name}</p>
+                <p className="text-[11px] text-red-600 font-semibold mt-1">{course.instructor_name}</p>
               </div>
             </div>
 
@@ -823,12 +823,12 @@ export const CheckoutPage: React.FC = () => {
                   placeholder={dict.checkout.couponPlaceholder}
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  className="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600"
                 />
                 <button
                   type="submit"
                   disabled={validatingCoupon || !couponCode.trim()}
-                  className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-red-600 text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {validatingCoupon ? '...' : dict.checkout.applyCoupon}
                 </button>

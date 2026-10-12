@@ -24,11 +24,11 @@ export const Footer: React.FC = () => {
         {/* Brand Column */}
         <div className="lg:col-span-2 space-y-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-500 flex items-center justify-center shadow-md">
-              <TrendingUp className="w-6 h-6 text-white stroke-[2.2]" />
+            <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center shadow-md border border-slate-800">
+              <TrendingUp className="w-6 h-6 text-red-500 stroke-[2.2]" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              The Safe<span className="text-emerald-600">Trading</span>
+            <span className="text-xl font-extrabold tracking-tight text-slate-950">
+              The Safe<span className="text-red-600">Trading</span>
             </span>
           </Link>
           <p className="text-sm text-slate-600 max-w-sm leading-relaxed">
@@ -53,27 +53,27 @@ export const Footer: React.FC = () => {
           </h4>
           <ul className="space-y-2.5 text-xs sm:text-sm">
             <li>
-              <Link to="/courses?category=cat-stock-basics" className="hover:text-emerald-600 transition-colors">
+              <Link to="/courses?category=cat-stock-basics" className="hover:text-red-600 transition-colors">
                 {language === 'gu' ? 'બેઝિક શેર બજાર' : 'Stock Market Basics'}
               </Link>
             </li>
             <li>
-              <Link to="/courses?category=cat-price-action" className="hover:text-emerald-600 transition-colors">
+              <Link to="/courses?category=cat-price-action" className="hover:text-red-600 transition-colors">
                 {language === 'gu' ? 'પ્રાઇસ એક્શન માસ્ટરી' : 'Price Action Mastery'}
               </Link>
             </li>
             <li>
-              <Link to="/courses?category=cat-options-trading" className="hover:text-emerald-600 transition-colors">
+              <Link to="/courses?category=cat-options-trading" className="hover:text-red-600 transition-colors">
                 {language === 'gu' ? 'ઓપ્શન્સ & નિફ્ટી સ્ટ્રેટેજી' : 'Options & Nifty Expiry'}
               </Link>
             </li>
             <li>
-              <Link to="/courses?category=cat-swing-trading" className="hover:text-emerald-600 transition-colors">
+              <Link to="/courses?category=cat-swing-trading" className="hover:text-red-600 transition-colors">
                 {language === 'gu' ? 'સ્વિંગ ટ્રેડિંગ & વેલ્થ' : 'Swing Trading & Wealth'}
               </Link>
             </li>
             <li>
-              <Link to="/courses?category=cat-crypto-trading" className="hover:text-emerald-600 transition-colors">
+              <Link to="/courses?category=cat-crypto-trading" className="hover:text-red-600 transition-colors">
                 {language === 'gu' ? 'ક્રિપ્ટો ટ્રેડિંગ ગાઇડ' : 'Crypto Trading Guide'}
               </Link>
             </li>
@@ -87,22 +87,22 @@ export const Footer: React.FC = () => {
           </h4>
           <ul className="space-y-2.5 text-xs sm:text-sm">
             <li>
-              <Link to="/courses" className="hover:text-emerald-600 transition-colors">
+              <Link to="/courses" className="hover:text-red-600 transition-colors">
                 {dict.courses.viewAll}
               </Link>
             </li>
             <li>
-              <Link to="/my-courses" className="hover:text-emerald-700 transition-colors text-emerald-600 font-medium">
+              <Link to="/my-courses" className="hover:text-red-700 transition-colors text-red-600 font-medium">
                 {dict.nav.myCourses}
               </Link>
             </li>
             <li>
-              <Link to="/verify-certificate" className="hover:text-emerald-600 transition-colors">
+              <Link to="/verify-certificate" className="hover:text-red-600 transition-colors">
                 {dict.nav.verifyCert}
               </Link>
             </li>
             <li>
-              <Link to="/dashboard" className="hover:text-emerald-600 transition-colors">
+              <Link to="/dashboard" className="hover:text-red-600 transition-colors">
                 {dict.nav.dashboard}
               </Link>
             </li>
@@ -116,7 +116,7 @@ export const Footer: React.FC = () => {
           </h4>
           <ul className="space-y-3 text-xs sm:text-sm">
             <li className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <Mail className="w-4 h-4 text-red-600 flex-shrink-0" />
               <span className="truncate">support@tradex.com</span>
             </li>
             <li className="flex items-center gap-2">
@@ -124,7 +124,7 @@ export const Footer: React.FC = () => {
               <span>+91 98765 43210 (WhatsApp)</span>
             </li>
             <li className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <Globe className="w-4 h-4 text-red-600 flex-shrink-0" />
               <span>{language === 'gu' ? 'અમદાવાદ, ગુજરાત, ભારત' : 'Ahmedabad, Gujarat, India'}</span>
             </li>
           </ul>

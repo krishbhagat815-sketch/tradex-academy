@@ -211,7 +211,7 @@ export const CourseDetailsPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <Link
                   to={`/courses?category=${course.category_slug}`}
-                  className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors shadow-2xs"
+                  className="px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shadow-2xs"
                 >
                   {course.category_name}
                 </Link>
@@ -231,7 +231,7 @@ export const CourseDetailsPage: React.FC = () => {
               </div>
 
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-950 tracking-tight leading-tight">
                 {course.title}
               </h1>
 
@@ -266,7 +266,7 @@ export const CourseDetailsPage: React.FC = () => {
                 <img
                   src={getMediaUrl(course.instructor_avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name)}`}
                   alt={course.instructor_name}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-emerald-500/30 bg-slate-100"
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-red-500/20 bg-slate-100"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name || 'Instructor')}`;
                   }}
@@ -275,8 +275,8 @@ export const CourseDetailsPage: React.FC = () => {
                   <p className="text-xs text-slate-500">
                     {language === 'gu' ? 'મુખ્ય ટ્રેડિંગ મેન્ટર:' : 'Created by expert mentor:'}
                   </p>
-                  <h4 className="text-sm font-bold text-slate-900">{course.instructor_name}</h4>
-                  <p className="text-xs text-emerald-700 font-medium">{course.instructor_title}</p>
+                  <h4 className="text-sm font-bold text-slate-950">{course.instructor_name}</h4>
+                  <p className="text-xs text-red-600 font-semibold">{course.instructor_title}</p>
                 </div>
               </div>
             </div>
@@ -285,7 +285,7 @@ export const CourseDetailsPage: React.FC = () => {
             <div className="lg:col-span-1 lg:-mb-32 z-20">
               <div className="rounded-2xl bg-white border border-slate-200/90 overflow-hidden shadow-card sticky top-28">
                 {/* Thumbnail Preview Area */}
-                <div className="relative aspect-video bg-slate-900 group overflow-hidden">
+                <div className="relative aspect-video bg-slate-950 group overflow-hidden">
                   <img
                     src={getMediaUrl(course.thumbnail)}
                     alt={course.title}
@@ -299,7 +299,7 @@ export const CourseDetailsPage: React.FC = () => {
                           title: `${course.title} - ${language === 'gu' ? 'ઓફિશિયલ પ્રિવ્યુ' : 'Official Preview'}`
                         })
                       }
-                      className="p-4 rounded-full bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-110 transition-all shadow-lg shadow-emerald-600/30 flex items-center gap-2 group/btn"
+                      className="p-4 rounded-full bg-red-600 text-white hover:bg-red-700 hover:scale-110 transition-all shadow-lg shadow-red-600/30 flex items-center gap-2 group/btn cursor-pointer"
                     >
                       <Play className="w-6 h-6 fill-current" />
                     </button>
@@ -314,7 +314,7 @@ export const CourseDetailsPage: React.FC = () => {
                   {/* Pricing */}
                   <div className="flex items-baseline justify-between">
                     <div className="flex items-baseline gap-2.5">
-                      <span className="text-3xl font-extrabold text-slate-900">
+                      <span className="text-3xl font-extrabold text-slate-950">
                         {formatPrice(currentPrice)}
                       </span>
                       {hasDiscount && (
@@ -324,7 +324,7 @@ export const CourseDetailsPage: React.FC = () => {
                       )}
                     </div>
                     {hasDiscount && (
-                      <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-extrabold shadow-2xs">
+                      <span className="px-2.5 py-1 rounded-md bg-red-50 text-red-700 border border-red-200 text-xs font-black shadow-2xs">
                         {course.discount_percentage ? `${course.discount_percentage}% OFF` : dict.courses.saleBadge}
                       </span>
                     )}
@@ -335,7 +335,7 @@ export const CourseDetailsPage: React.FC = () => {
                     <button
                       onClick={handleEnrollClick}
                       disabled={enrollingFree}
-                      className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-95"
+                      className="w-full py-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-base transition-all shadow-lg shadow-red-600/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
                     >
                       {enrollingFree ? (
                         <span>{language === 'gu' ? 'જોડાઈ રહ્યા છીએ...' : 'Enrolling...'}</span>
@@ -758,22 +758,22 @@ export const CourseDetailsPage: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header / Accent Ribbon */}
-            <div className="bg-gradient-to-r from-amber-500 via-emerald-600 to-teal-600 p-6 text-white relative">
+            <div className="bg-slate-950 p-6 text-white relative border-b border-slate-900">
               <button
                 type="button"
                 onClick={() => setLockedLectureModal(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+                className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white ring-2 ring-white/30">
+                <div className="w-12 h-12 rounded-2xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-500">
                   <Lock className="w-6 h-6" />
                 </div>
                 <div>
-                  <span className="text-xs uppercase tracking-wider font-extrabold text-amber-200 bg-amber-950/20 px-2.5 py-0.5 rounded-full inline-block">
+                  <span className="text-xs uppercase tracking-wider font-extrabold text-red-400 bg-red-950/40 px-2.5 py-0.5 rounded-full inline-block border border-red-900/40">
                     {language === 'gu' ? 'પ્રીમિયમ લેસન' : 'Premium Lesson'}
                   </span>
                   <h3 className="text-xl font-extrabold text-white mt-1 leading-snug">
@@ -786,13 +786,13 @@ export const CourseDetailsPage: React.FC = () => {
             {/* Modal Body */}
             <div className="p-6 space-y-5">
               {/* Target lecture details */}
-              <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-3 text-left">
-                <PlayCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3 text-left">
+                <PlayCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-amber-800 font-semibold uppercase tracking-wider">
+                  <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
                     {language === 'gu' ? 'તમે જોવા માગો છો:' : 'Selected Lesson:'}
                   </p>
-                  <p className="text-sm font-bold text-slate-900 truncate mt-0.5">
+                  <p className="text-sm font-bold text-slate-950 truncate mt-0.5">
                     {lockedLectureModal.lessonTitle}
                   </p>
                   {lockedLectureModal.lessonDuration && (
@@ -804,16 +804,16 @@ export const CourseDetailsPage: React.FC = () => {
               </div>
 
               {/* Course summary & pricing */}
-              <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
                 <img
                   src={getMediaUrl(course.thumbnail)}
                   alt={course.title}
                   className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-slate-200"
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-slate-900 line-clamp-1">{course.title}</h4>
+                  <h4 className="text-sm font-bold text-slate-950 line-clamp-1">{course.title}</h4>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-lg font-extrabold text-emerald-700">
+                    <span className="text-lg font-extrabold text-slate-950">
                       {formatPrice(currentPrice)}
                     </span>
                     {hasDiscount && (
@@ -822,7 +822,7 @@ export const CourseDetailsPage: React.FC = () => {
                       </span>
                     )}
                     {hasDiscount && (
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                      <span className="text-[11px] font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded">
                         {course.discount_percentage ? `${course.discount_percentage}% OFF` : 'SALE'}
                       </span>
                     )}
@@ -854,7 +854,7 @@ export const CourseDetailsPage: React.FC = () => {
                     setLockedLectureModal(null);
                     handleEnrollClick();
                   }}
-                  className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition-all shadow-md shadow-emerald-600/25 flex items-center justify-center gap-2 active:scale-95"
+                  className="w-full py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm transition-all shadow-md shadow-red-600/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
                 >
                   <span>
                     {language === 'gu'

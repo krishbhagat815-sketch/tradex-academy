@@ -257,9 +257,9 @@ export const UniversalVideoPlayer: React.FC<UniversalVideoPlayerProps> = ({
             step="0.1"
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1 group-hover/scrubber:h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-emerald-500 transition-all"
+            className="w-full h-1 group-hover/scrubber:h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-red-600 transition-all"
             style={{
-              background: `linear-gradient(to right, #10b981 ${progressPercent}%, rgba(255,255,255,0.2) ${progressPercent}%)`
+              background: `linear-gradient(to right, #dc2626 ${progressPercent}%, rgba(255,255,255,0.2) ${progressPercent}%)`
             }}
           />
         </div>

@@ -44,7 +44,8 @@ function query(sql, params = []) {
         const stmt = dbInstance.prepare(sql);
         try {
             if (params && params.length > 0) {
-                stmt.bind(params);
+                const safeParams = params.map(p => (p === undefined ? null : p));
+                stmt.bind(safeParams);
             }
             const rows = [];
             while (stmt.step()) {
@@ -75,7 +76,8 @@ function execute(sql, params = []) {
     if (!dbInstance)
         throw new Error("Database not initialized");
     try {
-        dbInstance.run(sql, params);
+        const safeParams = params.map(p => (p === undefined ? null : p));
+        dbInstance.run(sql, safeParams);
         saveDb();
         return { changes: 1 };
     }
