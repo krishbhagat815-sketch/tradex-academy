@@ -12,7 +12,7 @@ import {
   CheckCircle2,
   Sparkles,
   Layers,
-  DollarSign,
+  IndianRupee,
   ListPlus,
   X,
   Video,
@@ -487,7 +487,7 @@ export const AdminCourseEditorPage: React.FC = () => {
               : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
           }`}
         >
-          <DollarSign className="w-4 h-4" />
+          <IndianRupee className="w-4 h-4" />
           <span>Pricing & Media</span>
         </button>
 

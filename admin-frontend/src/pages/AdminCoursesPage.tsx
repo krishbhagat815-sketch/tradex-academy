@@ -10,7 +10,6 @@ import {
   CheckCircle,
   Eye,
   SlidersHorizontal,
-  DollarSign,
   Users
 } from 'lucide-react';
 

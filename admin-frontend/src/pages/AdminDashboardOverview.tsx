@@ -6,7 +6,7 @@ import {
   Users,
   BookOpen,
   Award,
-  DollarSign,
+  IndianRupee,
   Clock,
   ArrowUpRight,
   PlusCircle,
@@ -143,7 +143,7 @@ export const AdminDashboardOverview: React.FC = () => {
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 font-medium">Verified Revenue</span>
             <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700">
-              <DollarSign className="w-4 h-4" />
+              <IndianRupee className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
