@@ -37,7 +37,8 @@ export function query<T = any>(sql: string, params: any[] = []): T[] {
     const stmt = dbInstance.prepare(sql);
     try {
       if (params && params.length > 0) {
-        stmt.bind(params);
+        const safeParams = params.map(p => (p === undefined ? null : p));
+        stmt.bind(safeParams);
       }
       const rows: T[] = [];
       while (stmt.step()) {
@@ -66,7 +67,8 @@ export function queryOne<T = any>(sql: string, params: any[] = []): T | null {
 export function execute(sql: string, params: any[] = []): { changes: number } {
   if (!dbInstance) throw new Error("Database not initialized");
   try {
-    dbInstance.run(sql, params);
+    const safeParams = params.map(p => (p === undefined ? null : p));
+    dbInstance.run(sql, safeParams);
     saveDb();
     return { changes: 1 };
   } catch (error) {

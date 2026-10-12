@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { UserModel, CourseModel, OrderModel, PaymentModel, EnrollmentModel } from '../models/index.js';
-import { query } from './database.js';
+import { query, queryOne } from './database.js';
 
 let isConnected = false;
 
@@ -223,3 +223,82 @@ export async function syncSQLiteToMongo(): Promise<void> {
     console.warn('⚠️ [MongoDB Atlas] Auto-sync warning:', syncError?.message || syncError);
   }
 }
+
+/**
+ * Synchronizes a single course and its updated curriculum (modules & lessons) to MongoDB Atlas.
+ */
+export async function syncSingleCourseToMongo(courseId: string): Promise<void> {
+  if (!isMongoConnected()) return;
+
+  try {
+    const c = queryOne('SELECT * FROM courses WHERE id = ?', [courseId]);
+    if (!c) return;
+
+    const sqlModules = query('SELECT * FROM modules WHERE course_id = ? ORDER BY order_num ASC', [courseId]);
+    const sqlLessons = query('SELECT * FROM lessons WHERE course_id = ? ORDER BY order_num ASC', [courseId]);
+
+    const cModules = sqlModules.map((m: any) => {
+      const mLessons = sqlLessons
+        .filter((l: any) => l.module_id === m.id)
+        .map((l: any) => ({
+          id: l.id,
+          title: l.title,
+          description: l.description || '',
+          video_url: l.video_url || null,
+          media_type: l.media_type || 'url',
+          media_name: l.media_name || '',
+          media_size: l.media_size || '',
+          video_duration: l.video_duration || '10:00',
+          is_preview: Boolean(l.is_preview),
+          order_num: Number(l.order_num || 0),
+          resources: JSON.parse(l.resources || '[]'),
+          quizzes: JSON.parse(l.quizzes || '[]')
+        }));
+
+      return {
+        id: m.id,
+        title: m.title,
+        description: m.description || '',
+        order_num: Number(m.order_num || 0),
+        lessons: mLessons
+      };
+    });
+
+    await CourseModel.findOneAndUpdate(
+      { id: c.id },
+      {
+        id: c.id,
+        title: c.title,
+        slug: c.slug,
+        short_description: c.short_description || '',
+        description: c.description || '',
+        category_id: c.category_id,
+        instructor_id: c.instructor_id,
+        thumbnail: c.thumbnail || '',
+        preview_video_url: c.preview_video_url || '',
+        price: Number(c.price || 0),
+        discount_price: c.discount_price != null ? Number(c.discount_price) : null,
+        difficulty_level: c.difficulty_level || 'Beginner',
+        duration: c.duration || '0 hours',
+        language: c.language || 'Gujarati',
+        learning_outcomes: JSON.parse(c.learning_outcomes || '[]'),
+        requirements: JSON.parse(c.requirements || '[]'),
+        target_audience: JSON.parse(c.target_audience || '[]'),
+        tags: JSON.parse(c.tags || '[]'),
+        status: c.status || 'published',
+        featured: Boolean(c.featured),
+        popular: Boolean(c.popular),
+        is_new: Boolean(c.is_new),
+        enrolled_count: Number(c.enrolled_count || 0),
+        rating: Number(c.rating || 5.0),
+        review_count: Number(c.review_count || 0),
+        modules: cModules,
+        updated_at: new Date()
+      },
+      { upsert: true }
+    );
+  } catch (err: any) {
+    console.error(`⚠️ [MongoDB Atlas] Failed to sync course ${courseId}:`, err?.message || err);
+  }
+}
+
