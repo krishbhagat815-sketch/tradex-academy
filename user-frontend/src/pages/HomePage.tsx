@@ -11,21 +11,9 @@ import {
   ShieldCheck,
   CheckCircle,
   Star,
-  Users,
   Award,
   BookOpen,
-  TrendingUp,
-  Cpu,
-  BarChart3,
-  CandlestickChart,
-  Coins,
-  ShieldAlert,
-  ChevronDown,
-  Quote,
-  MessageCircle,
-  PlayCircle,
-  Check,
-  HelpCircle
+  MessageCircle
 } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -36,7 +24,6 @@ export const HomePage: React.FC = () => {
   const [instructorsList, setInstructorsList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'free' | 'options' | 'price-action' | 'crypto'>('all');
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
     async function loadData() {
@@ -80,64 +67,6 @@ export const HomePage: React.FC = () => {
     return true;
   });
 
-  // 6 Trading Highlights Data
-  const highlightPillars = [
-    {
-      title: dict.highlights.pillar1Title,
-      desc: dict.highlights.pillar1Desc,
-      icon: <BarChart3 className="w-7 h-7 text-emerald-400" />,
-      color: 'from-emerald-500/20 to-teal-500/5',
-      borderColor: 'border-emerald-500/30',
-      tag: language === 'gu' ? 'Beginner Friendly' : 'Beginner Friendly',
-      link: '/courses?category=cat-stock-basics'
-    },
-    {
-      title: dict.highlights.pillar2Title,
-      desc: dict.highlights.pillar2Desc,
-      icon: <TrendingUp className="w-7 h-7 text-cyan-400" />,
-      color: 'from-cyan-500/20 to-blue-500/5',
-      borderColor: 'border-cyan-500/30',
-      tag: language === 'gu' ? 'Pure Price Action' : 'Zero Indicators',
-      link: '/courses?category=cat-price-action'
-    },
-    {
-      title: dict.highlights.pillar3Title,
-      desc: dict.highlights.pillar3Desc,
-      icon: <Sparkles className="w-7 h-7 text-amber-400" />,
-      color: 'from-amber-500/20 to-orange-500/5',
-      borderColor: 'border-amber-500/30',
-      tag: language === 'gu' ? 'Nifty & BankNifty' : 'Nifty & BankNifty',
-      link: '/courses?category=cat-options-trading'
-    },
-    {
-      title: dict.highlights.pillar4Title,
-      desc: dict.highlights.pillar4Desc,
-      icon: <CandlestickChart className="w-7 h-7 text-rose-400" />,
-      color: 'from-rose-500/20 to-pink-500/5',
-      borderColor: 'border-rose-500/30',
-      tag: language === 'gu' ? 'Candlestick Secrets' : 'Price Secrets',
-      link: '/courses?category=cat-price-action'
-    },
-    {
-      title: dict.highlights.pillar5Title,
-      desc: dict.highlights.pillar5Desc,
-      icon: <Coins className="w-7 h-7 text-purple-400" />,
-      color: 'from-purple-500/20 to-indigo-500/5',
-      borderColor: 'border-purple-500/30',
-      tag: language === 'gu' ? 'Crypto & Futures' : 'Crypto & Futures',
-      link: '/courses?category=cat-crypto-trading'
-    },
-    {
-      title: dict.highlights.pillar6Title,
-      desc: dict.highlights.pillar6Desc,
-      icon: <ShieldAlert className="w-7 h-7 text-emerald-400" />,
-      color: 'from-emerald-500/20 to-teal-500/5',
-      borderColor: 'border-emerald-500/30',
-      tag: language === 'gu' ? 'Capital Protection' : 'Capital Safety',
-      link: '/courses?category=cat-psychology-risk'
-    }
-  ];
-
   // Why Choose Us Points
   const whyUsPoints = [
     {
@@ -172,35 +101,6 @@ export const HomePage: React.FC = () => {
     }
   ];
 
-  // Testimonials in Gujarati & English
-  // Testimonials in English as requested
-  const testimonials = [
-    {
-      name: 'Pratik Patel',
-      city: language === 'gu' ? 'અમદાવાદ (નવરંગપુરા)' : 'Ahmedabad (Navrangpura)',
-      role: language === 'gu' ? 'Full-Time Options Trader' : 'Full-Time Options Trader',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
-      rating: 5,
-      content: 'I used to lose capital every month following random Telegram tip channels. The Safe Trading’s Price Action & Risk Management course opened my eyes! Now I have strict setups, predefined entry points, and disciplined stop losses. Proud to be a consistently profitable trader.'
-    },
-    {
-      name: 'Harshil Mehta',
-      city: language === 'gu' ? 'સુરત (અડાજણ)' : 'Surat (Adajan)',
-      role: language === 'gu' ? 'Textile Business Owner & Swing Trader' : 'Textile Business Owner & Swing Trader',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
-      rating: 5,
-      content: 'I learned how to trade alongside running my textile business through the Swing Trading course. The best part is the practical live chart analysis without confusing financial jargon. Truly the most reliable trading education platform!'
-    },
-    {
-      name: 'Neha Shah',
-      city: language === 'gu' ? 'વડોદરા (અલકાપુરી)' : 'Vadodara (Alkapuri)',
-      role: language === 'gu' ? 'Banking Professional & Options Trader' : 'Banking Professional & Options Trader',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
-      rating: 5,
-      content: 'The Nifty & BankNifty Expiry Strategy course is simply phenomenal! How Option Greeks (Delta & Theta) work was explained with crystal clarity. Whenever I have a question during live market hours, the mentor team answers instantly on WhatsApp.'
-    }
-  ];
-
   // Mentors Data
   const mentors = [
     {
@@ -222,51 +122,6 @@ export const HomePage: React.FC = () => {
       bio: language === 'gu'
         ? 'નિફ્ટી અને બેંકનિફ્ટી ઓપ્શન્સ ડેટા, ઓપન ઇન્ટરેસ્ટ (OI) અને એક્સપાયરી ડે ટ્રેડિંગના માસ્ટર.'
         : 'Specialist in Nifty & BankNifty OI analysis, option Greeks, and high-probability expiry day setups.'
-    }
-  ];
-
-  // FAQs Data
-  const faqs = language === 'gu' ? [
-    {
-      q: 'શું સંપૂર્ણ નવો માણસ (Beginner) પણ આ કોર્સથી શેર બજાર શીખી શકે?',
-      a: 'હા, ચોક્કસ! અમારો "બેઝિક શેર બજાર ફાઉન્ડેશન કોર્સ" બિલકુલ શૂન્યથી શરૂ થાય છે. ડીમેટ એકાઉન્ટ શું છે, શેર કેવી રીતે ખરીદવા-વેચવા, અને રિસ્ક કેવી રીતે કંટ્રોલ કરવું તે બધું સરળ ગુજરાતીમાં શીખવવામાં આવે છે.'
-    },
-    {
-      q: 'શું શીખવા માટે મોંઘા લેપટોપની જરૂર છે કે મોબાઈલથી શીખી શકાય?',
-      a: 'તમે કોઈપણ સાધન — તમારા એન્ડ્રોઇડ કે આઈફોન મોબાઈલ, ટેબ્લેટ અથવા લેપટોપ પરથી આરામથી વિડિયો જોઈ શકો છો. અમારું પ્લેટફોર્મ ૧૦૦% મોબાઈલ ફ્રેન્ડલી છે.'
-    },
-    {
-      q: 'કોર્સ ખરીદ્યા પછી વિડિયો કેટલા સમય સુધી જોઈ શકાશે?',
-      a: 'તમામ કોર્સમાં લાઈફટાઈમ (આજીવન) અનલિમિટેડ એક્સેસ મળે છે! તમે ગમે ત્યારે, ગમે તેટલી વાર વિડિયો રિવિઝન કરી શકો છો. ભવિષ્યમાં ઉમેરાતા નવા વિડિયો પણ મફત મળશે.'
-    },
-    {
-      q: 'જો મને કોઈ સવાલ કે શંકા હોય તો માર્ગદર્શન કેવી રીતે મળશે?',
-      a: 'દરેક વિદ્યાર્થીને અમારો ડેડિકેટેડ વોટ્સએપ મેન્ટર સપોર્ટ મળે છે. તમે તમારા ચાર્ટના સ્ક્રીનશોટ મોકલીને મેન્ટર પાસેથી સીધો પ્રતિસાદ મેળવી શકો છો.'
-    },
-    {
-      q: 'શું તમે લાઈવ ટ્રેડિંગ ટીપ્સ કે કોલ્સ આપો છો?',
-      a: 'ના. અમે કોઈ ટીપ્સ આપતા નથી. અમે તમને ૧૦૦% સાચું શિક્ષણ આપીએ છીએ જેથી તમે જાતે ચાર્ટ રીડ કરીને આત્મનિર્ભર બનીને ટ્રેડિંગ કરી શકો.'
-    }
-  ] : [
-    {
-      q: 'Can complete beginners with no financial background learn?',
-      a: 'Yes, absolutely! Our Stock Market Basics course starts from scratch. We explain Demat accounts, how to place orders, and risk management in plain language.'
-    },
-    {
-      q: 'Can I learn using a mobile phone without an expensive laptop?',
-      a: 'Yes. Our learning player is fully mobile-optimized. You can watch lessons, download cheat sheets, and take quizzes on Android, iOS, or laptops.'
-    },
-    {
-      q: 'How long do I have access to course lessons after enrolling?',
-      a: 'You get lifetime unlimited access to all videos, downloadable resources, and future curriculum updates.'
-    },
-    {
-      q: 'How can I clear my doubts while studying?',
-      a: 'Enrolled students receive dedicated WhatsApp mentor support to clarify concepts and review chart patterns directly with educators.'
-    },
-    {
-      q: 'Do you provide stock tips or trading calls?',
-      a: 'No. We strictly adhere to education only. We teach you how to analyze charts independently without depending on external tip channels.'
     }
   ];
 
@@ -349,64 +204,6 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Hero Visual Feature Dashboard Mockup */}
-          <div className="mt-14 max-w-5xl mx-auto rounded-3xl p-2 bg-gradient-to-b from-slate-100 via-white to-slate-100 border border-slate-200/90 shadow-xl relative">
-            <div className="rounded-2xl bg-white border border-slate-100 p-5 sm:p-7 overflow-hidden">
-              {/* Header Bar Mockup */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 text-xs text-slate-500">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-400"></div>
-                  <div className="w-3 h-3 rounded-full bg-amber-400"></div>
-                  <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
-                  <span className="ml-2 font-mono text-[11px] text-slate-400">thesafetrading.in / live-classroom</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1.5 text-emerald-600 font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    Live Market Ready
-                  </span>
-                  <span className="hidden sm:inline text-slate-400">• High Accuracy Price Action</span>
-                </div>
-              </div>
-
-              {/* Internal Grid Inside Visual */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-5">
-                {/* Visual Card 1 */}
-                <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 flex items-center gap-3.5 hover:bg-white hover:shadow-xs transition-all">
-                  <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 flex-shrink-0">
-                    <CandlestickChart className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900">Pure Price Action</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">Support, Resistance & Chart Patterns</p>
-                  </div>
-                </div>
-
-                {/* Visual Card 2 */}
-                <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 flex items-center gap-3.5 hover:bg-white hover:shadow-xs transition-all">
-                  <div className="w-11 h-11 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600 flex-shrink-0">
-                    <TrendingUp className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900">Nifty & BankNifty Options</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">Greeks (Delta/Theta) & Expiry Rules</p>
-                  </div>
-                </div>
-
-                {/* Visual Card 3 */}
-                <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 flex items-center gap-3.5 hover:bg-white hover:shadow-xs transition-all">
-                  <div className="w-11 h-11 rounded-xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 flex-shrink-0">
-                    <ShieldCheck className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900">Capital Protection First</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">Strict Stop Loss & 1:2 Risk-Reward</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Trust Stats Bar */}
           <div className="mt-14 pt-10 border-t border-slate-200/80 grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="flex flex-col items-center">
@@ -444,54 +241,6 @@ export const HomePage: React.FC = () => {
                 {dict.hero.statSupportLabel}
               </span>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6 Core Trading Highlights (Gujju The Trader Inspired) */}
-      <section className="py-20 bg-slate-50/70 border-b border-slate-200/80 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
-              {dict.highlights.sectionBadge}
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-3 leading-tight">
-              {dict.highlights.sectionTitle}
-            </h2>
-            <p className="mt-3 text-sm sm:text-base text-slate-600">
-              {dict.highlights.sectionSubtitle}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {highlightPillars.map((pillar, idx) => (
-              <Link
-                key={idx}
-                to={pillar.link}
-                className="p-6 rounded-2xl bg-white border border-slate-200/90 hover:border-emerald-500/50 transition-all duration-300 shadow-card hover:shadow-card-hover hover:-translate-y-1 flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 shadow-2xs">
-                      {pillar.icon}
-                    </div>
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
-                      {pillar.tag}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                    {pillar.title}
-                  </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {pillar.desc}
-                  </p>
-                </div>
-                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-600 group-hover:text-emerald-700">
-                  <span>{language === 'gu' ? 'કોર્સ વિશે વધુ જાણો' : 'Explore Curriculum'}</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
@@ -704,126 +453,6 @@ export const HomePage: React.FC = () => {
               </div>
             );
           })()}
-        </div>
-      </section>
-
-      {/* Student Testimonials */}
-      <section id="testimonials" className="py-24 border-b border-slate-200/80 bg-slate-50/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
-              {dict.testimonials.badge}
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-1">
-              {dict.testimonials.title}
-            </h2>
-            <p className="mt-3 text-sm text-slate-600">
-              {dict.testimonials.subtitle}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, idx) => (
-              <div
-                key={idx}
-                className="p-8 rounded-2xl bg-white border border-slate-200/90 flex flex-col justify-between relative hover:border-emerald-500/40 transition-all shadow-card hover:shadow-card-hover hover:-translate-y-1"
-              >
-                <div>
-                  <Quote className="w-7 h-7 text-emerald-500/20 mb-3" />
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                    "{t.content}"
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-5 border-t border-slate-100 flex items-center gap-3">
-                  <img
-                    src={getMediaUrl(t.avatar)}
-                    alt={t.name}
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30 bg-slate-100"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(t.name)}`;
-                    }}
-                  />
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900">{t.name}</h4>
-                    <p className="text-[11px] text-emerald-700 font-semibold">{t.city}</p>
-                    <p className="text-[10px] text-slate-500">{t.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Frequently Asked Questions */}
-      <section className="py-24 border-b border-slate-200/80 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
-              {dict.faqs.badge}
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-1">
-              {dict.faqs.title}
-            </h2>
-            <p className="mt-2 text-sm text-slate-600">
-              {dict.faqs.subtitle}
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {faqs.map((faq, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl border border-slate-200 bg-slate-50/60 overflow-hidden transition-colors"
-              >
-                <button
-                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left font-semibold text-slate-900 hover:text-emerald-700 transition-colors"
-                >
-                  <span className="text-sm sm:text-base pr-4">{faq.q}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${
-                      openFaq === idx ? 'rotate-180 text-emerald-600' : ''
-                    }`}
-                  />
-                </button>
-                {openFaq === idx && (
-                  <div className="px-6 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200/80 pt-4 bg-white">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Additional Help Prompt */}
-          <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200 text-center flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
-            <div className="text-left">
-              <h4 className="text-slate-900 font-bold text-sm sm:text-base">
-                {dict.faqs.haveQuestions}
-              </h4>
-              <p className="text-xs text-slate-600 mt-0.5">
-                {language === 'gu'
-                  ? 'અમારા ગુજરાતી ટ્રેડિંગ મેન્ટર સાથે વોટ્સએપ પર સીધી વાત કરો.'
-                  : 'Chat directly with our Gujarati trading mentor on WhatsApp.'}
-              </p>
-            </div>
-            <a
-              href="https://wa.me/919876543210"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-2 shadow-xs active:scale-95"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>{dict.faqs.whatsappUs}</span>
-            </a>
-          </div>
         </div>
       </section>
 

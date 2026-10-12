@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 import {
   TrendingUp,
   ShieldCheck,
-  CheckCircle2,
   Lock,
   Mail,
   Phone,
@@ -16,70 +15,9 @@ import {
 
 export const Footer: React.FC = () => {
   const { language, dict } = useLanguage();
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newsletterEmail.trim()) {
-      setSubscribed(true);
-      setNewsletterEmail("");
-      setTimeout(() => setSubscribed(false), 5000);
-    }
-  };
 
   return (
     <footer className="bg-white border-t border-slate-200 text-slate-600 text-sm">
-      {/* Newsletter Section */}
-      <div className="border-b border-slate-200 bg-slate-50/70 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="max-w-xl text-center lg:text-left">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-3 shadow-2xs">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>{language === 'gu' ? 'સાપ્તાહિક માર્કેટ અપડેટ્સ' : 'Weekly Market Curations'}</span>
-            </span>
-            <h3 className="text-2xl font-bold text-slate-900 tracking-tight">
-              {language === 'gu'
-                ? 'ગુજરાતીમાં શેર બજાર અને ટ્રેડિંગ ન્યૂઝ મેળવો'
-                : 'Stay Ahead with Gujarati Trading Insights'}
-            </h3>
-            <p className="mt-2 text-slate-600 text-sm leading-relaxed">
-              {language === 'gu'
-                ? 'નિફ્ટી અને બેંકનિફ્ટી એનાલિસિસ, પ્રાઇસ એક્શન ચેકલિસ્ટ અને નવી બેચની માહિતી સીધી તમારા ઇમેઇલ પર મેળવો.'
-                : 'Get weekly chart breakdowns, option Greek setups, and educational checklists delivered to your inbox.'}
-            </p>
-          </div>
-
-          <form
-            onSubmit={handleSubscribe}
-            className="w-full max-w-md flex flex-col sm:flex-row gap-2"
-          >
-            <div className="relative flex-1">
-              <input
-                type="email"
-                required
-                placeholder={language === 'gu' ? 'તમારો ઇમેઇલ એડ્રેસ દાખલ કરો' : 'Enter your email address'}
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm shadow-xs"
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 flex-shrink-0 shadow-xs active:scale-95"
-            >
-              <span>{language === 'gu' ? 'જોડાવો' : 'Subscribe'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
-        {subscribed && (
-          <p className="text-center text-emerald-700 text-xs mt-3 flex items-center justify-center gap-1.5 font-medium animate-in fade-in">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>{language === 'gu' ? 'આભાર! સબસ્ક્રિપ્શન કન્ફર્મ થઈ ગયું છે.' : 'Thank you for subscribing! Check your inbox.'}</span>
-          </p>
-        )}
-      </div>
 
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">

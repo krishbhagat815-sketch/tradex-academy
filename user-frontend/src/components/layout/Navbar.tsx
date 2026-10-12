@@ -106,7 +106,6 @@ export const Navbar: React.FC = () => {
       badge: user ? "Enrolled" : undefined
     },
     { name: dict.nav.whyUs, path: "/#why-us" },
-    { name: dict.nav.testimonials, path: "/#testimonials" },
     { name: dict.nav.verifyCert, path: "/verify-certificate" },
   ];
 
