@@ -70,14 +70,9 @@ export const AdminDashboardOverview: React.FC = () => {
     mongodb: 'connected (Atlas)'
   };
 
-  const revenueTrend = statsData?.revenueTrend || [];
-  const salesByCategory = statsData?.salesByCategory || [];
-  const topCourses = statsData?.topCourses || [];
   const recentOrders = statsData?.recentOrders || [];
   const recentEnrollments = statsData?.recentEnrollments || [];
   const recentBookings = statsData?.recentBookings || [];
-
-  const maxRevenue = Math.max(...revenueTrend.map((r: any) => r.revenue), 1000);
 
   return (
     <div className="space-y-8 pb-16">
@@ -230,76 +225,6 @@ export const AdminDashboardOverview: React.FC = () => {
             <p className="text-[11px] text-slate-500 mt-1 font-medium">
               Of {stats.totalCourses} total courses
             </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Visual Analytics Grid: Revenue Trend & Category Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Trend Chart */}
-        <div className="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-bold text-slate-900">Monthly Revenue Trajectory</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Rolling monthly sales performance</p>
-            </div>
-            <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
-              USD ($)
-            </span>
-          </div>
-
-          {/* SVG Bar Chart */}
-          <div className="pt-4 h-64 flex items-end justify-between gap-3 sm:gap-6 border-b border-slate-100 pb-4">
-            {revenueTrend.map((item: any, idx: number) => {
-              const heightPercent = Math.max(15, Math.round((item.revenue / maxRevenue) * 100));
-              return (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
-                  <div className="text-[11px] font-mono font-semibold text-slate-500 group-hover:text-emerald-700 transition-colors">
-                    ${(item.revenue / 1000).toFixed(1)}k
-                  </div>
-                  <div
-                    className="w-full max-w-[48px] bg-slate-100 group-hover:bg-emerald-600 rounded-t-lg transition-all duration-300 relative"
-                    style={{ height: `${heightPercent}%` }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-600/30 to-teal-400/30 rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <span className="text-xs font-semibold text-slate-500 group-hover:text-slate-900 mt-1">
-                    {item.month}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Sales by Category */}
-        <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-6">
-          <div>
-            <h3 className="text-base font-bold text-slate-900">Revenue by Discipline</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Category distribution</p>
-          </div>
-
-          <div className="space-y-4">
-            {salesByCategory.map((cat: any, idx: number) => (
-              <div key={idx} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-800 truncate max-w-[180px]">
-                    {cat.category_name}
-                  </span>
-                  <span className="font-mono text-slate-500 font-medium">
-                    ₹{Number(cat.revenue).toFixed(2)}
-                  </span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
-                    style={{
-                      width: `${Math.max(10, Math.min(100, (Number(cat.revenue) / (stats.totalRevenue || 1)) * 100))}%`
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
