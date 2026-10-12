@@ -121,7 +121,7 @@ export const Footer: React.FC = () => {
             </li>
             <li className="flex items-center gap-2">
               <MessageCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <span>+91 98765 43210 (WhatsApp)</span>
+              <span>+91 7435961016 (WhatsApp)</span>
             </li>
             <li className="flex items-center gap-2">
               <Globe className="w-4 h-4 text-red-600 flex-shrink-0" />

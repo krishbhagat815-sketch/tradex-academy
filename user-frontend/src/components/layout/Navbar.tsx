@@ -310,7 +310,7 @@ export const Navbar: React.FC = () => {
 
           {/* Quick WhatsApp Support Link */}
           <a
-            href="https://wa.me/919876543210?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
+            href="https://wa.me/917435961016?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-full text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all"

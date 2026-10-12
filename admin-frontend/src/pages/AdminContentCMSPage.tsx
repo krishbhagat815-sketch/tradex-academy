@@ -34,7 +34,7 @@ export const AdminContentCMSPage: React.FC = () => {
 
   // WhatsApp Configuration state
   const [whatsappEnabled, setWhatsappEnabled] = useState(true);
-  const [whatsappNumber, setWhatsappNumber] = useState('918530724929');
+  const [whatsappNumber, setWhatsappNumber] = useState('917435961016');
   const [whatsappMessage, setWhatsappMessage] = useState('Hello, I would like to know more about your courses.');
 
   const loadContent = async () => {
@@ -65,10 +65,10 @@ export const AdminContentCMSPage: React.FC = () => {
         if (c.settings) {
           setPlatformName(c.settings.platformName || 'The Safe Trading Academy');
           setSupportEmail(c.settings.supportEmail || 'support@tradex.com');
-          setSupportPhone(c.settings.supportPhone || '+91 8530724929');
+          setSupportPhone(c.settings.supportPhone || '+91 7435961016');
           setCurrencySymbol(c.settings.currencySymbol || '₹');
           setWhatsappEnabled(c.settings.whatsapp_enabled !== false);
-          setWhatsappNumber(c.settings.whatsapp_number || '918530724929');
+          setWhatsappNumber(c.settings.whatsapp_number || '917435961016');
           setWhatsappMessage(c.settings.whatsapp_default_message || 'Hello, I would like to know more about your courses.');
         }
       }
@@ -572,11 +572,11 @@ export const AdminContentCMSPage: React.FC = () => {
                   type="text"
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
-                  placeholder="918530724929"
+                  placeholder="917435961016"
                   className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
                 <p className="text-[11px] text-slate-400 mt-1">
-                  Default: 918530724929 (Live link: https://wa.me/{whatsappNumber})
+                  Default: 917435961016 (Live link: https://wa.me/{whatsappNumber})
                 </p>
               </div>
 

@@ -252,10 +252,10 @@ async function initSchema() {
             const defaultSettings = JSON.stringify({
                 platformName: 'The Safe Trading Academy',
                 supportEmail: 'support@tradex.com',
-                supportPhone: '+91 8530724929',
+                supportPhone: '+91 7435961016',
                 currencySymbol: '₹',
                 whatsapp_enabled: true,
-                whatsapp_number: '918530724929',
+                whatsapp_number: '917435961016',
                 whatsapp_default_message: 'Hello, I would like to know more about your courses.'
             });
             (0, database_js_1.execute)("INSERT OR REPLACE INTO site_content (key, value, updated_at) VALUES ('settings', ?, ?)", [defaultSettings, now]);

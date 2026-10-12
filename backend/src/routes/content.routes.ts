@@ -43,10 +43,10 @@ router.get('/settings', async (_req, res: Response) => {
     let settings = {
       platformName: 'The Safe Trading Academy',
       supportEmail: 'support@tradex.com',
-      supportPhone: '+91 8530724929',
+      supportPhone: '+91 7435961016',
       currencySymbol: '₹',
       whatsapp_enabled: true,
-      whatsapp_number: '918530724929',
+      whatsapp_number: '917435961016',
       whatsapp_default_message: 'Hello, I would like to know more about your courses.'
     };
     if (row?.value) {

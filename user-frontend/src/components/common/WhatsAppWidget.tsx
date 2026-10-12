@@ -14,7 +14,7 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [customMsg, setCustomMsg] = useState('');
   const [enabled, setEnabled] = useState(true);
-  const [phone, setPhone] = useState(initialPhone || '918530724929');
+  const [phone, setPhone] = useState(initialPhone || '917435961016');
   const [defaultMessage, setDefaultMessage] = useState('Hello, I would like to know more about your courses.');
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
 
   const handleSend = (textToSend?: string) => {
     const text = textToSend || customMsg || defaultMessage || dict.whatsapp.defaultMessage;
-    const cleanPhone = phone.replace(/[^0-9]/g, '') || '918530724929';
+    const cleanPhone = phone.replace(/[^0-9]/g, '') || '917435961016';
     const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
     setIsOpen(false);
@@ -81,7 +81,7 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
                 </h4>
                 <p className="text-xs text-emerald-100 flex items-center gap-1 mt-0.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-ping inline-block" />
-                  <span>Online • +91 8530724929</span>
+                  <span>Online • +91 7435961016</span>
                 </p>
               </div>
             </div>
