@@ -22,7 +22,8 @@ import {
   ArrowRight,
   Sparkles,
   MessageSquare,
-  MessageCircle
+  MessageCircle,
+  X
 } from 'lucide-react';
 
 export const CourseDetailsPage: React.FC = () => {
@@ -37,6 +38,9 @@ export const CourseDetailsPage: React.FC = () => {
 
   // Video preview modal state
   const [previewVideo, setPreviewVideo] = useState<{ url: string; title: string } | null>(null);
+
+  // Locked lecture modal state
+  const [lockedLectureModal, setLockedLectureModal] = useState<{ lessonTitle: string; lessonDuration?: string } | null>(null);
 
   // Curriculum accordion expansion state
   const [expandedModules, setExpandedModules] = useState<Record<string, boolean>>({});
@@ -477,39 +481,80 @@ export const CourseDetailsPage: React.FC = () => {
                       {/* Lessons List */}
                       {isOpen && (
                         <div className="divide-y divide-slate-100 border-t border-slate-100">
-                          {mod.lessons?.map((lsn: any) => (
-                            <div
-                              key={lsn.id}
-                              className="px-6 py-3.5 flex items-center justify-between text-sm hover:bg-slate-50/70 transition-colors"
-                            >
-                              <div className="flex items-center gap-3 flex-1 min-w-0 pr-4">
-                                {lsn.is_preview || course.is_enrolled ? (
-                                  <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                                ) : (
-                                  <Lock className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                                )}
-                                <span className="text-slate-800 font-medium truncate">{lsn.title}</span>
-                              </div>
+                          {mod.lessons?.map((lsn: any) => {
+                            const isEnrolled = Boolean(course.is_enrolled);
+                            const isPreview = Boolean(lsn.is_preview);
+                            const isAccessible = isEnrolled || isPreview;
 
-                              <div className="flex items-center gap-3 flex-shrink-0">
-                                {lsn.is_preview && (
-                                  <button
-                                    onClick={() =>
-                                      setPreviewVideo({
-                                        url: lsn.video_url || course.preview_video_url,
-                                        title: lsn.title
-                                      })
-                                    }
-                                    className="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition-colors flex items-center gap-1 shadow-2xs"
-                                  >
-                                    <Play className="w-3 h-3 fill-current" />
-                                    <span>{dict.courseDetails.previewLesson}</span>
-                                  </button>
-                                )}
-                                <span className="text-xs text-slate-400 font-mono">{lsn.video_duration}</span>
+                            return (
+                              <div
+                                key={lsn.id}
+                                onClick={() => {
+                                  if (isEnrolled) {
+                                    navigate(`/learn/${course.id}`);
+                                  } else if (isPreview) {
+                                    setPreviewVideo({
+                                      url: lsn.video_url || course.preview_video_url,
+                                      title: lsn.title
+                                    });
+                                  } else {
+                                    setLockedLectureModal({
+                                      lessonTitle: lsn.title,
+                                      lessonDuration: lsn.video_duration
+                                    });
+                                  }
+                                }}
+                                className={`px-6 py-3.5 flex items-center justify-between text-sm transition-colors cursor-pointer group ${
+                                  isAccessible
+                                    ? 'hover:bg-emerald-50/50'
+                                    : 'hover:bg-amber-50/40'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3 flex-1 min-w-0 pr-4">
+                                  {isAccessible ? (
+                                    <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                                  ) : (
+                                    <Lock className="w-4 h-4 text-slate-400 flex-shrink-0 group-hover:text-amber-600 transition-colors" />
+                                  )}
+                                  <span className={`truncate font-medium transition-colors ${
+                                    isAccessible ? 'text-slate-800 group-hover:text-emerald-700' : 'text-slate-600 group-hover:text-slate-900'
+                                  }`}>
+                                    {lsn.title}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center gap-3 flex-shrink-0">
+                                  {isPreview && !isEnrolled && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setPreviewVideo({
+                                          url: lsn.video_url || course.preview_video_url,
+                                          title: lsn.title
+                                        });
+                                      }}
+                                      className="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition-colors flex items-center gap-1 shadow-2xs"
+                                    >
+                                      <Play className="w-3 h-3 fill-current" />
+                                      <span>{dict.courseDetails.previewLesson}</span>
+                                    </button>
+                                  )}
+
+                                  {!isAccessible && (
+                                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-500 border border-slate-200 group-hover:border-amber-200 group-hover:bg-amber-50 group-hover:text-amber-700 transition-colors">
+                                      <Lock className="w-3 h-3" />
+                                      {language === 'gu' ? 'લોક કરેલ' : 'Locked'}
+                                    </span>
+                                  )}
+
+                                  {lsn.video_duration && (
+                                    <span className="text-xs text-slate-400 font-mono">{lsn.video_duration}</span>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -700,6 +745,136 @@ export const CourseDetailsPage: React.FC = () => {
           title={previewVideo.title}
           subtitle={language === 'gu' ? 'મફત લેસન પ્રિવ્યુ' : 'Free Lesson Preview'}
         />
+      )}
+
+      {/* Locked Lecture Purchase Modal */}
+      {lockedLectureModal && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setLockedLectureModal(null)}
+        >
+          <div
+            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header / Accent Ribbon */}
+            <div className="bg-gradient-to-r from-amber-500 via-emerald-600 to-teal-600 p-6 text-white relative">
+              <button
+                type="button"
+                onClick={() => setLockedLectureModal(null)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white ring-2 ring-white/30">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider font-extrabold text-amber-200 bg-amber-950/20 px-2.5 py-0.5 rounded-full inline-block">
+                    {language === 'gu' ? 'પ્રીમિયમ લેસન' : 'Premium Lesson'}
+                  </span>
+                  <h3 className="text-xl font-extrabold text-white mt-1 leading-snug">
+                    {language === 'gu' ? 'આ લેક્ચર લોક કરેલું છે' : 'Unlock All Lectures'}
+                  </h3>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5">
+              {/* Target lecture details */}
+              <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-3 text-left">
+                <PlayCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-amber-800 font-semibold uppercase tracking-wider">
+                    {language === 'gu' ? 'તમે જોવા માગો છો:' : 'Selected Lesson:'}
+                  </p>
+                  <p className="text-sm font-bold text-slate-900 truncate mt-0.5">
+                    {lockedLectureModal.lessonTitle}
+                  </p>
+                  {lockedLectureModal.lessonDuration && (
+                    <span className="text-xs text-slate-500 font-mono mt-0.5 inline-block">
+                      Duration: {lockedLectureModal.lessonDuration}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Course summary & pricing */}
+              <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                <img
+                  src={getMediaUrl(course.thumbnail)}
+                  alt={course.title}
+                  className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-slate-200"
+                />
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-bold text-slate-900 line-clamp-1">{course.title}</h4>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-lg font-extrabold text-emerald-700">
+                      {formatPrice(currentPrice)}
+                    </span>
+                    {hasDiscount && (
+                      <span className="text-xs text-slate-400 line-through">
+                        {formatPrice(originalPrice)}
+                      </span>
+                    )}
+                    {hasDiscount && (
+                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                        {course.discount_percentage ? `${course.discount_percentage}% OFF` : 'SALE'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Course value highlights */}
+              <div className="space-y-2 text-xs text-slate-600">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span>{dict.courseDetails.lifetimeAccess || 'Full lifetime access to all course lectures & updates'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span>{dict.courseDetails.certificateIncluded || 'Official verified certificate of completion'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span>{dict.courseDetails.daysGuarantee || 'Secure payment via Razorpay with instant course unlock'}</span>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="pt-2 space-y-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLockedLectureModal(null);
+                    handleEnrollClick();
+                  }}
+                  className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition-all shadow-md shadow-emerald-600/25 flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <span>
+                    {language === 'gu'
+                      ? `કોર્સ અનલોક કરો — ${formatPrice(currentPrice)}`
+                      : `Unlock Full Course Now — ${formatPrice(currentPrice)}`}
+                  </span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setLockedLectureModal(null)}
+                  className="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                >
+                  {language === 'gu' ? 'પાછા જાઓ' : 'Close & Continue Exploring'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

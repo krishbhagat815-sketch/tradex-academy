@@ -9,6 +9,8 @@ const database_js_1 = require("../db/database.js");
 const auth_js_1 = require("../middleware/auth.js");
 const razorpay_1 = __importDefault(require("razorpay"));
 const crypto_1 = __importDefault(require("crypto"));
+const mongodb_js_1 = require("../db/mongodb.js");
+const index_js_1 = require("../models/index.js");
 const router = (0, express_1.Router)();
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -264,6 +266,66 @@ router.post('/verify-payment', auth_js_1.authenticateToken, async (req, res) => 
         }
         // 5. Remove from wishlist if exists
         (0, database_js_1.execute)('DELETE FROM wishlist WHERE user_id = ? AND course_id = ?', [userId, courseId]);
+        // 6. Sync to MongoDB Atlas
+        if ((0, mongodb_js_1.isMongoConnected)()) {
+            try {
+                await index_js_1.OrderModel.findOneAndUpdate({ razorpay_order_id: razorpay_order_id }, {
+                    $set: {
+                        payment_status: 'completed',
+                        transaction_id: effectivePaymentId,
+                        razorpay_payment_id: effectivePaymentId,
+                        razorpay_signature: razorpay_signature || null,
+                        billing_info: billingInfo || {},
+                        payment_method: paymentMethod,
+                        updated_at: new Date()
+                    },
+                    $setOnInsert: {
+                        id: orderId,
+                        order_number: orderNumber,
+                        user_id: userId,
+                        course_id: courseId,
+                        amount: finalAmount,
+                        discount_amount: discountAmount,
+                        coupon_code: appliedCoupon ? appliedCoupon.code : null,
+                        currency: 'INR',
+                        created_at: new Date()
+                    }
+                }, { upsert: true, new: true });
+                await index_js_1.PaymentModel.findOneAndUpdate({ razorpay_payment_id: effectivePaymentId }, {
+                    id: `pay_rec_${(0, uuid_1.v4)().slice(0, 8)}`,
+                    order_id: orderId,
+                    razorpay_order_id: razorpay_order_id,
+                    razorpay_payment_id: effectivePaymentId,
+                    razorpay_signature: razorpay_signature || null,
+                    amount: finalAmount,
+                    currency: 'INR',
+                    status: 'captured',
+                    method: paymentMethod,
+                    user_id: userId,
+                    course_id: courseId,
+                    captured: true,
+                    raw_payload: { billingInfo },
+                    updated_at: new Date()
+                }, { upsert: true, new: true });
+                await index_js_1.EnrollmentModel.findOneAndUpdate({ user_id: userId, course_id: courseId }, {
+                    $setOnInsert: {
+                        id: enrollmentId,
+                        user_id: userId,
+                        course_id: courseId,
+                        order_id: orderId,
+                        enrolled_at: new Date(),
+                        progress_percent: 0,
+                        status: 'active',
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    }
+                }, { upsert: true, new: true });
+                await index_js_1.CourseModel.updateOne({ id: courseId }, { $inc: { enrolled_count: 1 } });
+            }
+            catch (mongoErr) {
+                console.warn('⚠️ [MongoDB] checkout route persistence warning:', mongoErr?.message || mongoErr);
+            }
+        }
         res.status(201).json({
             success: true,
             message: 'Payment verified and course access granted.',

@@ -19,6 +19,7 @@ import certificateRoutes from './routes/certificate.routes.js';
 import contentRoutes from './routes/content.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import popupRoutes from './routes/popup.routes.js';
 
 dotenv.config();
 
@@ -85,6 +86,7 @@ app.use('/api/certificates', certificateRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/popups', popupRoutes);
 
 // Direct root endpoint support (e.g. /api/my-courses)
 app.use('/api', paymentRoutes);

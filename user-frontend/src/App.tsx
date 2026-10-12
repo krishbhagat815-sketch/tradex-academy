@@ -16,6 +16,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { WhatsAppWidget } from './components/common/WhatsAppWidget';
+import { SmartPopupRenderer } from './components/common/SmartPopupRenderer';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -28,6 +29,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <main className="flex-1">{children}</main>
       {!isPlayer && <Footer />}
       {!isPlayer && <WhatsAppWidget />}
+      <SmartPopupRenderer />
     </div>
   );
 };

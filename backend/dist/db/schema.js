@@ -215,6 +215,84 @@ async function initSchema() {
       updated_at TEXT NOT NULL
     );
   `);
+    (0, database_js_1.execute)(`
+    CREATE TABLE IF NOT EXISTS popups (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      type TEXT NOT NULL DEFAULT 'custom',
+      image_url TEXT,
+      cta_text TEXT DEFAULT 'Learn More',
+      cta_url TEXT DEFAULT '/courses',
+      badge_text TEXT,
+      bg_color TEXT DEFAULT '#ffffff',
+      text_color TEXT DEFAULT '#0f172a',
+      layout TEXT DEFAULT 'modal',
+      animation TEXT DEFAULT 'fade',
+      trigger_type TEXT DEFAULT 'delay',
+      trigger_value INTEGER DEFAULT 3,
+      target_page TEXT DEFAULT 'all',
+      target_audience TEXT DEFAULT 'all',
+      frequency TEXT DEFAULT 'once_per_session',
+      priority INTEGER DEFAULT 1,
+      start_date TEXT,
+      end_date TEXT,
+      is_active INTEGER DEFAULT 1,
+      views_count INTEGER DEFAULT 0,
+      clicks_count INTEGER DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+    // Initialize WhatsApp & Platform settings if missing
+    try {
+        const existingSettings = (0, database_js_1.queryOne)("SELECT key FROM site_content WHERE key = 'settings'");
+        const now = new Date().toISOString();
+        if (!existingSettings) {
+            const defaultSettings = JSON.stringify({
+                platformName: 'The Safe Trading Academy',
+                supportEmail: 'support@tradex.com',
+                supportPhone: '+91 8530724929',
+                currencySymbol: '₹',
+                whatsapp_enabled: true,
+                whatsapp_number: '918530724929',
+                whatsapp_default_message: 'Hello, I would like to know more about your courses.'
+            });
+            (0, database_js_1.execute)("INSERT OR REPLACE INTO site_content (key, value, updated_at) VALUES ('settings', ?, ?)", [defaultSettings, now]);
+        }
+        // Initialize sample popup if none exist
+        const existingPopup = (0, database_js_1.queryOne)("SELECT id FROM popups LIMIT 1");
+        if (!existingPopup) {
+            (0, database_js_1.execute)(`
+        INSERT INTO popups (id, title, description, type, image_url, cta_text, cta_url, badge_text, bg_color, text_color, layout, animation, trigger_type, trigger_value, target_page, target_audience, frequency, priority, is_active, views_count, clicks_count, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, 0, ?, ?)
+      `, [
+                'pop-welcome-offer',
+                'Special 20% Discount on Stock Market & Algo Trading!',
+                'Use coupon code TRADEX20 at checkout to unlock complete mastery of Nifty & BankNifty options with live mentor support.',
+                'discount',
+                'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80',
+                'Claim Discount Now',
+                '/courses',
+                'LIMITED TIME OFFER',
+                '#ffffff',
+                '#0f172a',
+                'modal',
+                'fade',
+                'delay',
+                3,
+                'all',
+                'all',
+                'once_per_session',
+                10,
+                now,
+                now
+            ]);
+        }
+    }
+    catch (e) {
+        console.error('Error seeding settings or popups:', e);
+    }
     // Indexes for query performance
     (0, database_js_1.execute)(`CREATE INDEX IF NOT EXISTS idx_courses_category ON courses (category_id);`);
     (0, database_js_1.execute)(`CREATE INDEX IF NOT EXISTS idx_courses_instructor ON courses (instructor_id);`);

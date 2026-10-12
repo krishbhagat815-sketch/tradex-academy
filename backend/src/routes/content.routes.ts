@@ -36,4 +36,28 @@ router.get('/', async (_req, res: Response) => {
   }
 });
 
+// Public Settings (including WhatsApp configuration)
+router.get('/settings', async (_req, res: Response) => {
+  try {
+    const row = queryOne("SELECT value FROM site_content WHERE key = 'settings'");
+    let settings = {
+      platformName: 'The Safe Trading Academy',
+      supportEmail: 'support@tradex.com',
+      supportPhone: '+91 8530724929',
+      currencySymbol: '₹',
+      whatsapp_enabled: true,
+      whatsapp_number: '918530724929',
+      whatsapp_default_message: 'Hello, I would like to know more about your courses.'
+    };
+    if (row?.value) {
+      try {
+        settings = { ...settings, ...JSON.parse(row.value) };
+      } catch {}
+    }
+    res.json({ success: true, settings });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: 'Failed to fetch settings.' });
+  }
+});
+
 export default router;

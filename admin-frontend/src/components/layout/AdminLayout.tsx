@@ -17,7 +17,8 @@ import {
   X,
   ChevronRight,
   ShieldCheck,
-  PlusCircle
+  PlusCircle,
+  Megaphone
 } from 'lucide-react';
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -33,6 +34,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { name: 'Enrollments', path: '/enrollments', icon: ShieldCheck },
     { name: 'Orders & Payments', path: '/orders', icon: ShoppingBag },
     { name: 'Coupons & Promos', path: '/coupons', icon: Tag },
+    { name: 'Popup Campaigns', path: '/popups', icon: Megaphone },
     { name: 'Course Reviews', path: '/reviews', icon: Star },
     { name: 'Students', path: '/students', icon: Users },
     { name: 'Instructors', path: '/instructors', icon: GraduationCap },

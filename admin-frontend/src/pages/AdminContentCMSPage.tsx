@@ -30,7 +30,12 @@ export const AdminContentCMSPage: React.FC = () => {
   const [platformName, setPlatformName] = useState('');
   const [supportEmail, setSupportEmail] = useState('');
   const [supportPhone, setSupportPhone] = useState('');
-  const [currencySymbol, setCurrencySymbol] = useState('$');
+  const [currencySymbol, setCurrencySymbol] = useState('₹');
+
+  // WhatsApp Configuration state
+  const [whatsappEnabled, setWhatsappEnabled] = useState(true);
+  const [whatsappNumber, setWhatsappNumber] = useState('918530724929');
+  const [whatsappMessage, setWhatsappMessage] = useState('Hello, I would like to know more about your courses.');
 
   const loadContent = async () => {
     setLoading(true);
@@ -58,10 +63,13 @@ export const AdminContentCMSPage: React.FC = () => {
         if (c.faqs) setFaqs(c.faqs);
 
         if (c.settings) {
-          setPlatformName(c.settings.platformName || 'TradeX Academy');
+          setPlatformName(c.settings.platformName || 'The Safe Trading Academy');
           setSupportEmail(c.settings.supportEmail || 'support@tradex.com');
-          setSupportPhone(c.settings.supportPhone || '+1 (800) 555-0199');
-          setCurrencySymbol(c.settings.currencySymbol || '$');
+          setSupportPhone(c.settings.supportPhone || '+91 8530724929');
+          setCurrencySymbol(c.settings.currencySymbol || '₹');
+          setWhatsappEnabled(c.settings.whatsapp_enabled !== false);
+          setWhatsappNumber(c.settings.whatsapp_number || '918530724929');
+          setWhatsappMessage(c.settings.whatsapp_default_message || 'Hello, I would like to know more about your courses.');
         }
       }
     } catch (err) {
@@ -123,7 +131,10 @@ export const AdminContentCMSPage: React.FC = () => {
       platformName,
       supportEmail,
       supportPhone,
-      currencySymbol
+      currencySymbol,
+      whatsapp_enabled: whatsappEnabled,
+      whatsapp_number: whatsappNumber,
+      whatsapp_default_message: whatsappMessage
     };
     saveSection('settings', updatedSettings);
   };
@@ -528,12 +539,71 @@ export const AdminContentCMSPage: React.FC = () => {
             />
           </div>
 
+          {/* WhatsApp Integration Card */}
+          <div className="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+                  <span>WhatsApp Contact Floating Button</span>
+                </h4>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Configure the floating WhatsApp live support button displayed to all website visitors.
+                </p>
+              </div>
+
+              <label className="flex items-center gap-2 cursor-pointer font-bold text-xs text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={whatsappEnabled}
+                  onChange={(e) => setWhatsappEnabled(e.target.checked)}
+                  className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
+                />
+                <span>Enable WhatsApp Button</span>
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                  WhatsApp Number (with country code, no + or spaces)
+                </label>
+                <input
+                  type="text"
+                  value={whatsappNumber}
+                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  placeholder="918530724929"
+                  className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Default: 918530724929 (Live link: https://wa.me/{whatsappNumber})
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                  Default Chat Message
+                </label>
+                <input
+                  type="text"
+                  value={whatsappMessage}
+                  onChange={(e) => setWhatsappMessage(e.target.value)}
+                  placeholder="Hello, I would like to know more about your courses."
+                  className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Pre-filled text when a student clicks the WhatsApp button.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <button
             onClick={handleSaveSettings}
             className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all"
           >
             <Save className="w-4 h-4" />
-            <span>Save Platform Settings</span>
+            <span>Save Platform & WhatsApp Settings</span>
           </button>
         </div>
       )}

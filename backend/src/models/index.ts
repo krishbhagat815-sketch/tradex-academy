@@ -3,3 +3,4 @@ export * from './Course.model.js';
 export * from './Order.model.js';
 export * from './Payment.model.js';
 export * from './Enrollment.model.js';
+export * from './Popup.model.js';
