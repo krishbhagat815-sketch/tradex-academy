@@ -1,27 +1,31 @@
 import { Router, Response } from 'express';
-import { query, queryOne } from '../db/database.js';
+import { InstructorModel, CourseModel } from '../models/index.js';
 
 const router = Router();
 
 // List Instructors
 router.get('/', async (_req, res: Response) => {
   try {
-    const instructors = query(`
-      SELECT 
-        i.*,
-        (SELECT COUNT(*) FROM courses c WHERE c.instructor_id = i.id AND c.status = 'published') as courses_count,
-        (SELECT COALESCE(SUM(c.enrolled_count), 0) FROM courses c WHERE c.instructor_id = i.id) as students_count
-      FROM instructors i
-      ORDER BY i.rating DESC
-    `);
+    const instructors = await InstructorModel.find().sort({ rating: -1 }).lean();
 
-    const formatted = instructors.map(inst => ({
-      ...inst,
-      social_links: JSON.parse(inst.social_links || '{}')
-    }));
+    const formatted = await Promise.all(
+      instructors.map(async (inst: any) => {
+        const courses = await CourseModel.find({ instructor_id: inst.id, status: 'published' }).lean();
+        const courses_count = courses.length;
+        const students_count = courses.reduce((sum: number, c: any) => sum + Number(c.enrolled_count || 0), 0);
+
+        return {
+          ...inst,
+          courses_count,
+          students_count,
+          social_links: typeof inst.social_links === 'string' ? JSON.parse(inst.social_links) : (inst.social_links || {})
+        };
+      })
+    );
 
     res.json({ success: true, instructors: formatted });
   } catch (error: any) {
+    console.error('Fetch instructors error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch instructors.' });
   }
 });
@@ -31,33 +35,28 @@ router.get('/:id', async (req, res: Response) => {
   try {
     const { id } = req.params;
 
-    const instructor = queryOne(`
-      SELECT * FROM instructors WHERE id = ?
-    `, [id]);
+    const instructor = await InstructorModel.findOne({ id }).lean();
 
     if (!instructor) {
       res.status(404).json({ success: false, message: 'Instructor not found.' });
       return;
     }
 
-    const courses = query(`
-      SELECT 
-        c.id, c.title, c.slug, c.thumbnail, c.price, c.discount_price,
-        c.difficulty_level, c.duration, c.rating, c.review_count, c.enrolled_count
-      FROM courses c
-      WHERE c.instructor_id = ? AND c.status = 'published'
-      ORDER BY c.enrolled_count DESC
-    `, [id]);
+    const courses = await CourseModel.find({ instructor_id: id, status: 'published' })
+      .sort({ enrolled_count: -1 })
+      .select('id title slug thumbnail price discount_price difficulty_level duration rating review_count enrolled_count')
+      .lean();
 
     res.json({
       success: true,
       instructor: {
         ...instructor,
-        social_links: JSON.parse(instructor.social_links || '{}'),
+        social_links: typeof instructor.social_links === 'string' ? JSON.parse(instructor.social_links) : (instructor.social_links || {}),
         courses
       }
     });
   } catch (error: any) {
+    console.error('Fetch instructor error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch instructor details.' });
   }
 });

@@ -1,21 +1,31 @@
 import { Router, Response } from 'express';
-import { query } from '../db/database.js';
+import { CategoryModel, CourseModel } from '../models/index.js';
 
 const router = Router();
 
 // List All Categories with live active course counts
 router.get('/', async (_req, res: Response) => {
   try {
-    const categories = query(`
-      SELECT 
-        c.id, c.name, c.slug, c.description, c.icon, c.order_num,
-        (SELECT COUNT(*) FROM courses cr WHERE cr.category_id = c.id AND cr.status = 'published') as course_count
-      FROM categories c
-      ORDER BY c.order_num ASC
-    `);
+    const categories = await CategoryModel.find().sort({ order_num: 1 }).lean();
 
-    res.json({ success: true, categories });
+    const categoriesWithCount = await Promise.all(
+      categories.map(async (c: any) => {
+        const course_count = await CourseModel.countDocuments({ category_id: c.id, status: 'published' });
+        return {
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          description: c.description || '',
+          icon: c.icon || '',
+          order_num: Number(c.order_num || 0),
+          course_count
+        };
+      })
+    );
+
+    res.json({ success: true, categories: categoriesWithCount });
   } catch (error: any) {
+    console.error('Fetch categories error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch categories.' });
   }
 });

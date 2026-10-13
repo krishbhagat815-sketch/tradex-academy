@@ -1,7 +1,17 @@
 import { Router, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { query, queryOne, execute } from '../db/database.js';
 import { authenticateToken, AuthRequest } from '../middleware/auth.js';
+import {
+  EnrollmentModel,
+  CourseModel,
+  InstructorModel,
+  CertificateModel,
+  OrderModel,
+  LessonProgressModel,
+  NoteModel,
+  WishlistModel,
+  UserModel
+} from '../models/index.js';
 
 const router = Router();
 
@@ -11,47 +21,90 @@ router.get('/dashboard', authenticateToken, async (req: AuthRequest, res: Respon
     const userId = req.user!.id;
 
     // Enrolled courses with course details and progress
-    const enrolledCourses = query(`
-      SELECT 
-        e.id as enrollment_id, e.course_id, e.enrolled_at, e.progress_percent,
-        e.last_lesson_id, e.completed_at, e.status as enrollment_status,
-        c.title, c.slug, c.thumbnail, c.duration, c.difficulty_level,
-        inst.name as instructor_name, inst.avatar as instructor_avatar,
-        (SELECT COUNT(*) FROM lessons l WHERE l.course_id = c.id) as total_lessons,
-        (SELECT COUNT(*) FROM lesson_progress lp WHERE lp.user_id = e.user_id AND lp.course_id = c.id AND lp.completed = 1) as completed_lessons,
-        (SELECT l2.title FROM lessons l2 WHERE l2.id = e.last_lesson_id) as last_lesson_title
-      FROM enrollments e
-      JOIN courses c ON e.course_id = c.id
-      LEFT JOIN instructors inst ON c.instructor_id = inst.id
-      WHERE e.user_id = ? AND e.status != 'revoked'
-      ORDER BY e.enrolled_at DESC
-    `, [userId]);
+    const enrollments = await EnrollmentModel.find({
+      user_id: userId,
+      status: { $ne: 'revoked' }
+    })
+      .sort({ enrolled_at: -1 })
+      .lean();
 
-    const formattedCourses = enrolledCourses.map(c => ({
-      ...c,
-      progress_percent: Math.min(100, Math.round(Number(c.progress_percent || 0))),
-      total_lessons: Number(c.total_lessons || 0),
-      completed_lessons: Number(c.completed_lessons || 0)
-    }));
+    const formattedCourses = await Promise.all(
+      enrollments.map(async (e: any) => {
+        const course = await CourseModel.findOne({ id: e.course_id }).lean();
+        const instructor = course?.instructor_id
+          ? await InstructorModel.findOne({ id: course.instructor_id }).lean()
+          : null;
+
+        let total_lessons = 0;
+        let last_lesson_title = '';
+        if (course?.modules && Array.isArray(course.modules)) {
+          for (const m of course.modules) {
+            if (m.lessons && Array.isArray(m.lessons)) {
+              total_lessons += m.lessons.length;
+              if (e.last_lesson_id) {
+                const foundLesson = m.lessons.find((l: any) => l.id === e.last_lesson_id);
+                if (foundLesson) last_lesson_title = foundLesson.title;
+              }
+            }
+          }
+        }
+
+        const completed_lessons = await LessonProgressModel.countDocuments({
+          user_id: userId,
+          course_id: e.course_id,
+          completed: 1
+        });
+
+        return {
+          enrollment_id: e.id,
+          course_id: e.course_id,
+          enrolled_at: e.enrolled_at,
+          progress_percent: Math.min(100, Math.round(Number(e.progress_percent || 0))),
+          last_lesson_id: e.last_lesson_id,
+          last_lesson_title,
+          completed_at: e.completed_at,
+          enrollment_status: e.status,
+          title: course?.title || '',
+          slug: course?.slug || '',
+          thumbnail: course?.thumbnail || '',
+          duration: course?.duration || '',
+          difficulty_level: course?.difficulty_level || '',
+          instructor_name: instructor?.name || 'TradeX Academy',
+          instructor_avatar: instructor?.avatar || '',
+          total_lessons,
+          completed_lessons
+        };
+      })
+    );
 
     const totalEnrolled = formattedCourses.length;
-    const completedCoursesCount = formattedCourses.filter(c => c.progress_percent >= 100 || c.enrollment_status === 'completed').length;
+    const completedCoursesCount = formattedCourses.filter(
+      c => c.progress_percent >= 100 || c.enrollment_status === 'completed'
+    ).length;
     const inProgressCoursesCount = totalEnrolled - completedCoursesCount;
 
     // Count certificates
-    const certificatesCount = queryOne(`
-      SELECT COUNT(*) as count FROM certificates WHERE user_id = ?
-    `, [userId])?.count || 0;
+    const certificatesCount = await CertificateModel.countDocuments({ user_id: userId });
 
     // Recent orders
-    const recentOrders = query(`
-      SELECT o.id, o.order_number, o.amount, o.payment_status, o.created_at, c.title as course_title
-      FROM orders o
-      JOIN courses c ON o.course_id = c.id
-      WHERE o.user_id = ?
-      ORDER BY o.created_at DESC
-      LIMIT 5
-    `, [userId]);
+    const orders = await OrderModel.find({ user_id: userId })
+      .sort({ created_at: -1 })
+      .limit(5)
+      .lean();
+
+    const recentOrders = await Promise.all(
+      orders.map(async (o: any) => {
+        const c = await CourseModel.findOne({ id: o.course_id }).select('title').lean();
+        return {
+          id: o.id,
+          order_number: o.order_number,
+          amount: o.amount,
+          payment_status: o.payment_status,
+          created_at: o.created_at,
+          course_title: c?.title || 'Trading Course'
+        };
+      })
+    );
 
     res.json({
       success: true,
@@ -59,7 +112,7 @@ router.get('/dashboard', authenticateToken, async (req: AuthRequest, res: Respon
         totalEnrolled,
         completedCourses: completedCoursesCount,
         inProgressCourses: inProgressCoursesCount,
-        certificatesEarned: Number(certificatesCount)
+        certificatesEarned: certificatesCount
       },
       enrolled_courses: formattedCourses,
       recent_orders: recentOrders
@@ -81,70 +134,80 @@ router.post('/progress', authenticateToken, async (req: AuthRequest, res: Respon
       return;
     }
 
-    const now = new Date().toISOString();
+    const now = new Date();
 
     if (completed) {
-      const existing = queryOne('SELECT id FROM lesson_progress WHERE user_id = ? AND lesson_id = ?', [userId, lessonId]);
+      const existing = await LessonProgressModel.findOne({ user_id: userId, lesson_id: lessonId });
       if (!existing) {
-        const prgId = `prg-${uuidv4().slice(0, 8)}`;
-        execute(`
-          INSERT INTO lesson_progress (id, user_id, lesson_id, course_id, completed, completed_at)
-          VALUES (?, ?, ?, ?, 1, ?)
-        `, [prgId, userId, lessonId, courseId, now]);
+        await LessonProgressModel.create({
+          id: `prg-${uuidv4().slice(0, 8)}`,
+          user_id: userId,
+          lesson_id: lessonId,
+          course_id: courseId,
+          completed: 1,
+          completed_at: now
+        });
       }
     } else {
-      execute('DELETE FROM lesson_progress WHERE user_id = ? AND lesson_id = ?', [userId, lessonId]);
+      await LessonProgressModel.deleteOne({ user_id: userId, lesson_id: lessonId });
     }
 
-    // Calculate updated percentage
-    const totalLessonsRow = queryOne('SELECT COUNT(*) as count FROM lessons WHERE course_id = ?', [courseId]);
-    const totalLessons = Number(totalLessonsRow?.count || 1);
+    // Calculate total lessons from course
+    const course = await CourseModel.findOne({ id: courseId }).lean();
+    let totalLessons = 0;
+    if (course?.modules && Array.isArray(course.modules)) {
+      for (const m of course.modules) {
+        if (m.lessons && Array.isArray(m.lessons)) {
+          totalLessons += m.lessons.length;
+        }
+      }
+    }
+    if (totalLessons === 0) totalLessons = 1;
 
-    const completedLessonsRow = queryOne(`
-      SELECT COUNT(*) as count FROM lesson_progress 
-      WHERE user_id = ? AND course_id = ? AND completed = 1
-    `, [userId, courseId]);
-    const completedLessons = Number(completedLessonsRow?.count || 0);
+    const completedLessons = await LessonProgressModel.countDocuments({
+      user_id: userId,
+      course_id: courseId,
+      completed: 1
+    });
 
     const progressPercent = Math.min(100, Math.round((completedLessons / totalLessons) * 100));
     const isCompleted = progressPercent >= 100;
 
     // Update enrollment
-    execute(`
-      UPDATE enrollments
-      SET progress_percent = ?,
-          last_lesson_id = ?,
-          status = CASE WHEN ? >= 100 THEN 'completed' ELSE 'active' END,
-          completed_at = CASE WHEN ? >= 100 AND completed_at IS NULL THEN ? ELSE completed_at END
-      WHERE user_id = ? AND course_id = ?
-    `, [progressPercent, lessonId, progressPercent, progressPercent, now, userId, courseId]);
+    await EnrollmentModel.findOneAndUpdate(
+      { user_id: userId, course_id: courseId },
+      {
+        progress_percent: progressPercent,
+        last_lesson_id: lessonId,
+        status: isCompleted ? 'completed' : 'active',
+        ...(isCompleted ? { completed_at: now } : {}),
+        updated_at: now
+      }
+    );
 
     // Check certificate issuance if 100% completed
     let issuedCertificate: any = null;
     if (isCompleted) {
-      const existingCert = queryOne('SELECT certificate_code, issued_at FROM certificates WHERE user_id = ? AND course_id = ?', [userId, courseId]);
+      const existingCert = await CertificateModel.findOne({ user_id: userId, course_id: courseId }).lean();
       if (!existingCert) {
         const certId = `cert-${uuidv4().slice(0, 8)}`;
         const certCode = `CERT-TRX-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
 
-        const userRow = queryOne('SELECT name FROM users WHERE id = ?', [userId]);
-        const courseRow = queryOne(`
-          SELECT c.title, inst.name as instructor_name
-          FROM courses c
-          LEFT JOIN instructors inst ON c.instructor_id = inst.id
-          WHERE c.id = ?
-        `, [courseId]);
+        const userRow = await UserModel.findOne({ id: userId }).lean();
+        const instructor = course?.instructor_id
+          ? await InstructorModel.findOne({ id: course.instructor_id }).lean()
+          : null;
 
-        execute(`
-          INSERT INTO certificates (id, certificate_code, user_id, course_id, student_name, course_title, instructor_name, issued_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `, [
-          certId, certCode, userId, courseId,
-          userRow?.name || 'Valued Student',
-          courseRow?.title || 'Certificate of Completion',
-          courseRow?.instructor_name || 'TradeX Academy',
-          now
-        ]);
+        const newCert = await CertificateModel.create({
+          id: certId,
+          certificate_code: certCode,
+          user_id: userId,
+          course_id: courseId,
+          student_name: userRow?.name || 'Valued Student',
+          course_title: course?.title || 'Certificate of Completion',
+          instructor_name: instructor?.name || 'TradeX Academy',
+          issued_at: now
+        });
 
         issuedCertificate = {
           certificate_code: certCode,
@@ -180,20 +243,23 @@ router.post('/notes', authenticateToken, async (req: AuthRequest, res: Response)
       return;
     }
 
-    const now = new Date().toISOString();
-    const existing = queryOne('SELECT id FROM notes WHERE user_id = ? AND lesson_id = ?', [userId, lessonId]);
-
-    if (existing) {
-      execute('UPDATE notes SET content = ?, updated_at = ? WHERE id = ?', [content || '', now, existing.id]);
-    } else {
-      execute(`
-        INSERT INTO notes (id, user_id, course_id, lesson_id, content, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `, [`not-${uuidv4().slice(0, 8)}`, userId, courseId, lessonId, content || '', now]);
-    }
+    const now = new Date();
+    await NoteModel.findOneAndUpdate(
+      { user_id: userId, lesson_id: lessonId },
+      {
+        id: `not-${uuidv4().slice(0, 8)}`,
+        user_id: userId,
+        course_id: courseId,
+        lesson_id: lessonId,
+        content: content || '',
+        updated_at: now
+      },
+      { upsert: true, new: true }
+    );
 
     res.json({ success: true, message: 'Note saved successfully.' });
   } catch (error: any) {
+    console.error('Save note error:', error);
     res.status(500).json({ success: false, message: 'Failed to save note.' });
   }
 });
@@ -203,22 +269,41 @@ router.get('/wishlist', authenticateToken, async (req: AuthRequest, res: Respons
   try {
     const userId = req.user!.id;
 
-    const wishlistCourses = query(`
-      SELECT 
-        w.id as wishlist_id, w.created_at as wishlisted_at,
-        c.id, c.title, c.slug, c.short_description, c.thumbnail, c.price, c.discount_price,
-        c.difficulty_level, c.duration, c.rating, c.review_count,
-        inst.name as instructor_name,
-        (SELECT COUNT(*) FROM enrollments e WHERE e.user_id = ? AND e.course_id = c.id AND e.status != 'revoked') as is_enrolled
-      FROM wishlist w
-      JOIN courses c ON w.course_id = c.id
-      LEFT JOIN instructors inst ON c.instructor_id = inst.id
-      WHERE w.user_id = ?
-      ORDER BY w.created_at DESC
-    `, [userId, userId]);
+    const items = await WishlistModel.find({ user_id: userId }).sort({ created_at: -1 }).lean();
+
+    const wishlistCourses = await Promise.all(
+      items.map(async (w: any) => {
+        const c = await CourseModel.findOne({ id: w.course_id }).lean();
+        const inst = c?.instructor_id ? await InstructorModel.findOne({ id: c.instructor_id }).lean() : null;
+        const isEnrolled = await EnrollmentModel.exists({
+          user_id: userId,
+          course_id: w.course_id,
+          status: { $ne: 'revoked' }
+        });
+
+        return {
+          wishlist_id: w.id,
+          wishlisted_at: w.created_at,
+          id: c?.id || w.course_id,
+          title: c?.title || '',
+          slug: c?.slug || '',
+          short_description: c?.short_description || '',
+          thumbnail: c?.thumbnail || '',
+          price: c?.price || 0,
+          discount_price: c?.discount_price,
+          difficulty_level: c?.difficulty_level || '',
+          duration: c?.duration || '',
+          rating: c?.rating || 5.0,
+          review_count: c?.review_count || 0,
+          instructor_name: inst?.name || 'TradeX Academy',
+          is_enrolled: isEnrolled ? 1 : 0
+        };
+      })
+    );
 
     res.json({ success: true, wishlist: wishlistCourses });
   } catch (error: any) {
+    console.error('Fetch wishlist error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch wishlist.' });
   }
 });
@@ -229,19 +314,22 @@ router.post('/wishlist/:courseId', authenticateToken, async (req: AuthRequest, r
     const userId = req.user!.id;
     const { courseId } = req.params;
 
-    const existing = queryOne('SELECT id FROM wishlist WHERE user_id = ? AND course_id = ?', [userId, courseId]);
+    const existing = await WishlistModel.findOne({ user_id: userId, course_id: courseId });
 
     if (existing) {
-      execute('DELETE FROM wishlist WHERE id = ?', [existing.id]);
+      await WishlistModel.deleteOne({ id: existing.id });
       res.json({ success: true, message: 'Removed from wishlist.', is_wishlisted: false });
     } else {
-      const now = new Date().toISOString();
-      execute('INSERT INTO wishlist (id, user_id, course_id, created_at) VALUES (?, ?, ?, ?)', [
-        `wsh-${uuidv4().slice(0, 8)}`, userId, courseId, now
-      ]);
+      await WishlistModel.create({
+        id: `wsh-${uuidv4().slice(0, 8)}`,
+        user_id: userId,
+        course_id: courseId,
+        created_at: new Date()
+      });
       res.json({ success: true, message: 'Added to wishlist.', is_wishlisted: true });
     }
   } catch (error: any) {
+    console.error('Toggle wishlist error:', error);
     res.status(500).json({ success: false, message: 'Failed to toggle wishlist.' });
   }
 });
@@ -251,18 +339,22 @@ router.get('/certificates', authenticateToken, async (req: AuthRequest, res: Res
   try {
     const userId = req.user!.id;
 
-    const certificates = query(`
-      SELECT 
-        cert.*,
-        c.thumbnail as course_thumbnail, c.slug as course_slug
-      FROM certificates cert
-      JOIN courses c ON cert.course_id = c.id
-      WHERE cert.user_id = ?
-      ORDER BY cert.issued_at DESC
-    `, [userId]);
+    const certs = await CertificateModel.find({ user_id: userId }).sort({ issued_at: -1 }).lean();
 
-    res.json({ success: true, certificates });
+    const formatted = await Promise.all(
+      certs.map(async (cert: any) => {
+        const c = await CourseModel.findOne({ id: cert.course_id }).select('thumbnail slug').lean();
+        return {
+          ...cert,
+          course_thumbnail: c?.thumbnail || '',
+          course_slug: c?.slug || ''
+        };
+      })
+    );
+
+    res.json({ success: true, certificates: formatted });
   } catch (error: any) {
+    console.error('Fetch certificates error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch certificates.' });
   }
 });
@@ -272,23 +364,24 @@ router.get('/orders', authenticateToken, async (req: AuthRequest, res: Response)
   try {
     const userId = req.user!.id;
 
-    const orders = query(`
-      SELECT 
-        o.*,
-        c.title as course_title, c.thumbnail as course_thumbnail, c.slug as course_slug
-      FROM orders o
-      JOIN courses c ON o.course_id = c.id
-      WHERE o.user_id = ?
-      ORDER BY o.created_at DESC
-    `, [userId]);
+    const orders = await OrderModel.find({ user_id: userId }).sort({ created_at: -1 }).lean();
 
-    const formattedOrders = orders.map(o => ({
-      ...o,
-      billing_info: JSON.parse(o.billing_info || '{}')
-    }));
+    const formattedOrders = await Promise.all(
+      orders.map(async (o: any) => {
+        const c = await CourseModel.findOne({ id: o.course_id }).select('title thumbnail slug').lean();
+        return {
+          ...o,
+          course_title: c?.title || 'Course',
+          course_thumbnail: c?.thumbnail || '',
+          course_slug: c?.slug || '',
+          billing_info: typeof o.billing_info === 'string' ? JSON.parse(o.billing_info) : (o.billing_info || {})
+        };
+      })
+    );
 
     res.json({ success: true, orders: formattedOrders });
   } catch (error: any) {
+    console.error('Fetch orders error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch orders.' });
   }
 });

@@ -1,9 +1,6 @@
 import { Router, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { query, queryOne, execute } from '../db/database.js';
 import { authenticateToken, AuthRequest } from '../middleware/auth.js';
 import { CounselingBookingModel } from '../models/index.js';
-import { isMongoConnected } from '../db/mongodb.js';
 
 const router = Router();
 
@@ -93,62 +90,26 @@ router.post('/book', async (req: AuthRequest, res: Response) => {
 
     const bookingId = `bkg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
     const userId = req.user?.id || null;
-    const now = new Date().toISOString();
+    const now = new Date();
 
-    execute(
-      `
-      INSERT INTO counseling_bookings (
-        id, user_id, client_name, client_email, client_phone,
-        counseling_type, topic, preferred_date, preferred_time_slot,
-        experience_level, notes, status, meeting_link, admin_notes,
-        created_at, updated_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', '', '', ?, ?)
-    `,
-      [
-        bookingId,
-        userId,
-        client_name.trim(),
-        client_email.trim().toLowerCase(),
-        client_phone.trim(),
-        counseling_type,
-        topic || '',
-        preferred_date,
-        preferred_time_slot,
-        experience_level || 'Beginner',
-        notes || '',
-        now,
-        now
-      ]
-    );
-
-    // Sync to MongoDB Atlas if connected
-    if (isMongoConnected()) {
-      try {
-        await CounselingBookingModel.create({
-          id: bookingId,
-          user_id: userId,
-          client_name: client_name.trim(),
-          client_email: client_email.trim().toLowerCase(),
-          client_phone: client_phone.trim(),
-          counseling_type,
-          topic: topic || '',
-          preferred_date,
-          preferred_time_slot,
-          experience_level: experience_level || 'Beginner',
-          notes: notes || '',
-          status: 'pending',
-          meeting_link: '',
-          admin_notes: '',
-          created_at: new Date(now),
-          updated_at: new Date(now)
-        });
-      } catch (mongoErr) {
-        console.warn('MongoDB Atlas booking sync warning:', mongoErr);
-      }
-    }
-
-    const newBooking = queryOne('SELECT * FROM counseling_bookings WHERE id = ?', [bookingId]);
+    const newBooking = await CounselingBookingModel.create({
+      id: bookingId,
+      user_id: userId,
+      client_name: client_name.trim(),
+      client_email: client_email.trim().toLowerCase(),
+      client_phone: client_phone.trim(),
+      counseling_type,
+      topic: topic || '',
+      preferred_date,
+      preferred_time_slot,
+      experience_level: experience_level || 'Beginner',
+      notes: notes || '',
+      status: 'pending',
+      meeting_link: '',
+      admin_notes: '',
+      created_at: now,
+      updated_at: now
+    });
 
     res.status(201).json({
       success: true,
@@ -170,14 +131,15 @@ router.get('/my-bookings', authenticateToken, async (req: AuthRequest, res: Resp
     const userId = req.user?.id;
     const userEmail = req.user?.email;
 
-    const bookings = query(
-      `
-      SELECT * FROM counseling_bookings 
-      WHERE user_id = ? OR LOWER(client_email) = LOWER(?)
-      ORDER BY created_at DESC
-    `,
-      [userId, userEmail]
-    );
+    const queryConditions: any[] = [];
+    if (userId) queryConditions.push({ user_id: userId });
+    if (userEmail) queryConditions.push({ client_email: userEmail.toLowerCase() });
+
+    const bookings = await CounselingBookingModel.find(
+      queryConditions.length > 0 ? { $or: queryConditions } : { user_id: userId }
+    )
+      .sort({ created_at: -1 })
+      .lean();
 
     res.json({
       success: true,

@@ -1,8 +1,8 @@
 import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import { queryOne, execute } from '../db/database.js';
 import { authenticateToken, generateToken, AuthRequest } from '../middleware/auth.js';
+import { UserModel } from '../models/index.js';
 
 const router = Router();
 
@@ -21,7 +21,8 @@ router.post('/register', async (req, res: Response) => {
       return;
     }
 
-    const existingUser = queryOne('SELECT id FROM users WHERE LOWER(email) = LOWER(?)', [email.trim()]);
+    const cleanEmail = email.trim().toLowerCase();
+    const existingUser = await UserModel.findOne({ email: cleanEmail });
     if (existingUser) {
       res.status(400).json({ success: false, message: 'An account with this email already exists.' });
       return;
@@ -30,30 +31,39 @@ router.post('/register', async (req, res: Response) => {
     const salt = bcrypt.genSaltSync(10);
     const passwordHash = bcrypt.hashSync(password, salt);
     const userId = `usr-${uuidv4().slice(0, 8)}`;
-    const now = new Date().toISOString();
+    const now = new Date();
 
     const avatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=059669,06b6d4,3b82f6`;
 
-    execute(`
-      INSERT INTO users (id, name, email, password, role, avatar, headline, bio, status, created_at, updated_at)
-      VALUES (?, ?, ?, ?, 'student', ?, '', '', 'active', ?, ?)
-    `, [userId, name.trim(), email.trim().toLowerCase(), passwordHash, avatar, now, now]);
+    const newUser = await UserModel.create({
+      id: userId,
+      name: name.trim(),
+      email: cleanEmail,
+      password: passwordHash,
+      role: 'student',
+      avatar,
+      headline: '',
+      bio: '',
+      status: 'active',
+      created_at: now,
+      updated_at: now
+    });
 
-    const token = generateToken({ id: userId, email: email.trim().toLowerCase(), role: 'student', name: name.trim() });
+    const token = generateToken({ id: userId, email: cleanEmail, role: 'student', name: name.trim() });
 
     res.status(201).json({
       success: true,
       message: 'Account registered successfully.',
       token,
       user: {
-        id: userId,
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        role: 'student',
-        avatar,
-        headline: '',
-        bio: '',
-        status: 'active'
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        avatar: newUser.avatar,
+        headline: newUser.headline,
+        bio: newUser.bio,
+        status: newUser.status
       }
     });
   } catch (error: any) {
@@ -72,10 +82,8 @@ router.post('/login', async (req, res: Response) => {
       return;
     }
 
-    const user = queryOne(`
-      SELECT id, name, email, password, role, avatar, headline, bio, status
-      FROM users WHERE LOWER(email) = LOWER(?)
-    `, [email.trim()]);
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await UserModel.findOne({ email: cleanEmail });
 
     if (!user) {
       res.status(401).json({ success: false, message: 'Invalid email or password.' });
@@ -87,7 +95,7 @@ router.post('/login', async (req, res: Response) => {
       return;
     }
 
-    const isMatch = bcrypt.compareSync(password, user.password);
+    const isMatch = bcrypt.compareSync(password, user.password || '');
     if (!isMatch) {
       res.status(401).json({ success: false, message: 'Invalid email or password.' });
       return;
@@ -126,17 +134,15 @@ router.post('/admin-login', async (req, res: Response) => {
       return;
     }
 
-    const user = queryOne(`
-      SELECT id, name, email, password, role, avatar, headline, bio, status
-      FROM users WHERE LOWER(email) = LOWER(?)
-    `, [email.trim()]);
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await UserModel.findOne({ email: cleanEmail });
 
     if (!user || user.role !== 'admin') {
       res.status(401).json({ success: false, message: 'Invalid administrator credentials.' });
       return;
     }
 
-    const isMatch = bcrypt.compareSync(password, user.password);
+    const isMatch = bcrypt.compareSync(password, user.password || '');
     if (!isMatch) {
       res.status(401).json({ success: false, message: 'Invalid administrator credentials.' });
       return;
@@ -165,10 +171,7 @@ router.post('/admin-login', async (req, res: Response) => {
 // Get Current User Profile
 router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
-    const user = queryOne(`
-      SELECT id, name, email, role, avatar, headline, bio, status, created_at
-      FROM users WHERE id = ?
-    `, [req.user!.id]);
+    const user = await UserModel.findOne({ id: req.user!.id }).select('-password').lean();
 
     if (!user) {
       res.status(404).json({ success: false, message: 'User not found.' });
@@ -177,6 +180,7 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => 
 
     res.json({ success: true, user });
   } catch (error: any) {
+    console.error('Fetch me error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch user profile.' });
   }
 });
@@ -185,25 +189,21 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => 
 router.put('/profile', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
     const { name, headline, bio, avatar } = req.body;
-    const now = new Date().toISOString();
+    const updateData: any = { updated_at: new Date() };
+    if (name) updateData.name = name.trim();
+    if (headline !== undefined) updateData.headline = headline;
+    if (bio !== undefined) updateData.bio = bio;
+    if (avatar !== undefined) updateData.avatar = avatar;
 
-    execute(`
-      UPDATE users 
-      SET name = COALESCE(?, name),
-          headline = COALESCE(?, headline),
-          bio = COALESCE(?, bio),
-          avatar = COALESCE(?, avatar),
-          updated_at = ?
-      WHERE id = ?
-    `, [name, headline, bio, avatar, now, req.user!.id]);
-
-    const updatedUser = queryOne(`
-      SELECT id, name, email, role, avatar, headline, bio, status, created_at
-      FROM users WHERE id = ?
-    `, [req.user!.id]);
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { id: req.user!.id },
+      updateData,
+      { new: true }
+    ).select('-password').lean();
 
     res.json({ success: true, message: 'Profile updated successfully.', user: updatedUser });
   } catch (error: any) {
+    console.error('Update profile error:', error);
     res.status(500).json({ success: false, message: 'Failed to update profile.' });
   }
 });
@@ -223,26 +223,26 @@ router.put('/change-password', authenticateToken, async (req: AuthRequest, res: 
       return;
     }
 
-    const user = queryOne('SELECT password FROM users WHERE id = ?', [req.user!.id]);
+    const user = await UserModel.findOne({ id: req.user!.id });
     if (!user) {
       res.status(404).json({ success: false, message: 'User not found.' });
       return;
     }
 
-    const isMatch = bcrypt.compareSync(currentPassword, user.password);
+    const isMatch = bcrypt.compareSync(currentPassword, user.password || '');
     if (!isMatch) {
       res.status(400).json({ success: false, message: 'Current password does not match.' });
       return;
     }
 
     const salt = bcrypt.genSaltSync(10);
-    const newHash = bcrypt.hashSync(newPassword, salt);
-    const now = new Date().toISOString();
-
-    execute('UPDATE users SET password = ?, updated_at = ? WHERE id = ?', [newHash, now, req.user!.id]);
+    user.password = bcrypt.hashSync(newPassword, salt);
+    user.updated_at = new Date();
+    await user.save();
 
     res.json({ success: true, message: 'Password updated successfully.' });
   } catch (error: any) {
+    console.error('Change password error:', error);
     res.status(500).json({ success: false, message: 'Failed to update password.' });
   }
 });
@@ -256,14 +256,14 @@ router.post('/forgot-password', async (req, res: Response) => {
       return;
     }
 
-    const user = queryOne('SELECT id FROM users WHERE LOWER(email) = LOWER(?)', [email.trim()]);
-    // Always return success for privacy
+    const user = await UserModel.findOne({ email: email.trim().toLowerCase() });
     res.json({
       success: true,
       message: 'If an account exists with this email, password reset instructions have been sent.',
       resetToken: user ? `rst_${uuidv4()}` : null
     });
   } catch (error: any) {
+    console.error('Forgot password error:', error);
     res.status(500).json({ success: false, message: 'Server error processing request.' });
   }
 });
@@ -279,12 +279,15 @@ router.post('/reset-password', async (req, res: Response) => {
 
     const salt = bcrypt.genSaltSync(10);
     const newHash = bcrypt.hashSync(newPassword, salt);
-    const now = new Date().toISOString();
 
-    execute('UPDATE users SET password = ?, updated_at = ? WHERE LOWER(email) = LOWER(?)', [newHash, now, email.trim()]);
+    await UserModel.findOneAndUpdate(
+      { email: email.trim().toLowerCase() },
+      { password: newHash, updated_at: new Date() }
+    );
 
     res.json({ success: true, message: 'Your password has been successfully reset. You can now login.' });
   } catch (error: any) {
+    console.error('Reset password error:', error);
     res.status(500).json({ success: false, message: 'Failed to reset password.' });
   }
 });

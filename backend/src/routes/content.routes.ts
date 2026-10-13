@@ -1,26 +1,26 @@
 import { Router, Response } from 'express';
-import { query, queryOne } from '../db/database.js';
+import { SiteContentModel, UserModel, CourseModel, EnrollmentModel } from '../models/index.js';
 
 const router = Router();
 
 // Public CMS Content for Landing Page
 router.get('/', async (_req, res: Response) => {
   try {
-    const rows = query('SELECT key, value FROM site_content');
+    const rows = await SiteContentModel.find().lean();
     const content: Record<string, any> = {};
 
-    rows.forEach(r => {
+    rows.forEach((r: any) => {
       try {
-        content[r.key] = JSON.parse(r.value);
+        content[r.key] = typeof r.value === 'string' ? JSON.parse(r.value) : r.value;
       } catch {
         content[r.key] = r.value;
       }
     });
 
     // Also get live platform counts
-    const totalStudents = queryOne("SELECT COUNT(*) as count FROM users WHERE role = 'student'")?.count || 45000;
-    const totalCourses = queryOne("SELECT COUNT(*) as count FROM courses WHERE status = 'published'")?.count || 12;
-    const totalEnrollments = queryOne("SELECT COUNT(*) as count FROM enrollments WHERE status != 'revoked'")?.count || 12800;
+    const totalStudents = await UserModel.countDocuments({ role: 'student' }) || 45000;
+    const totalCourses = await CourseModel.countDocuments({ status: 'published' }) || 12;
+    const totalEnrollments = await EnrollmentModel.countDocuments({ status: { $ne: 'revoked' } }) || 12800;
 
     res.json({
       success: true,
@@ -32,6 +32,7 @@ router.get('/', async (_req, res: Response) => {
       }
     });
   } catch (error: any) {
+    console.error('Fetch site content error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch site content.' });
   }
 });
@@ -39,7 +40,7 @@ router.get('/', async (_req, res: Response) => {
 // Public Settings (including WhatsApp configuration)
 router.get('/settings', async (_req, res: Response) => {
   try {
-    const row = queryOne("SELECT value FROM site_content WHERE key = 'settings'");
+    const row = await SiteContentModel.findOne({ key: 'settings' }).lean();
     let settings = {
       platformName: 'The Safe Trading Academy',
       supportEmail: 'support@tradex.com',
@@ -51,11 +52,13 @@ router.get('/settings', async (_req, res: Response) => {
     };
     if (row?.value) {
       try {
-        settings = { ...settings, ...JSON.parse(row.value) };
+        const parsed = typeof row.value === 'string' ? JSON.parse(row.value) : row.value;
+        settings = { ...settings, ...parsed };
       } catch {}
     }
     res.json({ success: true, settings });
   } catch (error: any) {
+    console.error('Fetch settings error:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch settings.' });
   }
 });
