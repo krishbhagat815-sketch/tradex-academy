@@ -23,6 +23,10 @@ export interface TranslationDictionary {
     tagline: string;
     langGu: string;
     langEn: string;
+    themeLight: string;
+    themeDark: string;
+    themeSystem: string;
+    themeToggle: string;
   };
 
   // Promo Banner
@@ -112,6 +116,11 @@ export interface TranslationDictionary {
     levelIntermediate: string;
     levelAdvanced: string;
     levelAll: string;
+    previewVideo: string;
+    previewing: string;
+    mutePreview: string;
+    unmutePreview: string;
+    closePreview: string;
   };
 
   // Why Choose Us
@@ -308,7 +317,11 @@ export const translations: Record<Language, TranslationDictionary> = {
       whatsappHelp: 'WhatsApp Support',
       tagline: 'ગુજરાતનું #1 Trading Education Platform',
       langGu: 'ગુજરાતી (Gujlish)',
-      langEn: 'English'
+      langEn: 'English',
+      themeLight: 'લાઇટ મોડ (Light)',
+      themeDark: 'ડાર્ક મોડ (Dark)',
+      themeSystem: 'સિસ્ટમ થીમ (System)',
+      themeToggle: 'થીમ બદલો'
     },
     promo: {
       badge: '🎉 SPECIAL OFFER',
@@ -389,7 +402,12 @@ export const translations: Record<Language, TranslationDictionary> = {
       levelBeginner: 'Beginner (શરૂઆત કરનાર)',
       levelIntermediate: 'Intermediate',
       levelAdvanced: 'Advanced',
-      levelAll: 'All Levels'
+      levelAll: 'All Levels',
+      previewVideo: 'વિડિયો પ્રિવ્યુ',
+      previewing: 'Live પ્રિવ્યુ',
+      mutePreview: 'અવાજ બંધ (Mute)',
+      unmutePreview: 'અવાજ ચાલુ (Unmute)',
+      closePreview: 'પ્રિવ્યુ બંધ કરો'
     },
     whyUs: {
       badge: 'WHY THE SAFE TRADING',
@@ -564,7 +582,11 @@ export const translations: Record<Language, TranslationDictionary> = {
       whatsappHelp: 'WhatsApp Help',
       tagline: "Gujarat's Premier Trading Academy",
       langGu: 'ગુજરાતી',
-      langEn: 'English'
+      langEn: 'English',
+      themeLight: 'Light Mode',
+      themeDark: 'Dark Mode',
+      themeSystem: 'System Theme',
+      themeToggle: 'Toggle Theme'
     },
     promo: {
       badge: '🎉 SPECIAL LAUNCH OFFER',
@@ -645,7 +667,12 @@ export const translations: Record<Language, TranslationDictionary> = {
       levelBeginner: 'Beginner',
       levelIntermediate: 'Intermediate',
       levelAdvanced: 'Advanced',
-      levelAll: 'All Levels'
+      levelAll: 'All Levels',
+      previewVideo: 'Video Preview',
+      previewing: 'Live Preview',
+      mutePreview: 'Mute',
+      unmutePreview: 'Unmute',
+      closePreview: 'Close Preview'
     },
     whyUs: {
       badge: 'WHY THE SAFE TRADING?',

@@ -200,9 +200,9 @@ export const CourseDetailsPage: React.FC = () => {
   const hasDiscount = !isFree && course.discount_price != null && course.discount_price < originalPrice;
 
   return (
-    <div className="min-h-screen pb-24 bg-slate-50">
+    <div className="min-h-screen pb-24 bg-slate-50 dark:bg-[#0b0f19]">
       {/* Course Hero Header */}
-      <section className="relative bg-white border-b border-slate-200/80 pt-10 pb-16">
+      <section className="relative bg-white dark:bg-[#0f172a] border-b border-slate-200/80 dark:border-slate-800 pt-10 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
             {/* Left 2 Cols: Main Info */}
@@ -211,11 +211,11 @@ export const CourseDetailsPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <Link
                   to={`/courses?category=${course.category_slug}`}
-                  className="px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 transition-colors shadow-2xs"
+                  className="px-3 py-1 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50 hover:bg-red-100 transition-colors shadow-2xs"
                 >
                   {course.category_name}
                 </Link>
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs">
                   {course.difficulty_level}
                 </span>
                 {isFree && (
@@ -224,66 +224,66 @@ export const CourseDetailsPage: React.FC = () => {
                   </span>
                 )}
                 {course.featured ? (
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50 shadow-2xs">
                     ★ {language === 'gu' ? 'લોકપ્રિય કોર્સ' : 'FEATURED'}
                   </span>
                 ) : null}
               </div>
 
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-950 tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-950 dark:text-white tracking-tight leading-tight">
                 {course.title}
               </h1>
 
               {/* Short Description */}
-              <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                 {course.short_description}
               </p>
 
               {/* Metrics Row */}
-              <div className="flex flex-wrap items-center gap-6 pt-2 text-sm text-slate-600">
+              <div className="flex flex-wrap items-center gap-6 pt-2 text-sm text-slate-600 dark:text-slate-400">
                 <div className="flex items-center gap-1.5 text-amber-500 font-bold">
                   <Star className="w-5 h-5 fill-amber-400" />
-                  <span className="text-slate-900 text-base">{course.rating.toFixed(1)}</span>
-                  <span className="text-slate-500 font-normal">({course.review_count} {language === 'gu' ? 'રેટિંગ્સ' : 'ratings'})</span>
+                  <span className="text-slate-900 dark:text-white text-base">{course.rating.toFixed(1)}</span>
+                  <span className="text-slate-500 dark:text-slate-400 font-normal">({course.review_count} {language === 'gu' ? 'રેટિંગ્સ' : 'ratings'})</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-slate-500">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                   <Users className="w-4 h-4 text-slate-400" />
                   <span>{course.enrolled_count.toLocaleString()} {dict.courses.students}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-slate-500">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                   <Clock className="w-4 h-4 text-slate-400" />
                   <span>{course.duration} {dict.courseDetails.duration}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-slate-500">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                   <Globe className="w-4 h-4 text-slate-400" />
                   <span>{course.language || 'ગુજરાતી / English'}</span>
                 </div>
               </div>
 
               {/* Instructor snippet */}
-              <div className="pt-4 flex items-center gap-3 border-t border-slate-100">
+              <div className="pt-4 flex items-center gap-3 border-t border-slate-100 dark:border-slate-800">
                 <img
                   src={getMediaUrl(course.instructor_avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name)}`}
                   alt={course.instructor_name}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-red-500/20 bg-slate-100"
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-red-500/20 bg-slate-100 dark:bg-slate-800"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name || 'Instructor')}`;
                   }}
                 />
                 <div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {language === 'gu' ? 'મુખ્ય ટ્રેડિંગ મેન્ટર:' : 'Created by expert mentor:'}
                   </p>
-                  <h4 className="text-sm font-bold text-slate-950">{course.instructor_name}</h4>
-                  <p className="text-xs text-red-600 font-semibold">{course.instructor_title}</p>
+                  <h4 className="text-sm font-bold text-slate-950 dark:text-white">{course.instructor_name}</h4>
+                  <p className="text-xs text-red-600 dark:text-red-400 font-semibold">{course.instructor_title}</p>
                 </div>
               </div>
             </div>
 
             {/* Right Col: Desktop Pricing & Action Card */}
             <div className="lg:col-span-1 lg:-mb-32 z-20">
-              <div className="rounded-2xl bg-white border border-slate-200/90 overflow-hidden shadow-card sticky top-28">
+              <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-card sticky top-28">
                 {/* Thumbnail Preview Area */}
                 <div className="relative aspect-video bg-slate-950 group overflow-hidden">
                   <img
@@ -304,7 +304,7 @@ export const CourseDetailsPage: React.FC = () => {
                       <Play className="w-6 h-6 fill-current" />
                     </button>
                   </div>
-                  <span className="absolute bottom-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-md bg-white/90 backdrop-blur-md text-slate-900 shadow-xs">
+                  <span className="absolute bottom-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-900 dark:text-slate-100 shadow-xs">
                     {dict.courseDetails.previewLesson}
                   </span>
                 </div>
@@ -314,7 +314,7 @@ export const CourseDetailsPage: React.FC = () => {
                   {/* Pricing */}
                   <div className="flex items-baseline justify-between">
                     <div className="flex items-baseline gap-2.5">
-                      <span className="text-3xl font-extrabold text-slate-950">
+                      <span className="text-3xl font-extrabold text-slate-950 dark:text-white">
                         {formatPrice(currentPrice)}
                       </span>
                       {hasDiscount && (
@@ -324,7 +324,7 @@ export const CourseDetailsPage: React.FC = () => {
                       )}
                     </div>
                     {hasDiscount && (
-                      <span className="px-2.5 py-1 rounded-md bg-red-50 text-red-700 border border-red-200 text-xs font-black shadow-2xs">
+                      <span className="px-2.5 py-1 rounded-md bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50 text-xs font-black shadow-2xs">
                         {course.discount_percentage ? `${course.discount_percentage}% OFF` : dict.courses.saleBadge}
                       </span>
                     )}
@@ -361,8 +361,8 @@ export const CourseDetailsPage: React.FC = () => {
                       onClick={handleToggleWishlist}
                       className={`w-full py-2.5 rounded-xl border text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
                         course.is_wishlisted
-                          ? 'bg-rose-50 border-rose-200 text-rose-600'
-                          : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                          ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400'
+                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700'
                       }`}
                     >
                       <Heart className={`w-4 h-4 ${course.is_wishlisted ? 'fill-current text-rose-500' : ''}`} />
@@ -371,7 +371,7 @@ export const CourseDetailsPage: React.FC = () => {
                   </div>
 
                   {/* Trust list */}
-                  <div className="pt-4 border-t border-slate-100 space-y-2.5 text-xs text-slate-600">
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2.5 text-xs text-slate-600 dark:text-slate-400">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                       <span>{dict.courseDetails.daysGuarantee}</span>
@@ -403,16 +403,16 @@ export const CourseDetailsPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-14">
             {/* What you'll learn */}
             {course.learning_outcomes && course.learning_outcomes.length > 0 && (
-              <div className="p-8 rounded-2xl bg-white border border-slate-200/90 shadow-card">
-                <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-emerald-600" />
+              <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-card">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   {dict.courseDetails.whatYouLearn}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {course.learning_outcomes.map((item: string, idx: number) => (
                     <div key={idx} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-slate-700 leading-relaxed">{item}</span>
+                      <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -423,8 +423,8 @@ export const CourseDetailsPage: React.FC = () => {
             <div>
               <div className="flex items-baseline justify-between mb-6">
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-900">{dict.courseDetails.curriculum}</h3>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{dict.courseDetails.curriculum}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     {course.curriculum?.length || 0} {language === 'gu' ? 'મોડ્યુલ' : 'modules'} •{' '}
                     {course.curriculum?.reduce((acc: number, m: any) => acc + (m.lessons?.length || 0), 0) || 0}{' '}
                     {dict.courses.lessons} • {course.duration} {dict.courseDetails.duration}
@@ -439,7 +439,7 @@ export const CourseDetailsPage: React.FC = () => {
                     });
                     setExpandedModules(next);
                   }}
-                  className="text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+                  className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
                 >
                   {Object.values(expandedModules).every(Boolean)
                     ? (language === 'gu' ? 'બધા બંધ કરો' : 'Collapse All')
@@ -453,34 +453,34 @@ export const CourseDetailsPage: React.FC = () => {
                   return (
                     <div
                       key={mod.id}
-                      className="rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-xs"
+                      className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs"
                     >
                       {/* Module Header Accordion */}
                       <button
                         onClick={() => toggleModule(mod.id)}
-                        className="w-full px-6 py-4 flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 transition-colors text-left"
+                        className="w-full px-6 py-4 flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/80 hover:bg-slate-100/80 dark:hover:bg-slate-800 transition-colors text-left"
                       >
                         <div className="flex items-center gap-3">
                           <ChevronDown
-                            className={`w-5 h-5 text-slate-400 transition-transform ${
-                              isOpen ? 'rotate-180 text-emerald-600' : ''
+                            className={`w-5 h-5 text-slate-400 dark:text-slate-500 transition-transform ${
+                              isOpen ? 'rotate-180 text-emerald-600 dark:text-emerald-400' : ''
                             }`}
                           />
                           <div>
-                            <h4 className="text-base font-bold text-slate-900">{mod.title}</h4>
+                            <h4 className="text-base font-bold text-slate-900 dark:text-white">{mod.title}</h4>
                             {mod.description && (
-                              <p className="text-xs text-slate-500 line-clamp-1">{mod.description}</p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">{mod.description}</p>
                             )}
                           </div>
                         </div>
-                        <span className="text-xs text-slate-500 font-medium whitespace-nowrap ml-4">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap ml-4">
                           {mod.lessons?.length || 0} {dict.courses.lessons}
                         </span>
                       </button>
 
                       {/* Lessons List */}
                       {isOpen && (
-                        <div className="divide-y divide-slate-100 border-t border-slate-100">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800 border-t border-slate-100 dark:border-slate-800">
                           {mod.lessons?.map((lsn: any) => {
                             const isEnrolled = Boolean(course.is_enrolled);
                             const isPreview = Boolean(lsn.is_preview);
@@ -506,18 +506,18 @@ export const CourseDetailsPage: React.FC = () => {
                                 }}
                                 className={`px-6 py-3.5 flex items-center justify-between text-sm transition-colors cursor-pointer group ${
                                   isAccessible
-                                    ? 'hover:bg-emerald-50/50'
-                                    : 'hover:bg-amber-50/40'
+                                    ? 'hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20'
+                                    : 'hover:bg-amber-50/40 dark:hover:bg-amber-950/20'
                                 }`}
                               >
                                 <div className="flex items-center gap-3 flex-1 min-w-0 pr-4">
                                   {isAccessible ? (
-                                    <PlayCircle className="w-4 h-4 text-emerald-600 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                                    <PlayCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 group-hover:scale-110 transition-transform" />
                                   ) : (
-                                    <Lock className="w-4 h-4 text-slate-400 flex-shrink-0 group-hover:text-amber-600 transition-colors" />
+                                    <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors" />
                                   )}
                                   <span className={`truncate font-medium transition-colors ${
-                                    isAccessible ? 'text-slate-800 group-hover:text-emerald-700' : 'text-slate-600 group-hover:text-slate-900'
+                                    isAccessible ? 'text-slate-800 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300' : 'text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white'
                                   }`}>
                                     {lsn.title}
                                   </span>
@@ -534,7 +534,7 @@ export const CourseDetailsPage: React.FC = () => {
                                           title: lsn.title
                                         });
                                       }}
-                                      className="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold transition-colors flex items-center gap-1 shadow-2xs"
+                                      className="px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 text-xs font-semibold transition-colors flex items-center gap-1 shadow-2xs"
                                     >
                                       <Play className="w-3 h-3 fill-current" />
                                       <span>{dict.courseDetails.previewLesson}</span>
@@ -542,14 +542,14 @@ export const CourseDetailsPage: React.FC = () => {
                                   )}
 
                                   {!isAccessible && (
-                                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-500 border border-slate-200 group-hover:border-amber-200 group-hover:bg-amber-50 group-hover:text-amber-700 transition-colors">
+                                    <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 group-hover:border-amber-200 dark:group-hover:border-amber-800 group-hover:bg-amber-50 dark:group-hover:bg-amber-950/40 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
                                       <Lock className="w-3 h-3" />
                                       {language === 'gu' ? 'લોક કરેલ' : 'Locked'}
                                     </span>
                                   )}
 
                                   {lsn.video_duration && (
-                                    <span className="text-xs text-slate-400 font-mono">{lsn.video_duration}</span>
+                                    <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">{lsn.video_duration}</span>
                                   )}
                                 </div>
                               </div>
@@ -566,9 +566,9 @@ export const CourseDetailsPage: React.FC = () => {
             {/* Requirements & Target Audience */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {course.requirements && course.requirements.length > 0 && (
-                <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card">
-                  <h4 className="text-lg font-bold text-slate-900 mb-4">{dict.courseDetails.requirements}</h4>
-                  <ul className="space-y-2.5 text-sm text-slate-600">
+                <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-card">
+                  <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{dict.courseDetails.requirements}</h4>
+                  <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
                     {course.requirements.map((req: string, i: number) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
@@ -580,9 +580,9 @@ export const CourseDetailsPage: React.FC = () => {
               )}
 
               {course.target_audience && course.target_audience.length > 0 && (
-                <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card">
-                  <h4 className="text-lg font-bold text-slate-900 mb-4">{dict.courseDetails.targetAudience}</h4>
-                  <ul className="space-y-2.5 text-sm text-slate-600">
+                <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-card">
+                  <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">{dict.courseDetails.targetAudience}</h4>
+                  <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
                     {course.target_audience.map((aud: string, i: number) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-2 flex-shrink-0" />
@@ -595,25 +595,25 @@ export const CourseDetailsPage: React.FC = () => {
             </div>
 
             {/* Instructor Profile Card */}
-            <div className="p-8 rounded-2xl bg-white border border-slate-200/90 shadow-card">
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
+            <div className="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-card">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                 {dict.courseDetails.instructor}
               </span>
               <div className="mt-4 flex flex-col sm:flex-row items-start gap-6">
                 <img
                   src={getMediaUrl(course.instructor_avatar) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name)}`}
                   alt={course.instructor_name}
-                  className="w-20 h-20 rounded-2xl object-cover ring-2 ring-emerald-500/30 flex-shrink-0 bg-slate-100"
+                  className="w-20 h-20 rounded-2xl object-cover ring-2 ring-emerald-500/30 flex-shrink-0 bg-slate-100 dark:bg-slate-800"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(course.instructor_name || 'Instructor')}`;
                   }}
                 />
                 <div className="space-y-2 flex-1">
-                  <h4 className="text-xl font-bold text-slate-900">{course.instructor_name}</h4>
-                  <p className="text-sm text-emerald-700 font-medium">{course.instructor_title}</p>
-                  <p className="text-sm text-slate-600 leading-relaxed pt-2">{course.instructor_bio}</p>
-                  <div className="flex flex-wrap gap-4 pt-3 text-xs text-slate-500">
-                    <span className="font-semibold text-slate-900">★ {course.instructor_rating || 4.9} {dict.mentors.rating}</span>
+                  <h4 className="text-xl font-bold text-slate-900 dark:text-white">{course.instructor_name}</h4>
+                  <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">{course.instructor_title}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed pt-2">{course.instructor_bio}</p>
+                  <div className="flex flex-wrap gap-4 pt-3 text-xs text-slate-500 dark:text-slate-400">
+                    <span className="font-semibold text-slate-900 dark:text-white">★ {course.instructor_rating || 4.9} {dict.mentors.rating}</span>
                     <span>•</span>
                     <span>{(course.instructor_students || 24000).toLocaleString()} {dict.courses.students}</span>
                     <span>•</span>
@@ -627,15 +627,15 @@ export const CourseDetailsPage: React.FC = () => {
             <div className="space-y-8">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-slate-900">{dict.courseDetails.reviews}</h3>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{dict.courseDetails.reviews}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     {language === 'gu' ? 'ચકાસાયેલા વિદ્યાર્થીઓના વાસ્તવિક અભિપ્રાયો' : 'Authentic feedback from verified students'}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Star className="w-6 h-6 fill-amber-400 text-amber-400" />
-                  <span className="text-2xl font-extrabold text-slate-900">{course.rating.toFixed(1)}</span>
-                  <span className="text-xs text-slate-500 font-normal">
+                  <span className="text-2xl font-extrabold text-slate-900 dark:text-white">{course.rating.toFixed(1)}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
                     {language === 'gu' ? 'કોર્સ રેટિંગ' : 'course rating'}
                   </span>
                 </div>
@@ -643,16 +643,16 @@ export const CourseDetailsPage: React.FC = () => {
 
               {/* Review writing box for enrolled students */}
               {course.is_enrolled && (
-                <form onSubmit={handleSubmitReview} className="p-6 rounded-2xl bg-white border border-emerald-200 shadow-card space-y-4">
-                  <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-emerald-600" />
+                <form onSubmit={handleSubmitReview} className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800/50 shadow-card space-y-4">
+                  <h4 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     {dict.courseDetails.writeReview}
                   </h4>
                   {reviewSuccess && (
-                    <p className="text-xs text-emerald-700 font-semibold">{reviewSuccess}</p>
+                    <p className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">{reviewSuccess}</p>
                   )}
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-600 font-medium">
+                    <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                       {language === 'gu' ? 'તમારું રેટિંગ:' : 'Your Rating:'}
                     </span>
                     <div className="flex items-center gap-1">
@@ -665,7 +665,7 @@ export const CourseDetailsPage: React.FC = () => {
                         >
                           <Star
                             className={`w-5 h-5 ${
-                              star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
+                              star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-slate-600'
                             }`}
                           />
                         </button>
@@ -678,7 +678,7 @@ export const CourseDetailsPage: React.FC = () => {
                     placeholder={language === 'gu' ? 'આ કોર્સમાંથી તમને શું શીખવા મળ્યું તે અન્ય વિદ્યાર્થીઓ સાથે શેર કરો...' : 'Share your learning experience and what you learned...'}
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
-                    className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                    className="w-full p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800"
                   />
                   <button
                     type="submit"
@@ -694,17 +694,17 @@ export const CourseDetailsPage: React.FC = () => {
               <div className="space-y-4">
                 {course.reviews && course.reviews.length > 0 ? (
                   course.reviews.map((rev: any) => (
-                    <div key={rev.id} className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-3">
+                    <div key={rev.id} className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-card space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <img
                             src={rev.student_avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${rev.student_name}`}
                             alt={rev.student_name}
-                            className="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/20 bg-slate-100"
+                            className="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/20 bg-slate-100 dark:bg-slate-800"
                           />
                           <div>
-                            <h5 className="text-sm font-bold text-slate-900">{rev.student_name}</h5>
-                            <span className="text-[11px] text-emerald-700 font-semibold">
+                            <h5 className="text-sm font-bold text-slate-900 dark:text-white">{rev.student_name}</h5>
+                            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
                               {language === 'gu' ? 'ચકાસાયેલ વિદ્યાર્થી' : 'Verified Enrollment'}
                             </span>
                           </div>
@@ -714,17 +714,17 @@ export const CourseDetailsPage: React.FC = () => {
                             <Star
                               key={i}
                               className={`w-3.5 h-3.5 ${
-                                i < rev.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'
+                                i < rev.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200 dark:text-slate-700'
                               }`}
                             />
                           ))}
                         </div>
                       </div>
-                      <p className="text-sm text-slate-700 leading-relaxed">{rev.review_text}</p>
+                      <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{rev.review_text}</p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-slate-500 italic">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 italic">
                     {language === 'gu'
                       ? 'આ કોર્સ માટે હજુ કોઈ રિવ્યુ નથી. પ્રથમ જોડાઈને તમારો પ્રતિભાવ આપો!'
                       : 'No reviews yet for this course. Be the first to enroll and share your thoughts!'}
@@ -754,7 +754,7 @@ export const CourseDetailsPage: React.FC = () => {
           onClick={() => setLockedLectureModal(null)}
         >
           <div
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden transform animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden transform animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header / Accent Ribbon */}
@@ -786,17 +786,17 @@ export const CourseDetailsPage: React.FC = () => {
             {/* Modal Body */}
             <div className="p-6 space-y-5">
               {/* Target lecture details */}
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3 text-left">
-                <PlayCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-start gap-3 text-left">
+                <PlayCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
                     {language === 'gu' ? 'તમે જોવા માગો છો:' : 'Selected Lesson:'}
                   </p>
-                  <p className="text-sm font-bold text-slate-950 truncate mt-0.5">
+                  <p className="text-sm font-bold text-slate-950 dark:text-white truncate mt-0.5">
                     {lockedLectureModal.lessonTitle}
                   </p>
                   {lockedLectureModal.lessonDuration && (
-                    <span className="text-xs text-slate-500 font-mono mt-0.5 inline-block">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5 inline-block">
                       Duration: {lockedLectureModal.lessonDuration}
                     </span>
                   )}
@@ -804,16 +804,16 @@ export const CourseDetailsPage: React.FC = () => {
               </div>
 
               {/* Course summary & pricing */}
-              <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+              <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
                 <img
                   src={getMediaUrl(course.thumbnail)}
                   alt={course.title}
-                  className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-slate-200"
+                  className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-slate-200 dark:border-slate-700"
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-slate-950 line-clamp-1">{course.title}</h4>
+                  <h4 className="text-sm font-bold text-slate-950 dark:text-white line-clamp-1">{course.title}</h4>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-lg font-extrabold text-slate-950">
+                    <span className="text-lg font-extrabold text-slate-950 dark:text-white">
                       {formatPrice(currentPrice)}
                     </span>
                     {hasDiscount && (
@@ -822,7 +822,7 @@ export const CourseDetailsPage: React.FC = () => {
                       </span>
                     )}
                     {hasDiscount && (
-                      <span className="text-[11px] font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded">
+                      <span className="text-[11px] font-bold text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-950/60 px-1.5 py-0.5 rounded">
                         {course.discount_percentage ? `${course.discount_percentage}% OFF` : 'SALE'}
                       </span>
                     )}
@@ -831,17 +831,17 @@ export const CourseDetailsPage: React.FC = () => {
               </div>
 
               {/* Course value highlights */}
-              <div className="space-y-2 text-xs text-slate-600">
+              <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                   <span>{dict.courseDetails.lifetimeAccess || 'Full lifetime access to all course lectures & updates'}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                   <span>{dict.courseDetails.certificateIncluded || 'Official verified certificate of completion'}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                   <span>{dict.courseDetails.daysGuarantee || 'Secure payment via Razorpay with instant course unlock'}</span>
                 </div>
               </div>
@@ -867,7 +867,7 @@ export const CourseDetailsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setLockedLectureModal(null)}
-                  className="w-full py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                  className="w-full py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   {language === 'gu' ? 'પાછા જાઓ' : 'Close & Continue Exploring'}
                 </button>

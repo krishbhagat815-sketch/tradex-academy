@@ -180,20 +180,20 @@ export const CounselingBookingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-10">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-200">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50">
             <Video className="w-3.5 h-3.5" />
             <span>{language === 'gu' ? '૧-ઓન-૧ લાઈવ મેન્ટરશિપ' : '1-on-1 Live Mentorship & Counseling'}</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-950 tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-950 dark:text-white tracking-tight">
             {language === 'gu'
               ? 'નિષ્ણાત ટ્રેડર સાથે ૧-ઓન-૧ પર્સનલ કાઉન્સેલિંગ સેશન'
               : 'Book a 1-on-1 Trading Mentorship & Counseling Session'}
           </h1>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
             {language === 'gu'
               ? 'તમારા પોર્ટફોલિયોનું ઓડિટ કરાવો, તમારા લોસને રિકવર કરવાની સાચી સિસ્ટમ સમજો અને વ્યક્તિગત ગૂગલ મીટ સેશન દ્વારા તમારી ટ્રેડિંગ સાયકોલોજી સુધારો.'
               : 'Direct video consultation with verified senior traders. Review your live trades, fix your risk management, and develop a personalized profitable trading plan.'}
@@ -202,19 +202,19 @@ export const CounselingBookingPage: React.FC = () => {
 
         {/* Success Confirmation View */}
         {bookingSuccess ? (
-          <div className="bg-white rounded-3xl border border-emerald-200 shadow-xl p-8 sm:p-12 max-w-3xl mx-auto text-center space-y-6 animate-in zoom-in-95 duration-200">
-            <div className="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center ring-8 ring-emerald-50">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-emerald-200 dark:border-emerald-800 shadow-xl p-8 sm:p-12 max-w-3xl mx-auto text-center space-y-6 animate-in zoom-in-95 duration-200">
+            <div className="w-20 h-20 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center ring-8 ring-emerald-50 dark:ring-emerald-950/30">
               <CheckCircle className="w-10 h-10" />
             </div>
 
             <div>
-              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-emerald-100 text-emerald-800">
+              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
                 Booking Confirmed & Saved
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-950 mt-3">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-3">
                 {language === 'gu' ? 'તમારું કાઉન્સેલિંગ સેશન નોંધાઈ ગયું છે!' : 'Your Counseling Session is Booked!'}
               </h2>
-              <p className="text-sm text-slate-600 mt-2 max-w-md mx-auto">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-md mx-auto">
                 {language === 'gu'
                   ? 'અમારા મુખ્ય મેન્ટર તમારી વિગતો ચકાસીને ૨ કલાકમાં ગૂગલ મીટ લિંક સાથે ઇમેઇલ અને વ્હોટ્સએપ કરશે.'
                   : 'Our mentor team has received your request. You will receive an official Google Meet link and session confirmation via email and WhatsApp shortly.'}
@@ -222,26 +222,26 @@ export const CounselingBookingPage: React.FC = () => {
             </div>
 
             {/* Session Card Details */}
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-3 font-mono text-xs">
-              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 font-sans">
-                <span className="text-slate-500 font-semibold">Booking Reference ID</span>
-                <span className="font-mono font-bold text-slate-900">#{bookingSuccess.id?.slice(0, 8)}</span>
+            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-left space-y-3 font-mono text-xs">
+              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 dark:border-slate-700 font-sans">
+                <span className="text-slate-500 dark:text-slate-400 font-semibold">Booking Reference ID</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">#{bookingSuccess.id?.slice(0, 8)}</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 font-sans">
-                <span className="text-slate-500 font-semibold">Mentorship Topic</span>
-                <span className="font-bold text-slate-900">{bookingSuccess.counseling_type}</span>
+              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 dark:border-slate-700 font-sans">
+                <span className="text-slate-500 dark:text-slate-400 font-semibold">Mentorship Topic</span>
+                <span className="font-bold text-slate-900 dark:text-white">{bookingSuccess.counseling_type}</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 font-sans">
-                <span className="text-slate-500 font-semibold">Scheduled Date</span>
-                <span className="font-bold text-slate-900">{bookingSuccess.preferred_date}</span>
+              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 dark:border-slate-700 font-sans">
+                <span className="text-slate-500 dark:text-slate-400 font-semibold">Scheduled Date</span>
+                <span className="font-bold text-slate-900 dark:text-white">{bookingSuccess.preferred_date}</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 font-sans">
-                <span className="text-slate-500 font-semibold">Time Slot</span>
-                <span className="font-bold text-slate-900">{bookingSuccess.preferred_time_slot}</span>
+              <div className="flex justify-between items-center py-1 border-b border-slate-200/60 dark:border-slate-700 font-sans">
+                <span className="text-slate-500 dark:text-slate-400 font-semibold">Time Slot</span>
+                <span className="font-bold text-slate-900 dark:text-white">{bookingSuccess.preferred_time_slot}</span>
               </div>
               <div className="flex justify-between items-center py-1 font-sans">
-                <span className="text-slate-500 font-semibold">Meeting Platform</span>
-                <span className="font-bold text-emerald-700 flex items-center gap-1">
+                <span className="text-slate-500 dark:text-slate-400 font-semibold">Meeting Platform</span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                   <Video className="w-3.5 h-3.5" /> Google Meet / Zoom HD
                 </span>
               </div>
@@ -250,7 +250,7 @@ export const CounselingBookingPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
               <Link
                 to="/dashboard?tab=counseling"
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-950 hover:bg-slate-900 text-white font-bold text-sm transition-all"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-950 dark:bg-red-600 hover:bg-slate-900 dark:hover:bg-red-700 text-white font-bold text-sm transition-all"
               >
                 {language === 'gu' ? 'મારા ડેશબોર્ડ પર જુઓ' : 'View in Student Dashboard'}
               </Link>
@@ -260,7 +260,7 @@ export const CounselingBookingPage: React.FC = () => {
                   setBookingSuccess(null);
                   setNotes('');
                 }}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-sm transition-all cursor-pointer"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 font-bold text-sm transition-all cursor-pointer"
               >
                 {language === 'gu' ? 'બીજું સેશન બુક કરો' : 'Book Another Session'}
               </button>
@@ -270,13 +270,13 @@ export const CounselingBookingPage: React.FC = () => {
           /* Main Booking Form + Info Grid */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Booking Form */}
-            <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 shadow-card p-6 sm:p-8 space-y-6">
+            <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-card p-6 sm:p-8 space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-slate-950 flex items-center gap-2">
+                <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-red-600" />
                   <span>{language === 'gu' ? 'કાઉન્સેલિંગ ફોર્મ ભરો' : 'Schedule Your Session'}</span>
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   {language === 'gu'
                     ? 'તમારી અનુકૂળ તારીખ અને વિષય પસંદ કરો. અમારા મેન્ટર તમારી સાથે લાઈવ કનેક્ટ થશે.'
                     : 'Choose your desired date, slot, and focus topic. Real database-connected instant booking.'}
@@ -284,7 +284,7 @@ export const CounselingBookingPage: React.FC = () => {
               </div>
 
               {errorMsg && (
-                <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{errorMsg}</span>
                 </div>
@@ -293,7 +293,7 @@ export const CounselingBookingPage: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* 1. Select Counseling Focus */}
                 <div className="space-y-2.5">
-                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                     1. {language === 'gu' ? 'સેશનનો પ્રકાર પસંદ કરો' : 'Select Mentorship Type'}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -305,20 +305,20 @@ export const CounselingBookingPage: React.FC = () => {
                           onClick={() => setSelectedType(type.title)}
                           className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                             isSelected
-                              ? 'border-red-600 bg-red-50/50 shadow-sm ring-1 ring-red-600'
-                              : 'border-slate-200 hover:border-slate-300 bg-white'
+                              ? 'border-red-600 dark:border-red-500 bg-red-50/50 dark:bg-red-950/30 shadow-sm ring-1 ring-red-600'
+                              : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800'
                           }`}
                         >
                           <div className="flex items-center justify-between text-xs mb-1.5">
-                            <span className="font-bold text-red-600">{type.duration}</span>
+                            <span className="font-bold text-red-600 dark:text-red-400">{type.duration}</span>
                             {type.badge && (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
                                 {type.badge}
                               </span>
                             )}
                           </div>
-                          <h4 className="text-xs font-bold text-slate-950 leading-snug">{type.title}</h4>
-                          <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                          <h4 className="text-xs font-bold text-slate-950 dark:text-white leading-snug">{type.title}</h4>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                             {type.description}
                           </p>
                         </div>
@@ -329,27 +329,27 @@ export const CounselingBookingPage: React.FC = () => {
 
                 {/* 2. Date and Time Slot Picker */}
                 <div className="space-y-3">
-                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                     2. {language === 'gu' ? 'તારીખ અને સમય પસંદ કરો' : 'Date & Preferred Time Slot'}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <span className="text-xs text-slate-500 mb-1.5 block">Preferred Date:</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 mb-1.5 block">Preferred Date:</span>
                       <input
                         type="date"
                         min={new Date().toISOString().split('T')[0]}
                         value={preferredDate}
                         onChange={(e) => setPreferredDate(e.target.value)}
                         required
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
                       />
                     </div>
                     <div>
-                      <span className="text-xs text-slate-500 mb-1.5 block">Available Slot:</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 mb-1.5 block">Available Slot:</span>
                       <select
                         value={selectedSlot}
                         onChange={(e) => setSelectedSlot(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none bg-white"
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none bg-white dark:bg-slate-800"
                       >
                         {timeSlots.map((slot) => (
                           <option key={slot} value={slot}>
@@ -362,13 +362,13 @@ export const CounselingBookingPage: React.FC = () => {
                 </div>
 
                 {/* 3. Client Contact Details */}
-                <div className="space-y-3 pt-2 border-t border-slate-100">
-                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">
+                <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                     3. {language === 'gu' ? 'તમારી સંપર્ક વિગતો' : 'Your Contact Details'}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <span className="text-xs text-slate-500 mb-1 block">Full Name:</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Full Name:</span>
                       <div className="relative">
                         <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                         <input
@@ -377,13 +377,13 @@ export const CounselingBookingPage: React.FC = () => {
                           onChange={(e) => setClientName(e.target.value)}
                           placeholder="Krish Bhagat"
                           required
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <span className="text-xs text-slate-500 mb-1 block">Email Address:</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Email Address:</span>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                         <input
@@ -392,7 +392,7 @@ export const CounselingBookingPage: React.FC = () => {
                           onChange={(e) => setClientEmail(e.target.value)}
                           placeholder="name@gmail.com"
                           required
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
                         />
                       </div>
                     </div>
@@ -400,7 +400,7 @@ export const CounselingBookingPage: React.FC = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div>
-                      <span className="text-xs text-slate-500 mb-1 block">Phone / WhatsApp Number:</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Phone / WhatsApp Number:</span>
                       <div className="relative">
                         <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                         <input
@@ -409,17 +409,17 @@ export const CounselingBookingPage: React.FC = () => {
                           onChange={(e) => setClientPhone(e.target.value)}
                           placeholder="7435961016"
                           required
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <span className="text-xs text-slate-500 mb-1 block">Trading Experience:</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Trading Experience:</span>
                       <select
                         value={experienceLevel}
                         onChange={(e) => setExperienceLevel(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none bg-white"
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none bg-white dark:bg-slate-800"
                       >
                         <option value="Beginner (0-1 Years)">Beginner (0-1 Years)</option>
                         <option value="Intermediate (1-3 Years)">Intermediate (1-3 Years)</option>
@@ -430,13 +430,13 @@ export const CounselingBookingPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <span className="text-xs text-slate-500 mb-1 block">What would you like to discuss? (Optional):</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">What would you like to discuss? (Optional):</span>
                     <textarea
                       rows={3}
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="e.g. I trade Nifty options but often exit early due to emotion. Need guidance on stop-loss execution..."
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none resize-none"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-medium focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none resize-none"
                     />
                   </div>
                 </div>
@@ -501,12 +501,12 @@ export const CounselingBookingPage: React.FC = () => {
               </div>
 
               {/* Direct WhatsApp Quick Contact */}
-              <div className="bg-emerald-50 rounded-3xl p-6 border border-emerald-200 space-y-3">
-                <div className="flex items-center gap-2 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+              <div className="bg-emerald-50 dark:bg-emerald-950/30 rounded-3xl p-6 border border-emerald-200 dark:border-emerald-800/60 space-y-3">
+                <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
                   <MessageSquare className="w-4 h-4" />
                   <span>Prefer Instant WhatsApp Booking?</span>
                 </div>
-                <p className="text-xs text-emerald-900 leading-relaxed">
+                <p className="text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
                   Have an urgent query regarding market timings or session availability? Reach out directly via official WhatsApp.
                 </p>
                 <a
@@ -521,18 +521,18 @@ export const CounselingBookingPage: React.FC = () => {
               </div>
 
               {/* FAQ Accordion snippet */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-card space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Frequently Asked Questions</h4>
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/90 dark:border-slate-800 shadow-card space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Frequently Asked Questions</h4>
                 <div className="space-y-3 text-xs">
                   <div>
-                    <p className="font-bold text-slate-900">How do I join the session?</p>
-                    <p className="text-slate-500 mt-0.5">
+                    <p className="font-bold text-slate-900 dark:text-white">How do I join the session?</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">
                       You will receive a Google Meet video conference link in your email and dashboard upon confirmation.
                     </p>
                   </div>
-                  <div className="pt-2 border-t border-slate-100">
-                    <p className="font-bold text-slate-900">Can I reschedule if market is volatile?</p>
-                    <p className="text-slate-500 mt-0.5">
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <p className="font-bold text-slate-900 dark:text-white">Can I reschedule if market is volatile?</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-0.5">
                       Yes, contact us on WhatsApp at least 2 hours before the scheduled time slot to choose another date.
                     </p>
                   </div>

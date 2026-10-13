@@ -158,7 +158,7 @@ export const CookieConsentBanner: React.FC = () => {
           aria-labelledby="cookie-modal-title"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200"
         >
-          <div className="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="p-5 sm:p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-3">
@@ -185,15 +185,15 @@ export const CookieConsentBanner: React.FC = () => {
             </div>
 
             {/* Modal Content - Categories */}
-            <div className="p-5 sm:p-6 space-y-4 overflow-y-auto divide-y divide-slate-100 flex-1">
+            <div className="p-5 sm:p-6 space-y-4 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 flex-1">
               {/* Category 1: Essential (Strictly Necessary) */}
               <div className="pt-2 first:pt-0 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-slate-900">
+                    <span className="font-bold text-sm text-slate-900 dark:text-white">
                       {language === 'gu' ? 'જરૂરી કૂકીઝ (આવશ્યક)' : 'Strictly Necessary Cookies'}
                     </span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                       Always Active
                     </span>
                   </div>
@@ -205,7 +205,7 @@ export const CookieConsentBanner: React.FC = () => {
                     className="w-5 h-5 accent-red-600 cursor-not-allowed opacity-75"
                   />
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {language === 'gu'
                     ? 'આ કૂકીઝ વેબસાઇટ સુરક્ષા, વિદ્યાર્થી ઓથેન્ટિકેશન (JWT ટોકન્સ), પેમેન્ટ ગેટવે ચકાસણી અને શોપિંગ કાર્ટ માટે ફરજિયાત છે. તેને નિષ્ક્રિય કરી શકાતી નથી.'
                     : 'Required for core security, student user authentication, secure payment sessions, and enrollment verification. The platform cannot function properly without them.'}
@@ -215,7 +215,7 @@ export const CookieConsentBanner: React.FC = () => {
               {/* Category 2: Functional & Language */}
               <div className="pt-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-slate-900">
+                  <span className="font-bold text-sm text-slate-900 dark:text-white">
                     {language === 'gu' ? 'કાર્યાત્મક અને ભાષા પસંદગીઓ' : 'Functional & Language Preferences'}
                   </span>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -227,10 +227,10 @@ export const CookieConsentBanner: React.FC = () => {
                       }
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                   </label>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {language === 'gu'
                     ? 'તમારી પસંદગીની ભાષા (ગુજરાતી / English), વિડિયો પ્લેબેક સ્પીડ, વોલ્યુમ સેટિંગ્સ અને ડાર્ક/લાઇટ મોડ યાદ રાખે છે.'
                     : 'Remembers your chosen language (Gujarati / English), video lesson speed, audio volume, and player state so you never have to reselect them.'}
@@ -240,7 +240,7 @@ export const CookieConsentBanner: React.FC = () => {
               {/* Category 3: Analytics & Performance */}
               <div className="pt-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-slate-900">
+                  <span className="font-bold text-sm text-slate-900 dark:text-white">
                     {language === 'gu' ? 'વિશ્લેષણ અને પ્રદર્શન (Analytics)' : 'Analytics & Performance'}
                   </span>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -252,10 +252,10 @@ export const CookieConsentBanner: React.FC = () => {
                       }
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                   </label>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {language === 'gu'
                     ? 'અમને એ સમજવામાં મદદ કરે છે કે કયા વિષયો અને પાઠ સૌથી વધુ લોકપ્રિય છે જેથી અમે ટ્રેડિંગ શિક્ષણની ગુણવત્તા સતત સુધારી શકીએ.'
                     : 'Collects anonymous telemetry on lesson engagement and page load speeds to help our educators identify and improve the curriculum.'}
@@ -265,7 +265,7 @@ export const CookieConsentBanner: React.FC = () => {
               {/* Category 4: Marketing & Communications */}
               <div className="pt-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-slate-900">
+                  <span className="font-bold text-sm text-slate-900 dark:text-white">
                     {language === 'gu' ? 'માર્કેટિંગ અને ઑફર્સ' : 'Marketing & Live Session Offers'}
                   </span>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -277,10 +277,10 @@ export const CookieConsentBanner: React.FC = () => {
                       }
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                   </label>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {language === 'gu'
                     ? 'નવા લાઈવ વેબિનાર, સ્પેશિયલ ડિસ્કાઉન્ટ કૂપન્સ અને ૧-ઓન-૧ કાઉન્સેલિંગ સેશન વિશે સમયસર નોટિફિકેશન આપે છે.'
                     : 'Allows us to show relevant course discount popups, live webinar alerts, and tailored counseling recommendations.'}
@@ -289,11 +289,11 @@ export const CookieConsentBanner: React.FC = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="p-5 sm:p-6 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="p-5 sm:p-6 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={handleRejectNonEssential}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-100 transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               >
                 {language === 'gu' ? 'માત્ર જરૂરી રાખો' : 'Reject Non-Essential'}
               </button>

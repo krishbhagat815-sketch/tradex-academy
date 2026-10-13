@@ -19,7 +19,9 @@ import {
   MessageCircle,
   TrendingUp,
   BookOpen,
+  Sun,
 } from "lucide-react";
+import { ThemeToggle } from "../common/ThemeToggle";
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -115,7 +117,7 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-xs transition-colors">
+    <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800 shadow-xs transition-colors">
       <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 sm:gap-6">
         {/* Left Side: Brand Logo + Extended Search Bar */}
         <div className="flex items-center gap-4 lg:gap-6 flex-1 min-w-0">
@@ -124,11 +126,11 @@ export const Navbar: React.FC = () => {
               <TrendingUp className="w-6 h-6 text-red-500 stroke-[2.4]" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-slate-950 flex items-center gap-1.5 whitespace-nowrap">
+              <span className="text-xl font-extrabold tracking-tight text-slate-950 dark:text-white flex items-center gap-1.5 whitespace-nowrap">
                 The Safe
                 <span className="text-red-600 font-black">Trading</span>
               </span>
-              <span className="text-[10px] tracking-wider text-slate-500 font-medium -mt-1 font-gujarati whitespace-nowrap">
+              <span className="text-[10px] tracking-wider text-slate-500 dark:text-slate-400 font-medium -mt-1 font-gujarati whitespace-nowrap">
                 {dict.nav.tagline}
               </span>
             </div>
@@ -154,7 +156,7 @@ export const Navbar: React.FC = () => {
                     handleSearch(e);
                   }
                 }}
-                className="w-full pl-12 pr-28 py-2.5 bg-slate-100 hover:bg-slate-50 focus:bg-white border border-slate-200 focus:border-red-600 rounded-full text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all shadow-xs"
+                className="w-full pl-12 pr-28 py-2.5 bg-slate-100 hover:bg-slate-50 focus:bg-white dark:bg-slate-900 dark:hover:bg-slate-850 dark:focus:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-red-600 dark:focus:border-red-500 rounded-full text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all shadow-xs"
               />
               <button
                 type="submit"
@@ -175,7 +177,7 @@ export const Navbar: React.FC = () => {
                         navigate("/courses");
                       }
                     }}
-                    className="p-1 text-slate-400 hover:text-slate-700 transition-colors"
+                    className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
                     title="Clear"
                   >
                     <X className="w-4 h-4" />
@@ -194,36 +196,36 @@ export const Navbar: React.FC = () => {
             {/* Live Autocomplete Suggestions Dropdown */}
             {showDropdown && searchQuery.trim().length >= 2 && (
               <div
-                className="absolute left-0 right-0 top-full mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-[999] animate-in fade-in slide-in-from-top-1 duration-150"
+                className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden z-[999] animate-in fade-in slide-in-from-top-1 duration-150"
               >
-                <div className="p-3 border-b border-slate-100 bg-slate-50 text-[11px] font-semibold text-slate-500 flex items-center justify-between">
+                <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center justify-between">
                   <span>{language === 'gu' ? 'કોર્સ પરિણામો:' : 'Matching Courses:'}</span>
-                  {isSearching && <span className="text-emerald-600 animate-pulse text-[10px]">Searching...</span>}
+                  {isSearching && <span className="text-emerald-600 dark:text-emerald-400 animate-pulse text-[10px]">Searching...</span>}
                 </div>
 
                 {suggestions.length > 0 ? (
-                  <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-80 overflow-y-auto">
                     {suggestions.map((course) => (
                       <button
                         key={course.id}
                         type="button"
                         onClick={() => {
-                          navigate(`/courses/${course.slug || course.id}`);
+                          navigate(`/course/${course.slug || course.id}`);
                           setShowDropdown(false);
                         }}
-                        className="w-full text-left p-3 hover:bg-slate-50 transition-colors flex items-center gap-3 group"
+                        className="w-full text-left p-3 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors flex items-center gap-3 group"
                       >
                         <img
                           src={course.thumbnail}
                           alt={course.title}
-                          className="w-12 h-9 rounded-lg object-cover flex-shrink-0 border border-slate-200"
+                          className="w-12 h-9 rounded-lg object-cover flex-shrink-0 border border-slate-200 dark:border-slate-700"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-slate-800 group-hover:text-red-600 transition-colors truncate">
+                          <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors truncate">
                             {course.title}
                           </p>
-                          <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-500">
-                            <span className="text-red-600 font-bold">
+                          <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-500 dark:text-slate-400">
+                            <span className="text-red-600 dark:text-red-400 font-bold">
                               {formatPrice(course.discount_price ?? course.price)}
                             </span>
                             <span>•</span>
@@ -235,18 +237,18 @@ export const Navbar: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleSearch()}
-                      className="w-full text-center py-2.5 bg-slate-50 hover:bg-red-50 text-red-600 font-bold text-xs transition-colors"
+                      className="w-full text-center py-2.5 bg-slate-50 dark:bg-slate-950 hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 font-bold text-xs transition-colors"
                     >
                       {language === 'gu' ? 'બધા પરિણામો જુઓ →' : 'View all matching courses →'}
                     </button>
                   </div>
                 ) : !isSearching ? (
-                  <div className="p-4 text-center text-xs text-slate-500">
+                  <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
                     <p>{language === 'gu' ? 'કોઈ કોર્સ મળ્યો નથી.' : 'No courses found for this query.'}</p>
                     <button
                       type="button"
                       onClick={() => handleSearch()}
-                      className="mt-2 text-red-600 underline hover:text-red-700 font-semibold"
+                      className="mt-2 text-red-600 dark:text-red-400 underline hover:text-red-700 dark:hover:text-red-300 font-semibold"
                     >
                       {language === 'gu' ? 'બધા Courses પેજ પર શોધો' : 'Browse full catalog'}
                     </button>
@@ -259,7 +261,7 @@ export const Navbar: React.FC = () => {
 
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden xl:flex items-center gap-5 text-sm font-medium text-slate-700">
+        <nav className="hidden xl:flex items-center gap-5 text-sm font-medium text-slate-700 dark:text-slate-300">
           {navLinks.map((link) => {
             const isActive =
               location.pathname === link.path ||
@@ -270,8 +272,8 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`hover:text-red-600 transition-colors flex items-center gap-1.5 ${
-                  isActive ? "text-red-600 font-bold" : ""
+                className={`hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1.5 ${
+                  isActive ? "text-red-600 dark:text-red-500 font-bold" : ""
                 }`}
               >
                 <span>{link.name}</span>
@@ -287,13 +289,13 @@ export const Navbar: React.FC = () => {
         <div className="hidden sm:flex items-center gap-2.5">
           {/* Language Switcher Pill */}
           <div className="relative">
-            <div className="flex items-center bg-slate-100 border border-slate-200 rounded-full p-0.5 text-xs font-semibold">
+            <div className="flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full p-0.5 text-xs font-semibold">
               <button
                 onClick={() => setLanguage("gu")}
                 className={`px-2.5 py-1 rounded-full transition-all flex items-center gap-1 ${
                   language === "gu"
-                    ? "bg-white text-emerald-700 shadow-xs font-bold border border-slate-200/60"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-xs font-bold border border-slate-200/60 dark:border-slate-700"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
                 title="ગુજરાતી + English (Gujlish) ભાષા પસંદ કરો"
               >
@@ -303,8 +305,8 @@ export const Navbar: React.FC = () => {
                 onClick={() => setLanguage("en")}
                 className={`px-2.5 py-1 rounded-full transition-all flex items-center gap-1 ${
                   language === "en"
-                    ? "bg-white text-emerald-700 shadow-xs font-bold border border-slate-200/60"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-xs font-bold border border-slate-200/60 dark:border-slate-700"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
                 title="Switch to English"
               >
@@ -313,12 +315,15 @@ export const Navbar: React.FC = () => {
             </div>
           </div>
 
+          {/* Theme Toggle Button */}
+          <ThemeToggle variant="button" />
+
           {/* Quick WhatsApp Support Link */}
           <a
             href="https://wa.me/917435961016?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-full text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all"
+            className="p-2 rounded-full text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-800 transition-all"
             title={dict.nav.whatsappHelp}
           >
             <MessageCircle className="w-4 h-4" />
@@ -327,7 +332,7 @@ export const Navbar: React.FC = () => {
           {/* Wishlist Icon */}
           <Link
             to={user ? "/dashboard?tab=wishlist" : "/login"}
-            className="p-2 rounded-full text-slate-600 hover:text-rose-600 hover:bg-slate-100 transition-colors"
+            className="p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title={dict.nav.wishlist}
           >
             <Heart className="w-4 h-4" />
@@ -338,7 +343,7 @@ export const Navbar: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2 p-1 pr-2.5 rounded-full bg-slate-100 border border-slate-200 hover:bg-slate-200/70 transition-all text-xs font-medium"
+                className="flex items-center gap-2 p-1 pr-2.5 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-200/70 dark:hover:bg-slate-850 transition-all text-xs font-medium"
               >
                 <img
                   src={
@@ -351,7 +356,7 @@ export const Navbar: React.FC = () => {
                     (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}`;
                   }}
                 />
-                <span className="text-slate-800 max-w-[100px] truncate font-medium">
+                <span className="text-slate-800 dark:text-slate-200 max-w-[100px] truncate font-medium">
                   {user.name.split(" ")[0]}
                 </span>
                 <ChevronDown className="w-3 h-3 text-slate-500" />
@@ -359,59 +364,59 @@ export const Navbar: React.FC = () => {
 
               {userDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 rounded-2xl bg-white border border-slate-200 shadow-xl py-2 z-50 text-sm animate-in fade-in zoom-in-95 duration-100"
+                  className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-2 z-50 text-sm animate-in fade-in zoom-in-95 duration-100"
                   onClick={() => setUserDropdownOpen(false)}
                 >
-                  <div className="px-4 py-2.5 border-b border-slate-100 bg-slate-50/50">
-                    <p className="text-xs text-slate-500">
+                  <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {language === "gu" ? "લોગિન યુઝર" : "Signed in as"}
                     </p>
-                    <p className="text-sm font-bold text-slate-900 truncate">
+                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
                       {user.name}
                     </p>
-                    <p className="text-xs text-slate-500 truncate">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                       {user.email}
                     </p>
                   </div>
                   <Link
                     to="/my-courses"
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 hover:bg-red-50 hover:text-red-700 transition-colors"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 dark:hover:text-red-400 transition-colors"
                   >
                     <BookOpen className="w-4 h-4 text-red-600" />
                     {dict.nav.myCourses}
                   </Link>
                   <Link
                     to="/dashboard"
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 hover:bg-red-50 hover:text-red-700 transition-colors"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 dark:hover:text-red-400 transition-colors"
                   >
                     <LayoutDashboard className="w-4 h-4 text-red-600" />
                     {dict.nav.dashboard}
                   </Link>
                   <Link
                     to="/dashboard?tab=certificates"
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
                   >
                     <Award className="w-4 h-4 text-emerald-600" />
                     {dict.dashboard.tabCertificates}
                   </Link>
                   <Link
                     to="/dashboard?tab=wishlist"
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
                   >
                     <Heart className="w-4 h-4 text-rose-500" />
                     {dict.dashboard.tabWishlist}
                   </Link>
                   <Link
                     to="/dashboard?tab=settings"
-                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
                   >
-                    <User className="w-4 h-4 text-slate-700" />
+                    <User className="w-4 h-4 text-slate-700 dark:text-slate-300" />
                     {dict.dashboard.tabSettings}
                   </Link>
-                  <div className="border-t border-slate-100 my-1"></div>
+                  <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
                   <button
                     onClick={logout}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-rose-600 hover:bg-rose-50 transition-colors text-left font-medium"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors text-left font-medium"
                   >
                     <LogOut className="w-4 h-4" />
                     {dict.nav.logout}
@@ -423,7 +428,7 @@ export const Navbar: React.FC = () => {
             <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
+                className="px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
               >
                 {dict.nav.login}
               </Link>
@@ -439,10 +444,13 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile controls & hamburger */}
         <div className="flex items-center gap-2 sm:hidden">
+          {/* Quick Mobile Theme Toggle */}
+          <ThemeToggle variant="button" />
+
           {/* Mobile Language Switcher */}
           <button
             onClick={() => setLanguage(language === "gu" ? "en" : "gu")}
-            className="px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-900 flex items-center gap-1"
+            className="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1"
           >
             <Globe className="w-3 h-3 text-red-600" />
             <span>{language === "gu" ? "GU" : "EN"}</span>
@@ -450,7 +458,7 @@ export const Navbar: React.FC = () => {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
+            className="p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
           >
             {mobileMenuOpen ? (
               <X className="w-6 h-6" />
@@ -463,7 +471,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="sm:hidden border-t border-slate-200 bg-white px-4 py-5 space-y-4 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="sm:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 py-5 space-y-4 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
           <form onSubmit={handleSearch} className="relative flex items-center gap-2">
             <div className="relative flex-1">
               <input
@@ -471,31 +479,40 @@ export const Navbar: React.FC = () => {
                 placeholder={dict.nav.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             </div>
             <button
               type="submit"
-              className="px-4 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs"
+              className="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs"
             >
               Search
             </button>
           </form>
 
+          {/* Mobile Theme Switcher Row */}
+          <div className="flex flex-col gap-1.5 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
+            <span className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5 mb-1">
+              <Sun className="w-3.5 h-3.5 text-amber-500" />
+              {dict.nav.themeToggle}
+            </span>
+            <ThemeToggle variant="segmented" />
+          </div>
+
           {/* Mobile Language Switcher Row */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs">
-            <span className="text-slate-700 font-medium flex items-center gap-1.5">
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
+            <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
               <Globe className="w-3.5 h-3.5 text-red-600" />
               {language === "gu" ? "ભાષા પસંદ કરો:" : "Select Language:"}
             </span>
-            <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200">
+            <div className="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
               <button
                 onClick={() => setLanguage("gu")}
                 className={`px-3 py-1 rounded-md text-xs font-bold ${
                   language === "gu"
-                    ? "bg-slate-950 text-white"
-                    : "text-slate-600"
+                    ? "bg-slate-950 dark:bg-slate-900 text-white"
+                    : "text-slate-600 dark:text-slate-400"
                 }`}
               >
                 ગુજરાતી (Gujlish)
@@ -504,8 +521,8 @@ export const Navbar: React.FC = () => {
                 onClick={() => setLanguage("en")}
                 className={`px-3 py-1 rounded-md text-xs font-bold ${
                   language === "en"
-                    ? "bg-slate-950 text-white"
-                    : "text-slate-600"
+                    ? "bg-slate-950 dark:bg-slate-900 text-white"
+                    : "text-slate-600 dark:text-slate-400"
                 }`}
               >
                 English
@@ -527,13 +544,13 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`px-3 py-2 text-sm font-medium rounded-lg flex items-center justify-between transition-colors ${
                     isActive
-                      ? "text-red-700 bg-red-50 font-bold"
-                      : "text-slate-700 hover:text-red-600 hover:bg-slate-50"
+                      ? "text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/40 font-bold"
+                      : "text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-900"
                   }`}
                 >
                   <span>{link.name}</span>
                   {link.badge && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-300">
                       {link.badge}
                     </span>
                   )}
@@ -542,13 +559,13 @@ export const Navbar: React.FC = () => {
             })}
           </div>
 
-          <div className="pt-3 border-t border-slate-200">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
             {user ? (
               <div className="space-y-2">
                 <Link
                   to="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-950 text-white font-bold text-sm shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-950 dark:bg-slate-900 text-white font-bold text-sm shadow-sm"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   {dict.nav.dashboard}
@@ -558,7 +575,7 @@ export const Navbar: React.FC = () => {
                     logout();
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full py-2 text-xs text-rose-600 hover:bg-rose-50 rounded-xl"
+                  className="w-full py-2 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl"
                 >
                   {dict.nav.logout}
                 </button>
@@ -568,7 +585,7 @@ export const Navbar: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2.5 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl"
+                  className="w-full text-center py-2.5 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl"
                 >
                   {dict.nav.login}
                 </Link>

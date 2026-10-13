@@ -63,9 +63,9 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
 
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end select-none">
-      {/* Popover Window (Modern Light Theme) */}
+      {/* Popover Window (Modern Light / Dark Theme) */}
       {isOpen && (
-        <div className="mb-4 w-80 sm:w-96 rounded-3xl bg-white border border-slate-200/90 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
+        <div className="mb-4 w-80 sm:w-96 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
           {/* Header */}
           <div className="p-4 bg-emerald-600 text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -94,9 +94,9 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
           </div>
 
           {/* Body */}
-          <div className="p-4 bg-slate-50 text-sm space-y-3">
-            <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 text-slate-700 text-xs leading-relaxed shadow-2xs">
-              <p className="font-bold text-emerald-700 mb-1 flex items-center gap-1">
+          <div className="p-4 bg-slate-50 dark:bg-slate-900/95 text-sm space-y-3">
+            <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs leading-relaxed shadow-2xs">
+              <p className="font-bold text-emerald-700 dark:text-emerald-400 mb-1 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" />
                 {language === 'gu' ? 'નમસ્તે ટ્રેડર મિત્ર! 🙏' : 'Hello Trader! 🙏'}
               </p>
@@ -109,7 +109,7 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
 
             {/* Quick Prompts */}
             <div className="space-y-1.5">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 {language === 'gu' ? 'વારંવાર પૂછાતા પ્રશ્નો પસંદ કરો:' : 'Quick Questions:'}
               </p>
               <div className="flex flex-col gap-1.5">
@@ -117,7 +117,7 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
                   <button
                     key={idx}
                     onClick={() => handleSend(prompt)}
-                    className="text-left text-xs px-3.5 py-2.5 rounded-xl bg-white hover:bg-emerald-50/60 border border-slate-200 hover:border-emerald-300 text-slate-700 hover:text-emerald-800 transition-all cursor-pointer font-medium shadow-2xs"
+                    className="text-left text-xs px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-emerald-50/60 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600 text-slate-700 dark:text-slate-200 hover:text-emerald-800 dark:hover:text-emerald-300 transition-all cursor-pointer font-medium shadow-2xs"
                   >
                     👉 {prompt}
                   </button>
@@ -133,7 +133,7 @@ export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
                 onChange={(e) => setCustomMsg(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder={language === 'gu' ? 'તમારો સવાલ અહીં લખો...' : 'Type your message...'}
-                className="flex-1 px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="flex-1 px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
               />
               <button
                 onClick={() => handleSend()}

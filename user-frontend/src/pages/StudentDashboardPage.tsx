@@ -212,8 +212,8 @@ export const StudentDashboardPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-screen">
       {/* Student Welcome Banner */}
-      <div className="p-8 sm:p-10 rounded-3xl bg-white border border-slate-200/90 shadow-card relative overflow-hidden mb-10">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-red-100/30 blur-[100px] rounded-full pointer-events-none" />
+      <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-card relative overflow-hidden mb-10">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-red-100/30 dark:bg-red-950/20 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative z-10 text-center sm:text-left">
           <img
@@ -222,19 +222,19 @@ export const StudentDashboardPage: React.FC = () => {
               `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name || "Student")}`
             }
             alt={user?.name}
-            className="w-20 h-20 rounded-2xl object-cover ring-4 ring-slate-900/10 shadow-md bg-slate-100"
+            className="w-20 h-20 rounded-2xl object-cover ring-4 ring-slate-900/10 dark:ring-white/10 shadow-md bg-slate-100 dark:bg-slate-800"
             onError={(e) => {
               (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name || "Student")}`;
             }}
           />
           <div className="flex-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200 mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-red-600" /> Student Learning Portal
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/50 mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-red-600 dark:text-red-400" /> Student Learning Portal
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
               {dict.dashboard.welcome} {user?.name}!
             </h1>
-            <p className="mt-1 text-sm text-slate-600 max-w-2xl">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
               {user?.headline ||
                 (language === 'gu'
                   ? 'Trading ની શરૂઆત કરો અને market concepts ને step by step સમજો. 100% completion તરફ આગળ વધો!'
@@ -252,36 +252,36 @@ export const StudentDashboardPage: React.FC = () => {
         </div>
 
         {/* Quick Stats Grid */}
-        <div className="mt-8 pt-8 border-t border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-            <p className="text-xs text-slate-500 font-medium">
+        <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {dict.dashboard.statsEnrolled}
             </p>
-            <p className="text-2xl font-extrabold text-slate-950 mt-1">
+            <p className="text-2xl font-extrabold text-slate-950 dark:text-white mt-1">
               {stats.totalEnrolled}
             </p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-            <p className="text-xs text-slate-500 font-medium">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {language === 'gu' ? 'In Progress Courses' : 'In Progress'}
             </p>
-            <p className="text-2xl font-extrabold text-red-600 mt-1">
+            <p className="text-2xl font-extrabold text-red-600 dark:text-red-400 mt-1">
               {stats.inProgressCourses}
             </p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-            <p className="text-xs text-slate-500 font-medium">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {dict.dashboard.statsCompleted}
             </p>
-            <p className="text-2xl font-extrabold text-emerald-600 mt-1">
+            <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">
               {stats.completedCourses}
             </p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-            <p className="text-xs text-slate-500 font-medium">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {dict.dashboard.statsCertificates}
             </p>
-            <p className="text-2xl font-extrabold text-amber-600 mt-1">
+            <p className="text-2xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">
               {stats.certificatesEarned}
             </p>
           </div>
@@ -289,13 +289,13 @@ export const StudentDashboardPage: React.FC = () => {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 border-b border-slate-200 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 border-b border-slate-200 dark:border-slate-800 scrollbar-none">
         <button
           onClick={() => setTab("courses")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "courses"
-              ? "bg-slate-950 text-white shadow-xs"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-slate-950 dark:bg-red-600 text-white shadow-xs"
+              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -306,8 +306,8 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("certificates")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "certificates"
-              ? "bg-slate-950 text-white shadow-xs"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-slate-950 dark:bg-red-600 text-white shadow-xs"
+              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
           <Award className="w-4 h-4" />
@@ -318,8 +318,8 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("wishlist")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "wishlist"
-              ? "bg-slate-950 text-white shadow-xs"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-slate-950 dark:bg-red-600 text-white shadow-xs"
+              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
           <Heart className="w-4 h-4" />
@@ -330,8 +330,8 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("orders")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "orders"
-              ? "bg-slate-950 text-white shadow-xs"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-slate-950 dark:bg-red-600 text-white shadow-xs"
+              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
           <ShoppingBag className="w-4 h-4" />
@@ -342,8 +342,8 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("counseling")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "counseling"
-              ? "bg-slate-950 text-white shadow-xs"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-slate-950 dark:bg-red-600 text-white shadow-xs"
+              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
           <Calendar className="w-4 h-4 text-red-500" />
@@ -354,8 +354,8 @@ export const StudentDashboardPage: React.FC = () => {
           onClick={() => setTab("settings")}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
             currentTab === "settings"
-              ? "bg-slate-950 text-white shadow-xs"
-              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-slate-950 dark:bg-red-600 text-white shadow-xs"
+              : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
           <Settings className="w-4 h-4" />
