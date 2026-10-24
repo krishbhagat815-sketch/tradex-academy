@@ -1,25 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const database_js_1 = require("../db/database.js");
+const index_js_1 = require("../models/index.js");
 const router = (0, express_1.Router)();
 // Public CMS Content for Landing Page
 router.get('/', async (_req, res) => {
     try {
-        const rows = (0, database_js_1.query)('SELECT key, value FROM site_content');
+        const rows = await index_js_1.SiteContentModel.find().lean();
         const content = {};
-        rows.forEach(r => {
+        rows.forEach((r) => {
             try {
-                content[r.key] = JSON.parse(r.value);
+                content[r.key] = typeof r.value === 'string' ? JSON.parse(r.value) : r.value;
             }
             catch {
                 content[r.key] = r.value;
             }
         });
         // Also get live platform counts
-        const totalStudents = (0, database_js_1.queryOne)("SELECT COUNT(*) as count FROM users WHERE role = 'student'")?.count || 45000;
-        const totalCourses = (0, database_js_1.queryOne)("SELECT COUNT(*) as count FROM courses WHERE status = 'published'")?.count || 12;
-        const totalEnrollments = (0, database_js_1.queryOne)("SELECT COUNT(*) as count FROM enrollments WHERE status != 'revoked'")?.count || 12800;
+        const totalStudents = await index_js_1.UserModel.countDocuments({ role: 'student' }) || 45000;
+        const totalCourses = await index_js_1.CourseModel.countDocuments({ status: 'published' }) || 12;
+        const totalEnrollments = await index_js_1.EnrollmentModel.countDocuments({ status: { $ne: 'revoked' } }) || 12800;
         res.json({
             success: true,
             content,
@@ -31,13 +31,14 @@ router.get('/', async (_req, res) => {
         });
     }
     catch (error) {
+        console.error('Fetch site content error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch site content.' });
     }
 });
 // Public Settings (including WhatsApp configuration)
 router.get('/settings', async (_req, res) => {
     try {
-        const row = (0, database_js_1.queryOne)("SELECT value FROM site_content WHERE key = 'settings'");
+        const row = await index_js_1.SiteContentModel.findOne({ key: 'settings' }).lean();
         let settings = {
             platformName: 'The Safe Trading Academy',
             supportEmail: 'support@tradex.com',
@@ -49,13 +50,15 @@ router.get('/settings', async (_req, res) => {
         };
         if (row?.value) {
             try {
-                settings = { ...settings, ...JSON.parse(row.value) };
+                const parsed = typeof row.value === 'string' ? JSON.parse(row.value) : row.value;
+                settings = { ...settings, ...parsed };
             }
             catch { }
         }
         res.json({ success: true, settings });
     }
     catch (error) {
+        console.error('Fetch settings error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch settings.' });
     }
 });

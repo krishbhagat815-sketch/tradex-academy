@@ -2,40 +2,43 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const uuid_1 = require("uuid");
-const database_js_1 = require("../db/database.js");
 const auth_js_1 = require("../middleware/auth.js");
+const index_js_1 = require("../models/index.js");
 const router = (0, express_1.Router)();
 // Get Approved Reviews for a Course
 router.get('/course/:courseId', async (req, res) => {
     try {
         const { courseId } = req.params;
-        const reviews = (0, database_js_1.query)(`
-      SELECT 
-        r.id, r.course_id, r.rating, r.review_text, r.created_at,
-        u.name as student_name, u.avatar as student_avatar
-      FROM reviews r
-      JOIN users u ON r.user_id = u.id
-      WHERE r.course_id = ? AND r.status = 'approved'
-      ORDER BY r.created_at DESC
-    `, [courseId]);
-        // Rating breakdown stats
-        const statsRow = (0, database_js_1.queryOne)(`
-      SELECT 
-        COUNT(*) as total,
-        AVG(rating) as avg_rating
-      FROM reviews
-      WHERE course_id = ? AND status = 'approved'
-    `, [courseId]);
+        const reviews = await index_js_1.ReviewModel.find({ course_id: courseId, status: 'approved' })
+            .sort({ created_at: -1 })
+            .lean();
+        const formattedReviews = await Promise.all(reviews.map(async (r) => {
+            const user = await index_js_1.UserModel.findOne({ id: r.user_id }).lean();
+            return {
+                id: r.id,
+                course_id: r.course_id,
+                rating: r.rating,
+                review_text: r.review_text,
+                created_at: r.created_at,
+                student_name: user?.name || 'Student',
+                student_avatar: user?.avatar || ''
+            };
+        }));
+        const total = reviews.length;
+        const avgRating = total > 0
+            ? Math.round((reviews.reduce((sum, r) => sum + Number(r.rating || 5), 0) / total) * 10) / 10
+            : 5.0;
         res.json({
             success: true,
-            reviews,
+            reviews: formattedReviews,
             stats: {
-                total: Number(statsRow?.total || 0),
-                average: statsRow?.avg_rating ? Math.round(Number(statsRow.avg_rating) * 10) / 10 : 5.0
+                total,
+                average: avgRating
             }
         });
     }
     catch (error) {
+        console.error('Fetch reviews error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch reviews.' });
     }
 });
@@ -50,50 +53,48 @@ router.post('/', auth_js_1.authenticateToken, async (req, res) => {
         }
         const numRating = Math.max(1, Math.min(5, Number(rating)));
         // Verify enrollment
-        const enrollment = (0, database_js_1.queryOne)(`
-      SELECT id FROM enrollments WHERE user_id = ? AND course_id = ? AND status != 'revoked'
-    `, [userId, courseId]);
+        const enrollment = await index_js_1.EnrollmentModel.findOne({
+            user_id: userId,
+            course_id: courseId,
+            status: { $ne: 'revoked' }
+        });
         if (!enrollment && req.user.role !== 'admin') {
             res.status(403).json({ success: false, message: 'Only enrolled students can review this course.' });
             return;
         }
-        const now = new Date().toISOString();
-        const existing = (0, database_js_1.queryOne)('SELECT id FROM reviews WHERE user_id = ? AND course_id = ?', [userId, courseId]);
+        const existing = await index_js_1.ReviewModel.findOne({ user_id: userId, course_id: courseId });
         if (existing) {
-            (0, database_js_1.execute)(`
-        UPDATE reviews
-        SET rating = ?, review_text = ?, updated_at = ?
-        WHERE id = ?
-      `, [numRating, reviewText.trim(), now, existing.id]);
+            existing.rating = numRating;
+            existing.review_text = reviewText.trim();
+            existing.updated_at = new Date();
+            await existing.save();
         }
         else {
-            (0, database_js_1.execute)(`
-        INSERT INTO reviews (id, course_id, user_id, rating, review_text, status, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, 'approved', ?, ?)
-      `, [`rev-${(0, uuid_1.v4)().slice(0, 8)}`, courseId, userId, numRating, reviewText.trim(), now, now]);
+            await index_js_1.ReviewModel.create({
+                id: `rev-${(0, uuid_1.v4)().slice(0, 8)}`,
+                course_id: courseId,
+                user_id: userId,
+                rating: numRating,
+                review_text: reviewText.trim(),
+                status: 'approved',
+                created_at: new Date(),
+                updated_at: new Date()
+            });
         }
         // Recalculate course average rating and review_count
-        const stats = (0, database_js_1.queryOne)(`
-      SELECT COUNT(*) as count, AVG(rating) as avg_rating
-      FROM reviews WHERE course_id = ? AND status = 'approved'
-    `, [courseId]);
-        const avgRating = stats?.avg_rating ? Math.round(Number(stats.avg_rating) * 10) / 10 : 5.0;
-        const reviewCount = Number(stats?.count || 0);
-        (0, database_js_1.execute)(`
-      UPDATE courses
-      SET rating = ?, review_count = ?
-      WHERE id = ?
-    `, [avgRating, reviewCount, courseId]);
+        const allApprovedReviews = await index_js_1.ReviewModel.find({ course_id: courseId, status: 'approved' });
+        const count = allApprovedReviews.length;
+        const avgRating = count > 0
+            ? Math.round((allApprovedReviews.reduce((sum, r) => sum + Number(r.rating || 5), 0) / count) * 10) / 10
+            : 5.0;
+        await index_js_1.CourseModel.findOneAndUpdate({ id: courseId }, { rating: avgRating, review_count: count, updated_at: new Date() });
         res.json({
             success: true,
-            message: 'Your review has been submitted successfully!',
-            rating: numRating,
-            course_rating: avgRating,
-            course_reviews_count: reviewCount
+            message: 'Review submitted successfully.'
         });
     }
     catch (error) {
-        console.error('Review submit error:', error);
+        console.error('Submit review error:', error);
         res.status(500).json({ success: false, message: 'Failed to submit review.' });
     }
 });

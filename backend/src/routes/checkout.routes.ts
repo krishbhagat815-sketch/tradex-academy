@@ -224,7 +224,11 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
     } = req.body;
 
     const { keySecret, isReal } = getRazorpayConfig();
-    const isSimulated = !razorpay_order_id || razorpay_order_id.startsWith('order_sim_') || razorpay_order_id.startsWith('order_test_');
+    const isSimulated =
+      !razorpay_order_id ||
+      razorpay_order_id.startsWith('order_sim_') ||
+      razorpay_order_id.startsWith('order_test_') ||
+      (!razorpay_signature && (process.env.NODE_ENV === 'development' || !isReal));
 
     if (!isSimulated && isReal && razorpay_signature) {
       const generated_signature = crypto
@@ -233,7 +237,7 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
         .digest('hex');
 
       if (generated_signature !== razorpay_signature) {
-        res.status(400).json({ success: false, message: 'Payment verification failed.' });
+        res.status(400).json({ success: false, message: 'Payment verification failed: Invalid signature.' });
         return;
       }
     }
@@ -247,11 +251,19 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
     const existingEnrollment = await EnrollmentModel.findOne({
       user_id: userId,
       course_id: courseId,
-      status: { $ne: 'revoked' }
+      status: 'active'
     });
 
     if (existingEnrollment) {
-      res.status(400).json({ success: false, message: 'You are already enrolled in this course.' });
+      res.status(200).json({
+        success: true,
+        message: 'You are already enrolled in this course.',
+        order: {
+          id: existingEnrollment.order_id || `ord-${uuidv4().slice(0, 8)}`,
+          payment_status: 'completed'
+        },
+        enrollment: existingEnrollment
+      });
       return;
     }
 
@@ -282,43 +294,60 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
     const now = new Date();
     const effectivePaymentId = razorpay_payment_id || `pay_${uuidv4().replace(/-/g, '').slice(0, 14)}`;
 
-    // 1. Create Order in MongoDB
-    const newOrder = await OrderModel.create({
-      id: orderId,
-      order_number: orderNumber,
-      user_id: userId,
-      course_id: courseId,
-      amount: finalAmount,
-      discount_amount: discountAmount,
-      coupon_code: appliedCoupon ? appliedCoupon.code : null,
-      payment_method: paymentMethod,
-      payment_status: 'completed',
-      billing_info: { ...(billingInfo || {}), razorpay_order_id, razorpay_payment_id: effectivePaymentId },
-      transaction_id: effectivePaymentId,
-      razorpay_order_id: razorpay_order_id || null,
-      razorpay_payment_id: effectivePaymentId,
-      created_at: now,
-      updated_at: now
-    });
+    // 1. Safely Upsert Order in MongoDB
+    const updatedOrder = await OrderModel.findOneAndUpdate(
+      { razorpay_order_id: razorpay_order_id || `order_sim_${uuidv4().replace(/-/g, '').slice(0, 14)}` },
+      {
+        $set: {
+          payment_status: 'completed',
+          transaction_id: effectivePaymentId,
+          razorpay_payment_id: effectivePaymentId,
+          razorpay_signature: razorpay_signature || null,
+          billing_info: { ...(billingInfo || {}), razorpay_order_id, razorpay_payment_id: effectivePaymentId },
+          payment_method: paymentMethod,
+          updated_at: now
+        },
+        $setOnInsert: {
+          id: orderId,
+          order_number: orderNumber,
+          user_id: userId,
+          course_id: courseId,
+          amount: finalAmount,
+          discount_amount: discountAmount,
+          coupon_code: appliedCoupon ? appliedCoupon.code : null,
+          currency: 'INR',
+          created_at: now
+        }
+      },
+      { upsert: true, returnDocument: 'after' }
+    );
 
-    // 2. Create Payment Record in MongoDB
-    await PaymentModel.create({
-      id: `pay_rec_${uuidv4().slice(0, 8)}`,
-      order_id: orderId,
-      user_id: userId,
-      course_id: courseId,
-      amount: finalAmount,
-      currency: 'INR',
-      method: paymentMethod,
-      status: 'captured',
-      razorpay_order_id: razorpay_order_id || null,
-      razorpay_payment_id: effectivePaymentId,
-      razorpay_signature: razorpay_signature || null,
-      captured: true,
-      raw_payload: { billingInfo },
-      created_at: now,
-      updated_at: now
-    });
+    // 2. Safely Upsert Payment Record in MongoDB
+    await PaymentModel.findOneAndUpdate(
+      { razorpay_payment_id: effectivePaymentId },
+      {
+        $set: {
+          order_id: updatedOrder?.id || orderId,
+          user_id: userId,
+          course_id: courseId,
+          amount: finalAmount,
+          currency: 'INR',
+          method: paymentMethod,
+          status: 'captured',
+          razorpay_order_id: razorpay_order_id || null,
+          razorpay_payment_id: effectivePaymentId,
+          razorpay_signature: razorpay_signature || null,
+          captured: true,
+          raw_payload: { billingInfo },
+          updated_at: now
+        },
+        $setOnInsert: {
+          id: `pay_rec_${uuidv4().slice(0, 8)}`,
+          created_at: now
+        }
+      },
+      { upsert: true, returnDocument: 'after' }
+    );
 
     // 3. Find First Lesson
     let firstLessonId: string | null = null;
@@ -329,20 +358,27 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
       firstLessonId = firstLesson?.id || null;
     }
 
-    // 4. Create Enrollment
+    // 4. Safely Upsert Enrollment in MongoDB (avoids duplicate key error on user_id + course_id)
     const enrollmentId = `enr-${uuidv4().slice(0, 8)}`;
-    await EnrollmentModel.create({
-      id: enrollmentId,
-      user_id: userId,
-      course_id: courseId,
-      order_id: orderId,
-      enrolled_at: now,
-      progress_percent: 0,
-      last_lesson_id: firstLessonId,
-      status: 'active',
-      created_at: now,
-      updated_at: now
-    });
+    const updatedEnrollment = await EnrollmentModel.findOneAndUpdate(
+      { user_id: userId, course_id: courseId },
+      {
+        $set: {
+          status: 'active',
+          order_id: updatedOrder?.id || orderId,
+          enrolled_at: now,
+          ...(firstLessonId ? { last_lesson_id: firstLessonId } : {})
+        },
+        $setOnInsert: {
+          id: enrollmentId,
+          user_id: userId,
+          course_id: courseId,
+          progress_percent: 0,
+          created_at: now
+        }
+      },
+      { upsert: true, returnDocument: 'after' }
+    );
 
     // 5. Increment course enrolled_count
     await CourseModel.updateOne({ id: courseId }, { $inc: { enrolled_count: 1 } });
@@ -355,28 +391,28 @@ router.post('/verify-payment', authenticateToken, async (req: AuthRequest, res: 
     // 7. Remove from wishlist
     await WishlistModel.deleteOne({ user_id: userId, course_id: courseId });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: 'Payment verified and course access granted.',
       order: {
-        id: orderId,
-        order_number: orderNumber,
+        id: updatedOrder?.id || orderId,
+        order_number: updatedOrder?.order_number || orderNumber,
         transaction_id: effectivePaymentId,
-        amount: finalAmount,
+        amount: updatedOrder?.amount != null ? updatedOrder.amount : finalAmount,
         discount_amount: discountAmount,
         payment_method: paymentMethod,
         payment_status: 'completed',
-        created_at: now.toISOString()
+        created_at: (updatedOrder?.created_at || now).toISOString()
       },
       enrollment: {
-        id: enrollmentId,
+        id: updatedEnrollment?.id || enrollmentId,
         course_id: courseId,
-        first_lesson_id: firstLessonId
+        first_lesson_id: updatedEnrollment?.last_lesson_id || firstLessonId
       }
     });
   } catch (error: any) {
     console.error('Payment verification error:', error);
-    res.status(500).json({ success: false, message: 'Payment verification failed.' });
+    res.status(500).json({ success: false, message: error?.message || 'Payment verification failed.' });
   }
 });
 

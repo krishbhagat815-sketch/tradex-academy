@@ -212,7 +212,11 @@ router.post('/verify', authenticateToken, async (req: AuthRequest, res: Response
     } = req.body;
 
     const { keySecret, isReal, client } = getRazorpayConfig();
-    const isSimulated = !razorpay_order_id || razorpay_order_id.startsWith('order_sim_') || razorpay_order_id.startsWith('order_test_');
+    const isSimulated =
+      !razorpay_order_id ||
+      razorpay_order_id.startsWith('order_sim_') ||
+      razorpay_order_id.startsWith('order_test_') ||
+      (!razorpay_signature && (process.env.NODE_ENV === 'development' || !isReal));
 
     // 1. Signature Verification for Live/Real Razorpay Orders
     if (!isSimulated && isReal) {
@@ -291,8 +295,8 @@ router.post('/verify', authenticateToken, async (req: AuthRequest, res: Response
     const enrollmentId = `enr-${uuidv4().slice(0, 8)}`;
     const now = new Date();
 
-    // 5. Update or Create in MongoDB Atlas
-    await OrderModel.findOneAndUpdate(
+    // 5. Update or Create Order in MongoDB Atlas
+    const updatedOrder = await OrderModel.findOneAndUpdate(
       { razorpay_order_id: razorpay_order_id },
       {
         $set: {
@@ -316,29 +320,34 @@ router.post('/verify', authenticateToken, async (req: AuthRequest, res: Response
           created_at: now
         }
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     // Record Payment in MongoDB
     await PaymentModel.findOneAndUpdate(
       { razorpay_payment_id: effectivePaymentId },
       {
-        id: `pay_rec_${uuidv4().slice(0, 8)}`,
-        order_id: orderId,
-        razorpay_order_id: razorpay_order_id,
-        razorpay_payment_id: effectivePaymentId,
-        razorpay_signature: razorpay_signature || null,
-        amount: finalAmount,
-        currency: 'INR',
-        status: 'captured',
-        method: paymentMethod,
-        user_id: userId,
-        course_id: courseId,
-        captured: true,
-        raw_payload: { billingInfo },
-        updated_at: now
+        $set: {
+          order_id: updatedOrder?.id || orderId,
+          razorpay_order_id: razorpay_order_id,
+          razorpay_payment_id: effectivePaymentId,
+          razorpay_signature: razorpay_signature || null,
+          amount: finalAmount,
+          currency: 'INR',
+          status: 'captured',
+          method: paymentMethod,
+          user_id: userId,
+          course_id: courseId,
+          captured: true,
+          raw_payload: { billingInfo },
+          updated_at: now
+        },
+        $setOnInsert: {
+          id: `pay_rec_${uuidv4().slice(0, 8)}`,
+          created_at: now
+        }
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     // Find first lesson for enrollment
@@ -350,24 +359,26 @@ router.post('/verify', authenticateToken, async (req: AuthRequest, res: Response
       firstLessonId = firstLesson?.id || null;
     }
 
-    // Automatic Enrollment in MongoDB
-    await EnrollmentModel.findOneAndUpdate(
+    // Automatic Enrollment in MongoDB:
+    // Safely upsert and activate enrollment without conflicting Mongoose timestamps
+    const updatedEnrollment = await EnrollmentModel.findOneAndUpdate(
       { user_id: userId, course_id: courseId },
       {
+        $set: {
+          status: 'active',
+          order_id: updatedOrder?.id || orderId,
+          enrolled_at: now,
+          ...(firstLessonId ? { last_lesson_id: firstLessonId } : {})
+        },
         $setOnInsert: {
           id: enrollmentId,
           user_id: userId,
           course_id: courseId,
-          order_id: orderId,
-          enrolled_at: now,
           progress_percent: 0,
-          last_lesson_id: firstLessonId,
-          status: 'active',
-          created_at: now,
-          updated_at: now
+          created_at: now
         }
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     await CourseModel.updateOne(
@@ -388,21 +399,22 @@ router.post('/verify', authenticateToken, async (req: AuthRequest, res: Response
       success: true,
       message: 'Payment verified and course access granted successfully.',
       order: {
-        id: orderId,
-        order_number: orderNumber,
-        amount: finalAmount,
+        id: updatedOrder?.id || orderId,
+        order_number: updatedOrder?.order_number || orderNumber,
+        amount: updatedOrder?.amount != null ? updatedOrder.amount : finalAmount,
         payment_status: 'completed',
+        payment_method: paymentMethod,
         transaction_id: effectivePaymentId
       },
       enrollment: {
-        id: enrollmentId,
+        id: updatedEnrollment?.id || enrollmentId,
         course_id: courseId,
-        first_lesson_id: firstLessonId
+        first_lesson_id: updatedEnrollment?.last_lesson_id || firstLessonId
       }
     });
   } catch (error: any) {
     console.error('❌ [Payments] verification error:', error);
-    res.status(500).json({ success: false, message: 'Payment verification failed.' });
+    res.status(500).json({ success: false, message: error?.message || 'Payment verification failed.' });
   }
 });
 

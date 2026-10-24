@@ -5,15 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const uuid_1 = require("uuid");
-const database_js_1 = require("../db/database.js");
 const auth_js_1 = require("../middleware/auth.js");
 const razorpay_1 = __importDefault(require("razorpay"));
 const crypto_1 = __importDefault(require("crypto"));
-const mongodb_js_1 = require("../db/mongodb.js");
-const index_js_1 = require("../models/index.js");
-const router = (0, express_1.Router)();
 const dotenv_1 = __importDefault(require("dotenv"));
+const index_js_1 = require("../models/index.js");
 dotenv_1.default.config();
+const router = (0, express_1.Router)();
 // Helper to get active Razorpay client and keys dynamically
 function getRazorpayConfig() {
     const keyId = process.env.RAZORPAY_KEY_ID?.trim() || '';
@@ -37,9 +35,10 @@ router.post('/validate-coupon', async (req, res) => {
             res.status(400).json({ success: false, message: 'Please provide a coupon code.' });
             return;
         }
-        const coupon = (0, database_js_1.queryOne)(`
-      SELECT * FROM coupons WHERE UPPER(code) = UPPER(?) AND is_active = 1
-    `, [couponCode.trim()]);
+        const coupon = await index_js_1.CouponModel.findOne({
+            code: { $regex: new RegExp(`^${couponCode.trim()}$`, 'i') },
+            is_active: 1
+        }).lean();
         if (!coupon) {
             res.status(404).json({ success: false, message: 'Invalid or inactive coupon code.' });
             return;
@@ -56,7 +55,7 @@ router.post('/validate-coupon', async (req, res) => {
         }
         let coursePrice = 0;
         if (courseId) {
-            const course = (0, database_js_1.queryOne)('SELECT price, discount_price FROM courses WHERE id = ?', [courseId]);
+            const course = await index_js_1.CourseModel.findOne({ id: courseId }).select('price discount_price').lean();
             if (course) {
                 coursePrice = course.discount_price != null ? Number(course.discount_price) : Number(course.price);
             }
@@ -104,15 +103,17 @@ router.post('/create-razorpay-order', auth_js_1.authenticateToken, async (req, r
             res.status(400).json({ success: false, message: 'Course ID is required.' });
             return;
         }
-        const course = (0, database_js_1.queryOne)('SELECT * FROM courses WHERE id = ?', [courseId]);
+        const course = await index_js_1.CourseModel.findOne({ id: courseId }).lean();
         if (!course) {
             res.status(404).json({ success: false, message: 'Course not found.' });
             return;
         }
         // Check if user already enrolled
-        const existingEnrollment = (0, database_js_1.queryOne)(`
-      SELECT id FROM enrollments WHERE user_id = ? AND course_id = ? AND status != 'revoked'
-    `, [userId, courseId]);
+        const existingEnrollment = await index_js_1.EnrollmentModel.findOne({
+            user_id: userId,
+            course_id: courseId,
+            status: { $ne: 'revoked' }
+        });
         if (existingEnrollment) {
             res.status(400).json({ success: false, message: 'You are already enrolled in this course.' });
             return;
@@ -120,9 +121,10 @@ router.post('/create-razorpay-order', auth_js_1.authenticateToken, async (req, r
         const basePrice = course.discount_price != null ? Number(course.discount_price) : Number(course.price);
         let discountAmount = 0;
         if (couponCode) {
-            const coupon = (0, database_js_1.queryOne)(`
-        SELECT * FROM coupons WHERE UPPER(code) = UPPER(?) AND is_active = 1
-      `, [couponCode.trim()]);
+            const coupon = await index_js_1.CouponModel.findOne({
+                code: { $regex: new RegExp(`^${couponCode.trim()}$`, 'i') },
+                is_active: 1
+            });
             if (coupon) {
                 if (coupon.discount_type === 'percent') {
                     discountAmount = (basePrice * Number(coupon.discount_value)) / 100;
@@ -140,15 +142,14 @@ router.post('/create-razorpay-order', auth_js_1.authenticateToken, async (req, r
         }
         const amountInPaise = Math.round(finalAmount * 100);
         const receipt = `receipt_${(0, uuid_1.v4)().slice(0, 8)}`;
-        const { keyId, keySecret, isReal, client } = getRazorpayConfig();
+        const { keyId, isReal, client } = getRazorpayConfig();
         let orderId = `order_sim_${(0, uuid_1.v4)().replace(/-/g, '').slice(0, 14)}`;
         let isRealRazorpayOrder = false;
-        // Check if real key is present and try creating real Razorpay order
         if (isReal) {
             try {
                 const options = {
                     amount: amountInPaise,
-                    currency: "INR",
+                    currency: 'INR',
                     receipt: receipt,
                     payment_capture: 1
                 };
@@ -164,7 +165,7 @@ router.post('/create-razorpay-order', auth_js_1.authenticateToken, async (req, r
             success: true,
             orderId,
             amount: finalAmount,
-            currency: "INR",
+            currency: 'INR',
             keyId: isReal ? keyId : 'rzp_test_placeholder',
             isRealRazorpay: isRealRazorpayOrder,
             paymentMethod,
@@ -182,37 +183,50 @@ router.post('/verify-payment', auth_js_1.authenticateToken, async (req, res) => 
         const userId = req.user.id;
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature, courseId, couponCode, billingInfo, paymentMethod = 'UPI' } = req.body;
         const { keySecret, isReal } = getRazorpayConfig();
-        const isSimulated = !razorpay_order_id || razorpay_order_id.startsWith('order_sim_') || razorpay_order_id.startsWith('order_test_');
-        // Verify signature only for live/real Razorpay orders
+        const isSimulated = !razorpay_order_id ||
+            razorpay_order_id.startsWith('order_sim_') ||
+            razorpay_order_id.startsWith('order_test_') ||
+            (!razorpay_signature && (process.env.NODE_ENV === 'development' || !isReal));
         if (!isSimulated && isReal && razorpay_signature) {
             const generated_signature = crypto_1.default
                 .createHmac('sha256', keySecret)
-                .update(razorpay_order_id + "|" + razorpay_payment_id)
+                .update(razorpay_order_id + '|' + razorpay_payment_id)
                 .digest('hex');
             if (generated_signature !== razorpay_signature) {
-                res.status(400).json({ success: false, message: 'Payment verification failed.' });
+                res.status(400).json({ success: false, message: 'Payment verification failed: Invalid signature.' });
                 return;
             }
         }
-        const course = (0, database_js_1.queryOne)('SELECT * FROM courses WHERE id = ?', [courseId]);
+        const course = await index_js_1.CourseModel.findOne({ id: courseId }).lean();
         if (!course) {
             res.status(404).json({ success: false, message: 'Course not found.' });
             return;
         }
-        const existingEnrollment = (0, database_js_1.queryOne)(`
-      SELECT id FROM enrollments WHERE user_id = ? AND course_id = ? AND status != 'revoked'
-    `, [userId, courseId]);
+        const existingEnrollment = await index_js_1.EnrollmentModel.findOne({
+            user_id: userId,
+            course_id: courseId,
+            status: 'active'
+        });
         if (existingEnrollment) {
-            res.status(400).json({ success: false, message: 'You are already enrolled in this course.' });
+            res.status(200).json({
+                success: true,
+                message: 'You are already enrolled in this course.',
+                order: {
+                    id: existingEnrollment.order_id || `ord-${(0, uuid_1.v4)().slice(0, 8)}`,
+                    payment_status: 'completed'
+                },
+                enrollment: existingEnrollment
+            });
             return;
         }
         const basePrice = course.discount_price != null ? Number(course.discount_price) : Number(course.price);
         let discountAmount = 0;
         let appliedCoupon = null;
         if (couponCode) {
-            const coupon = (0, database_js_1.queryOne)(`
-        SELECT * FROM coupons WHERE UPPER(code) = UPPER(?) AND is_active = 1
-      `, [couponCode.trim()]);
+            const coupon = await index_js_1.CouponModel.findOne({
+                code: { $regex: new RegExp(`^${couponCode.trim()}$`, 'i') },
+                is_active: 1
+            });
             if (coupon) {
                 appliedCoupon = coupon;
                 if (coupon.discount_type === 'percent') {
@@ -227,128 +241,110 @@ router.post('/verify-payment', auth_js_1.authenticateToken, async (req, res) => 
         const finalAmount = Math.max(0, Math.round((basePrice - discountAmount) * 100) / 100);
         const orderId = `ord-${(0, uuid_1.v4)().slice(0, 8)}`;
         const orderNumber = `TRX-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
-        const now = new Date().toISOString();
+        const now = new Date();
         const effectivePaymentId = razorpay_payment_id || `pay_${(0, uuid_1.v4)().replace(/-/g, '').slice(0, 14)}`;
-        // 1. Create Order
-        (0, database_js_1.execute)(`
-      INSERT INTO orders (
-        id, order_number, user_id, course_id, amount, discount_amount,
-        coupon_code, payment_method, payment_status, billing_info, transaction_id, created_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'completed', ?, ?, ?)
-    `, [
-            orderId, orderNumber, userId, courseId, finalAmount, discountAmount,
-            appliedCoupon ? appliedCoupon.code : null, paymentMethod,
-            JSON.stringify({ ...(billingInfo || {}), razorpay_order_id, razorpay_payment_id: effectivePaymentId }), effectivePaymentId, now
-        ]);
-        // 2. Create Enrollment
+        // 1. Safely Upsert Order in MongoDB
+        const updatedOrder = await index_js_1.OrderModel.findOneAndUpdate({ razorpay_order_id: razorpay_order_id || `order_sim_${(0, uuid_1.v4)().replace(/-/g, '').slice(0, 14)}` }, {
+            $set: {
+                payment_status: 'completed',
+                transaction_id: effectivePaymentId,
+                razorpay_payment_id: effectivePaymentId,
+                razorpay_signature: razorpay_signature || null,
+                billing_info: { ...(billingInfo || {}), razorpay_order_id, razorpay_payment_id: effectivePaymentId },
+                payment_method: paymentMethod,
+                updated_at: now
+            },
+            $setOnInsert: {
+                id: orderId,
+                order_number: orderNumber,
+                user_id: userId,
+                course_id: courseId,
+                amount: finalAmount,
+                discount_amount: discountAmount,
+                coupon_code: appliedCoupon ? appliedCoupon.code : null,
+                currency: 'INR',
+                created_at: now
+            }
+        }, { upsert: true, returnDocument: 'after' });
+        // 2. Safely Upsert Payment Record in MongoDB
+        await index_js_1.PaymentModel.findOneAndUpdate({ razorpay_payment_id: effectivePaymentId }, {
+            $set: {
+                order_id: updatedOrder?.id || orderId,
+                user_id: userId,
+                course_id: courseId,
+                amount: finalAmount,
+                currency: 'INR',
+                method: paymentMethod,
+                status: 'captured',
+                razorpay_order_id: razorpay_order_id || null,
+                razorpay_payment_id: effectivePaymentId,
+                razorpay_signature: razorpay_signature || null,
+                captured: true,
+                raw_payload: { billingInfo },
+                updated_at: now
+            },
+            $setOnInsert: {
+                id: `pay_rec_${(0, uuid_1.v4)().slice(0, 8)}`,
+                created_at: now
+            }
+        }, { upsert: true, returnDocument: 'after' });
+        // 3. Find First Lesson
+        let firstLessonId = null;
+        if (course.modules && course.modules.length > 0 && course.modules[0].lessons && course.modules[0].lessons.length > 0) {
+            firstLessonId = course.modules[0].lessons[0].id;
+        }
+        else {
+            const firstLesson = await index_js_1.LessonModel.findOne({ course_id: courseId }).sort({ order_num: 1 }).lean();
+            firstLessonId = firstLesson?.id || null;
+        }
+        // 4. Safely Upsert Enrollment in MongoDB (avoids duplicate key error on user_id + course_id)
         const enrollmentId = `enr-${(0, uuid_1.v4)().slice(0, 8)}`;
-        const firstLesson = (0, database_js_1.queryOne)(`
-      SELECT l.id FROM lessons l
-      JOIN modules m ON l.module_id = m.id
-      WHERE l.course_id = ?
-      ORDER BY m.order_num ASC, l.order_num ASC
-      LIMIT 1
-    `, [courseId]);
-        (0, database_js_1.execute)(`
-      INSERT INTO enrollments (id, user_id, course_id, order_id, enrolled_at, progress_percent, last_lesson_id, status)
-      VALUES (?, ?, ?, ?, ?, 0, ?, 'active')
-    `, [enrollmentId, userId, courseId, orderId, now, firstLesson?.id || null]);
-        // 3. Increment course enrolled_count
-        (0, database_js_1.execute)(`
-      UPDATE courses SET enrolled_count = enrolled_count + 1 WHERE id = ?
-    `, [courseId]);
-        // 4. Update coupon usage
+        const updatedEnrollment = await index_js_1.EnrollmentModel.findOneAndUpdate({ user_id: userId, course_id: courseId }, {
+            $set: {
+                status: 'active',
+                order_id: updatedOrder?.id || orderId,
+                enrolled_at: now,
+                ...(firstLessonId ? { last_lesson_id: firstLessonId } : {})
+            },
+            $setOnInsert: {
+                id: enrollmentId,
+                user_id: userId,
+                course_id: courseId,
+                progress_percent: 0,
+                created_at: now
+            }
+        }, { upsert: true, returnDocument: 'after' });
+        // 5. Increment course enrolled_count
+        await index_js_1.CourseModel.updateOne({ id: courseId }, { $inc: { enrolled_count: 1 } });
+        // 6. Update coupon usage
         if (appliedCoupon) {
-            (0, database_js_1.execute)(`
-        UPDATE coupons SET used_count = used_count + 1 WHERE id = ?
-      `, [appliedCoupon.id]);
+            await index_js_1.CouponModel.updateOne({ id: appliedCoupon.id }, { $inc: { used_count: 1 } });
         }
-        // 5. Remove from wishlist if exists
-        (0, database_js_1.execute)('DELETE FROM wishlist WHERE user_id = ? AND course_id = ?', [userId, courseId]);
-        // 6. Sync to MongoDB Atlas
-        if ((0, mongodb_js_1.isMongoConnected)()) {
-            try {
-                await index_js_1.OrderModel.findOneAndUpdate({ razorpay_order_id: razorpay_order_id }, {
-                    $set: {
-                        payment_status: 'completed',
-                        transaction_id: effectivePaymentId,
-                        razorpay_payment_id: effectivePaymentId,
-                        razorpay_signature: razorpay_signature || null,
-                        billing_info: billingInfo || {},
-                        payment_method: paymentMethod,
-                        updated_at: new Date()
-                    },
-                    $setOnInsert: {
-                        id: orderId,
-                        order_number: orderNumber,
-                        user_id: userId,
-                        course_id: courseId,
-                        amount: finalAmount,
-                        discount_amount: discountAmount,
-                        coupon_code: appliedCoupon ? appliedCoupon.code : null,
-                        currency: 'INR',
-                        created_at: new Date()
-                    }
-                }, { upsert: true, new: true });
-                await index_js_1.PaymentModel.findOneAndUpdate({ razorpay_payment_id: effectivePaymentId }, {
-                    id: `pay_rec_${(0, uuid_1.v4)().slice(0, 8)}`,
-                    order_id: orderId,
-                    razorpay_order_id: razorpay_order_id,
-                    razorpay_payment_id: effectivePaymentId,
-                    razorpay_signature: razorpay_signature || null,
-                    amount: finalAmount,
-                    currency: 'INR',
-                    status: 'captured',
-                    method: paymentMethod,
-                    user_id: userId,
-                    course_id: courseId,
-                    captured: true,
-                    raw_payload: { billingInfo },
-                    updated_at: new Date()
-                }, { upsert: true, new: true });
-                await index_js_1.EnrollmentModel.findOneAndUpdate({ user_id: userId, course_id: courseId }, {
-                    $setOnInsert: {
-                        id: enrollmentId,
-                        user_id: userId,
-                        course_id: courseId,
-                        order_id: orderId,
-                        enrolled_at: new Date(),
-                        progress_percent: 0,
-                        status: 'active',
-                        created_at: new Date(),
-                        updated_at: new Date()
-                    }
-                }, { upsert: true, new: true });
-                await index_js_1.CourseModel.updateOne({ id: courseId }, { $inc: { enrolled_count: 1 } });
-            }
-            catch (mongoErr) {
-                console.warn('⚠️ [MongoDB] checkout route persistence warning:', mongoErr?.message || mongoErr);
-            }
-        }
-        res.status(201).json({
+        // 7. Remove from wishlist
+        await index_js_1.WishlistModel.deleteOne({ user_id: userId, course_id: courseId });
+        res.status(200).json({
             success: true,
             message: 'Payment verified and course access granted.',
             order: {
-                id: orderId,
-                order_number: orderNumber,
+                id: updatedOrder?.id || orderId,
+                order_number: updatedOrder?.order_number || orderNumber,
                 transaction_id: effectivePaymentId,
-                amount: finalAmount,
+                amount: updatedOrder?.amount != null ? updatedOrder.amount : finalAmount,
                 discount_amount: discountAmount,
                 payment_method: paymentMethod,
                 payment_status: 'completed',
-                created_at: now
+                created_at: (updatedOrder?.created_at || now).toISOString()
             },
             enrollment: {
-                id: enrollmentId,
+                id: updatedEnrollment?.id || enrollmentId,
                 course_id: courseId,
-                first_lesson_id: firstLesson?.id || null
+                first_lesson_id: updatedEnrollment?.last_lesson_id || firstLessonId
             }
         });
     }
     catch (error) {
         console.error('Payment verification error:', error);
-        res.status(500).json({ success: false, message: 'Payment verification failed.' });
+        res.status(500).json({ success: false, message: error?.message || 'Payment verification failed.' });
     }
 });
 // Process Checkout & Payment (Fallback for free courses)
@@ -360,15 +356,16 @@ router.post('/process', auth_js_1.authenticateToken, async (req, res) => {
             res.status(400).json({ success: false, message: 'Course ID is required.' });
             return;
         }
-        const course = (0, database_js_1.queryOne)('SELECT * FROM courses WHERE id = ?', [courseId]);
+        const course = await index_js_1.CourseModel.findOne({ id: courseId }).lean();
         if (!course) {
             res.status(404).json({ success: false, message: 'Course not found.' });
             return;
         }
-        // Check if user already enrolled
-        const existingEnrollment = (0, database_js_1.queryOne)(`
-      SELECT id FROM enrollments WHERE user_id = ? AND course_id = ? AND status != 'revoked'
-    `, [userId, courseId]);
+        const existingEnrollment = await index_js_1.EnrollmentModel.findOne({
+            user_id: userId,
+            course_id: courseId,
+            status: { $ne: 'revoked' }
+        });
         if (existingEnrollment) {
             res.status(400).json({ success: false, message: 'You are already enrolled in this course.' });
             return;
@@ -377,9 +374,10 @@ router.post('/process', auth_js_1.authenticateToken, async (req, res) => {
         let discountAmount = 0;
         let appliedCoupon = null;
         if (couponCode) {
-            const coupon = (0, database_js_1.queryOne)(`
-        SELECT * FROM coupons WHERE UPPER(code) = UPPER(?) AND is_active = 1
-      `, [couponCode.trim()]);
+            const coupon = await index_js_1.CouponModel.findOne({
+                code: { $regex: new RegExp(`^${couponCode.trim()}$`, 'i') },
+                is_active: 1
+            });
             if (coupon) {
                 appliedCoupon = coupon;
                 if (coupon.discount_type === 'percent') {
@@ -399,44 +397,54 @@ router.post('/process', auth_js_1.authenticateToken, async (req, res) => {
         const orderId = `ord-${(0, uuid_1.v4)().slice(0, 8)}`;
         const orderNumber = `TRX-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
         const transactionId = `tx_${(0, uuid_1.v4)().replace(/-/g, '').slice(0, 16)}`;
-        const now = new Date().toISOString();
+        const now = new Date();
         // 1. Create Order
-        (0, database_js_1.execute)(`
-      INSERT INTO orders (
-        id, order_number, user_id, course_id, amount, discount_amount,
-        coupon_code, payment_method, payment_status, billing_info, transaction_id, created_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'completed', ?, ?, ?)
-    `, [
-            orderId, orderNumber, userId, courseId, finalAmount, discountAmount,
-            appliedCoupon ? appliedCoupon.code : null, paymentMethod,
-            JSON.stringify(billingInfo || {}), transactionId, now
-        ]);
-        // 2. Create Enrollment
-        const enrollmentId = `enr-${(0, uuid_1.v4)().slice(0, 8)}`;
-        const firstLesson = (0, database_js_1.queryOne)(`
-      SELECT l.id FROM lessons l
-      JOIN modules m ON l.module_id = m.id
-      WHERE l.course_id = ?
-      ORDER BY m.order_num ASC, l.order_num ASC
-      LIMIT 1
-    `, [courseId]);
-        (0, database_js_1.execute)(`
-      INSERT INTO enrollments (id, user_id, course_id, order_id, enrolled_at, progress_percent, last_lesson_id, status)
-      VALUES (?, ?, ?, ?, ?, 0, ?, 'active')
-    `, [enrollmentId, userId, courseId, orderId, now, firstLesson?.id || null]);
-        // 3. Increment course enrolled_count
-        (0, database_js_1.execute)(`
-      UPDATE courses SET enrolled_count = enrolled_count + 1 WHERE id = ?
-    `, [courseId]);
-        // 4. Update coupon usage
-        if (appliedCoupon) {
-            (0, database_js_1.execute)(`
-        UPDATE coupons SET used_count = used_count + 1 WHERE id = ?
-      `, [appliedCoupon.id]);
+        await index_js_1.OrderModel.create({
+            id: orderId,
+            order_number: orderNumber,
+            user_id: userId,
+            course_id: courseId,
+            amount: finalAmount,
+            discount_amount: discountAmount,
+            coupon_code: appliedCoupon ? appliedCoupon.code : null,
+            payment_method: paymentMethod,
+            payment_status: 'completed',
+            billing_info: billingInfo || {},
+            transaction_id: transactionId,
+            created_at: now,
+            updated_at: now
+        });
+        // 2. Find first lesson
+        let firstLessonId = null;
+        if (course.modules && course.modules.length > 0 && course.modules[0].lessons && course.modules[0].lessons.length > 0) {
+            firstLessonId = course.modules[0].lessons[0].id;
         }
-        // 5. Remove from wishlist if exists
-        (0, database_js_1.execute)('DELETE FROM wishlist WHERE user_id = ? AND course_id = ?', [userId, courseId]);
+        else {
+            const firstLesson = await index_js_1.LessonModel.findOne({ course_id: courseId }).sort({ order_num: 1 }).lean();
+            firstLessonId = firstLesson?.id || null;
+        }
+        // 3. Create Enrollment
+        const enrollmentId = `enr-${(0, uuid_1.v4)().slice(0, 8)}`;
+        await index_js_1.EnrollmentModel.create({
+            id: enrollmentId,
+            user_id: userId,
+            course_id: courseId,
+            order_id: orderId,
+            enrolled_at: now,
+            progress_percent: 0,
+            last_lesson_id: firstLessonId,
+            status: 'active',
+            created_at: now,
+            updated_at: now
+        });
+        // 4. Increment course enrolled_count
+        await index_js_1.CourseModel.updateOne({ id: courseId }, { $inc: { enrolled_count: 1 } });
+        // 5. Update coupon usage
+        if (appliedCoupon) {
+            await index_js_1.CouponModel.updateOne({ id: appliedCoupon.id }, { $inc: { used_count: 1 } });
+        }
+        // 6. Remove from wishlist
+        await index_js_1.WishlistModel.deleteOne({ user_id: userId, course_id: courseId });
         res.status(201).json({
             success: true,
             message: 'Checkout completed successfully and course access granted.',
@@ -447,12 +455,12 @@ router.post('/process', auth_js_1.authenticateToken, async (req, res) => {
                 amount: finalAmount,
                 discount_amount: discountAmount,
                 payment_status: 'completed',
-                created_at: now
+                created_at: now.toISOString()
             },
             enrollment: {
                 id: enrollmentId,
                 course_id: courseId,
-                first_lesson_id: firstLesson?.id || null
+                first_lesson_id: firstLessonId
             }
         });
     }

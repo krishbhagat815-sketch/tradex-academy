@@ -7,9 +7,6 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const database_js_1 = require("./db/database.js");
-const schema_js_1 = require("./db/schema.js");
-const seed_js_1 = require("./seed/seed.js");
 const mongodb_js_1 = require("./db/mongodb.js");
 const auth_routes_js_1 = __importDefault(require("./routes/auth.routes.js"));
 const course_routes_js_1 = __importDefault(require("./routes/course.routes.js"));
@@ -50,8 +47,9 @@ app.get('/api/health', (_req, res) => {
         timestamp: new Date().toISOString(),
         service: 'The Safe Trading & TradeX Academy API Server',
         database: {
-            sqlite: 'active',
-            mongodb: (0, mongodb_js_1.isMongoConnected)() ? 'connected (Atlas)' : 'disconnected / fallback'
+            type: 'MongoDB Atlas',
+            mongodb: (0, mongodb_js_1.isMongoConnected)() ? 'connected (Atlas)' : 'disconnected',
+            status: (0, mongodb_js_1.isMongoConnected)() ? 'healthy' : 'degraded'
         }
     });
 });
@@ -63,7 +61,7 @@ app.get('/', (_req, res) => {
       <p style="color: #94a3b8; font-size: 16px;">Backend server is live and running successfully!</p>
       <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left;">
         <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #4ade80;">Active (200 OK)</span></p>
-        <p style="margin: 5px 0;"><strong>MongoDB Atlas:</strong> <span style="color: ${(0, mongodb_js_1.isMongoConnected)() ? '#4ade80' : '#f59e0b'};">${(0, mongodb_js_1.isMongoConnected)() ? 'Connected' : 'Fallback / Not configured'}</span></p>
+        <p style="margin: 5px 0;"><strong>Database:</strong> <span style="color: ${(0, mongodb_js_1.isMongoConnected)() ? '#4ade80' : '#ef4444'};">${(0, mongodb_js_1.isMongoConnected)() ? 'MongoDB Atlas (Connected)' : 'MongoDB Atlas (Disconnected)'}</span></p>
         <p style="margin: 5px 0;"><strong>Razorpay Payments:</strong> <span style="color: #4ade80;">Integrated & Active</span></p>
         <p style="margin: 5px 0;"><strong>Health Endpoint:</strong> <a href="/api/health" style="color: #38bdf8;">/api/health</a></p>
       </div>
@@ -97,19 +95,14 @@ app.use((err, _req, res, _next) => {
 });
 async function startServer() {
     try {
-        // 1. Initialize SQLite storage
-        await (0, database_js_1.getDb)();
-        await (0, schema_js_1.initSchema)();
-        // 2. Connect to MongoDB Atlas (if MONGODB_URI is provided)
-        await (0, mongodb_js_1.connectMongoDB)();
-        // Check if initial Gujarati trading courses exist; if not, seed automatically
-        const gujjuCourse = (0, database_js_1.queryOne)("SELECT id FROM courses WHERE slug = 'stock-market-basics-for-beginners-gujarati'");
-        if (!gujjuCourse) {
-            console.log('Gujarati Trading courses not found in database. Auto-seeding initial data...');
-            await (0, seed_js_1.runSeed)();
+        // Connect to MongoDB Atlas (sole database)
+        const mongoConnected = await (0, mongodb_js_1.connectMongoDB)();
+        if (!mongoConnected) {
+            console.warn('⚠️ Server starting with pending MongoDB connection...');
         }
         app.listen(PORT, () => {
             console.log(`🚀 The Safe Trading Backend running on http://localhost:${PORT}`);
+            console.log(`🍃 Database: MongoDB Atlas (${(0, mongodb_js_1.isMongoConnected)() ? 'Connected' : 'Pending'})`);
         });
     }
     catch (err) {
