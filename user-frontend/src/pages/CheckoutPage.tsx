@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
-import QRCode from 'qrcode';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import {
   ShieldCheck,
-  CreditCard,
   Lock,
   CheckCircle2,
   AlertCircle,
-  Smartphone,
-  Building2,
-  QrCode,
-  Clock,
-  Sparkles,
-  Check,
   X,
   ExternalLink,
 } from 'lucide-react';
@@ -34,29 +26,6 @@ function loadRazorpayScript(src: string) {
     document.body.appendChild(script);
   });
 }
-
-const POPULAR_BANKS = [
-  { id: 'HDFC', name: 'HDFC Bank', code: 'HDFC', color: 'bg-blue-50 text-blue-800 border-blue-200' },
-  { id: 'SBI', name: 'State Bank of India (SBI)', code: 'SBIN', color: 'bg-sky-50 text-sky-800 border-sky-200' },
-  { id: 'ICICI', name: 'ICICI Bank', code: 'ICIC', color: 'bg-amber-50 text-amber-800 border-amber-200' },
-  { id: 'AXIS', name: 'Axis Bank', code: 'UTIB', color: 'bg-rose-50 text-rose-800 border-rose-200' },
-  { id: 'KOTAK', name: 'Kotak Mahindra Bank', code: 'KKBK', color: 'bg-red-50 text-red-800 border-red-200' },
-  { id: 'BOB', name: 'Bank of Baroda', code: 'BARB', color: 'bg-orange-50 text-orange-800 border-orange-200' },
-];
-
-const OTHER_BANKS = [
-  'Punjab National Bank (PNB)',
-  'Canara Bank',
-  'Union Bank of India',
-  'IndusInd Bank',
-  'IDBI Bank',
-  'Yes Bank',
-  'Federal Bank',
-  'Indian Bank',
-  'Central Bank of India',
-  'RBL Bank',
-  'AU Small Finance Bank',
-];
 
 export const CheckoutPage: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -79,13 +48,6 @@ export const CheckoutPage: React.FC = () => {
   const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState(language === 'gu' ? 'સુરત' : 'Surat');
-
-  // Interactive Payment Selection
-  const [selectedMethod, setSelectedMethod] = useState<'upi' | 'qr' | 'netbanking'>('upi');
-  const [selectedBank, setSelectedBank] = useState<string>('HDFC');
-  const [customUpiId, setCustomUpiId] = useState('');
-  const [qrDataUrl, setQrDataUrl] = useState<string>('');
-  const [qrTimer, setQrTimer] = useState<number>(899); // 14:59
 
   // Modal for Simulated / Test Razorpay flow
   const [showSimulatedModal, setShowSimulatedModal] = useState<boolean>(false);
@@ -122,37 +84,9 @@ export const CheckoutPage: React.FC = () => {
     fetchCourse();
   }, [courseId, user, navigate, language]);
 
-  // QR Timer countdown
-  useEffect(() => {
-    if (selectedMethod !== 'qr') return;
-    const interval = setInterval(() => {
-      setQrTimer((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [selectedMethod]);
-
   const basePrice = course?.discount_price != null ? course.discount_price : (course?.price || 0);
   const discountAmount = appliedCoupon ? (appliedCoupon.discount_amount || 0) : 0;
   const finalPrice = Math.max(0, basePrice - discountAmount);
-
-  // Generate QR Code dynamically
-  useEffect(() => {
-    if (finalPrice <= 0) return;
-    const upiString = `upi://pay?pa=thesafetrading@icici&pn=TheSafeTrading&am=${finalPrice}&cu=INR&tn=Course_${courseId}`;
-    QRCode.toDataURL(upiString, {
-      width: 260,
-      margin: 1,
-      color: { dark: '#0f172a', light: '#ffffff' },
-    })
-      .then((url) => setQrDataUrl(url))
-      .catch((err) => console.error('Failed to generate QR code:', err));
-  }, [finalPrice, courseId]);
-
-  const formatTimer = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,26 +129,16 @@ export const CheckoutPage: React.FC = () => {
           ...payload,
           courseId: course.id,
           couponCode: appliedCoupon ? appliedCoupon.code : null,
-          billingInfo: { fullName, email, phone, city, bank: selectedBank, upiId: customUpiId },
-          paymentMethod:
-            selectedMethod === 'upi'
-              ? 'UPI'
-              : selectedMethod === 'qr'
-              ? 'QR Code'
-              : `Net Banking (${selectedBank})`
+          billingInfo: { fullName, email, phone, city },
+          paymentMethod: 'UPI'
         });
       } catch {
         verifyRes = await api.post('/checkout/verify-payment', {
           ...payload,
           courseId: course.id,
           couponCode: appliedCoupon ? appliedCoupon.code : null,
-          billingInfo: { fullName, email, phone, city, bank: selectedBank, upiId: customUpiId },
-          paymentMethod:
-            selectedMethod === 'upi'
-              ? 'UPI'
-              : selectedMethod === 'qr'
-              ? 'QR Code'
-              : `Net Banking (${selectedBank})`
+          billingInfo: { fullName, email, phone, city },
+          paymentMethod: 'UPI'
         });
       }
 
@@ -273,13 +197,13 @@ export const CheckoutPage: React.FC = () => {
         orderRes = await api.post('/payments/create-order', {
           courseId: course.id,
           couponCode: appliedCoupon ? appliedCoupon.code : null,
-          paymentMethod: selectedMethod
+          paymentMethod: 'UPI'
         });
       } catch {
         orderRes = await api.post('/checkout/create-razorpay-order', {
           courseId: course.id,
           couponCode: appliedCoupon ? appliedCoupon.code : null,
-          paymentMethod: selectedMethod
+          paymentMethod: 'UPI'
         });
       }
 
@@ -311,10 +235,9 @@ export const CheckoutPage: React.FC = () => {
               name: fullName,
               email: email,
               contact: phone,
-              method: selectedMethod === 'netbanking' ? 'netbanking' : 'upi',
             },
             theme: {
-              color: '#059669'
+              color: '#dc2626'
             },
             modal: {
               ondismiss: function () {
@@ -530,262 +453,30 @@ export const CheckoutPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Payment Method Selector */}
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-card space-y-5">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-emerald-600" />
-                  <span>{dict.checkout.paymentMethod} પસંદ કરો</span>
-                </h3>
-                <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  Razorpay Verified
+            {/* Submit & Secure Payment Button */}
+            <div className="space-y-3 pt-2">
+              <button
+                type="submit"
+                disabled={processing}
+                className="w-full py-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-base transition-all shadow-lg shadow-red-600/25 active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+              >
+                <Lock className="w-5 h-5" />
+                <span>
+                  {processing
+                    ? (language === 'gu' ? 'પ્રોસેસ થઈ રહ્યું છે...' : 'Processing...')
+                    : `${language === 'gu' ? 'હવે Pay કરો' : 'Pay Now'} — ${formatPrice(finalPrice)}`}
+                </span>
+              </button>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/90 flex items-center justify-center gap-2 text-xs text-slate-600">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>
+                  {language === 'gu'
+                    ? 'Razorpay દ્વારા ૧૦૦% સુરક્ષિત ચુકવણી (UPI, Cards, Net Banking)'
+                    : '100% Secure Payment via Razorpay (UPI, Cards, Net Banking)'}
                 </span>
               </div>
-
-              {/* 3 Interactive Clickable Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* 1. UPI */}
-                <button
-                  type="button"
-                  onClick={() => setSelectedMethod('upi')}
-                  className={`relative p-4 rounded-2xl border text-left transition-all duration-150 flex flex-col items-center justify-center gap-2.5 cursor-pointer ${
-                    selectedMethod === 'upi'
-                      ? 'bg-emerald-50/80 border-emerald-500 ring-2 ring-emerald-500/30 text-emerald-950 shadow-sm'
-                      : 'bg-slate-50/60 border-slate-200 text-slate-600 hover:bg-slate-100/80 hover:border-slate-300'
-                  }`}
-                >
-                  {selectedMethod === 'upi' && (
-                    <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </span>
-                  )}
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                    selectedMethod === 'upi' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-200'
-                  }`}>
-                    <Smartphone className="w-5 h-5" />
-                  </div>
-                  <div className="text-center">
-                    <span className="block font-bold text-xs sm:text-sm">
-                      {language === 'gu' ? 'UPI થી Payment કરો' : 'Pay via UPI'}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5 block">GPay, PhonePe, Paytm</span>
-                  </div>
-                </button>
-
-                {/* 2. QR Code */}
-                <button
-                  type="button"
-                  onClick={() => setSelectedMethod('qr')}
-                  className={`relative p-4 rounded-2xl border text-left transition-all duration-150 flex flex-col items-center justify-center gap-2.5 cursor-pointer ${
-                    selectedMethod === 'qr'
-                      ? 'bg-emerald-50/80 border-emerald-500 ring-2 ring-emerald-500/30 text-emerald-950 shadow-sm'
-                      : 'bg-slate-50/60 border-slate-200 text-slate-600 hover:bg-slate-100/80 hover:border-slate-300'
-                  }`}
-                >
-                  {selectedMethod === 'qr' && (
-                    <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </span>
-                  )}
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                    selectedMethod === 'qr' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-200'
-                  }`}>
-                    <QrCode className="w-5 h-5" />
-                  </div>
-                  <div className="text-center">
-                    <span className="block font-bold text-xs sm:text-sm">
-                      {language === 'gu' ? 'QR Code Scan કરીને Pay કરો' : 'Pay via QR Code'}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5 block">Scan & Pay Instant</span>
-                  </div>
-                </button>
-
-                {/* 3. Net Banking */}
-                <button
-                  type="button"
-                  onClick={() => setSelectedMethod('netbanking')}
-                  className={`relative p-4 rounded-2xl border text-left transition-all duration-150 flex flex-col items-center justify-center gap-2.5 cursor-pointer ${
-                    selectedMethod === 'netbanking'
-                      ? 'bg-emerald-50/80 border-emerald-500 ring-2 ring-emerald-500/30 text-emerald-950 shadow-sm'
-                      : 'bg-slate-50/60 border-slate-200 text-slate-600 hover:bg-slate-100/80 hover:border-slate-300'
-                  }`}
-                >
-                  {selectedMethod === 'netbanking' && (
-                    <span className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </span>
-                  )}
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                    selectedMethod === 'netbanking' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-200'
-                  }`}>
-                    <Building2 className="w-5 h-5" />
-                  </div>
-                  <div className="text-center">
-                    <span className="block font-bold text-xs sm:text-sm">
-                      {language === 'gu' ? 'Net Banking પસંદ કરો' : 'Select Net Banking'}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5 block">All Major Indian Banks</span>
-                  </div>
-                </button>
-              </div>
-
-              {/* Dynamic details section depending on active method */}
-              <div className="mt-4 pt-4 border-t border-slate-100">
-                {/* UPI Panel */}
-                {selectedMethod === 'upi' && (
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4 animate-in fade-in duration-150">
-                    <div>
-                      <span className="text-xs font-bold text-slate-800 block mb-2">
-                        {language === 'gu' ? 'UPI એપ્સ સપોર્ટેડ:' : 'Supported UPI Apps:'}
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {['Google Pay', 'PhonePe', 'Paytm', 'BHIM UPI', 'CRED'].map((app) => (
-                          <span
-                            key={app}
-                            className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-2xs"
-                          >
-                            {app}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        {language === 'gu' ? 'તમારો UPI ID દાખલ કરો (વૈકલ્પિક)' : 'Enter your UPI ID (Optional)'}
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="yourname@okaxis / 8530724929@ybl"
-                        value={customUpiId}
-                        onChange={(e) => setCustomUpiId(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                      />
-                      <p className="text-[11px] text-slate-500 mt-1.5">
-                        {language === 'gu'
-                          ? 'બટન પર ક્લિક કરવાથી Razorpay UPI મોડલ ઓપન થશે જેમાં તમે સીધા UPI એપથી ચુકવણી કરી શકશો.'
-                          : 'Clicking the button will launch the Razorpay UPI checkout to pay directly with your UPI app.'}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* QR Code Panel */}
-                {selectedMethod === 'qr' && (
-                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4 animate-in fade-in duration-150 text-center">
-                    <div className="flex items-center justify-between px-2 text-xs">
-                      <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-emerald-600" />
-                        {language === 'gu' ? 'લાઇવ UPI QR કોડ' : 'Live UPI Payment QR'}
-                      </span>
-                      <span className="font-mono text-emerald-700 font-bold bg-emerald-100/70 px-2 py-0.5 rounded-md flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        {formatTimer(qrTimer)}
-                      </span>
-                    </div>
-
-                    <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm inline-block mx-auto relative group">
-                      {qrDataUrl ? (
-                        <img
-                          src={qrDataUrl}
-                          alt="Payment QR Code"
-                          className="w-48 h-48 sm:w-52 sm:h-52 object-contain mx-auto rounded-lg"
-                        />
-                      ) : (
-                        <div className="w-48 h-48 bg-slate-100 rounded-lg animate-pulse flex items-center justify-center text-xs text-slate-400">
-                          Generating QR...
-                        </div>
-                      )}
-                      <div className="mt-2 text-xs font-bold text-slate-800">
-                        {formatPrice(finalPrice)}
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5 max-w-sm mx-auto">
-                      <p className="text-xs font-bold text-slate-800">
-                        {language === 'gu'
-                          ? 'કોઈપણ UPI એપ (GPay, PhonePe, Paytm) થી સ્કેન કરો'
-                          : 'Scan with any UPI App (GPay, PhonePe, Paytm)'}
-                      </p>
-                      <p className="text-[11px] text-slate-500">
-                        {language === 'gu'
-                          ? 'QR સ્કેન કર્યા પછી નીચે આપેલા બટન પર ક્લિક કરીને ચુકવણી પુષ્ટિ કરો.'
-                          : 'After scanning and completing payment on your phone, click below to verify.'}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Net Banking Panel */}
-                {selectedMethod === 'netbanking' && (
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4 animate-in fade-in duration-150">
-                    <span className="text-xs font-bold text-slate-800 block">
-                      {language === 'gu' ? 'લોકપ્રિય બેંકો પસંદ કરો:' : 'Select Popular Bank:'}
-                    </span>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                      {POPULAR_BANKS.map((b) => (
-                        <button
-                          key={b.id}
-                          type="button"
-                          onClick={() => setSelectedBank(b.name)}
-                          className={`p-3 rounded-xl border text-xs font-bold text-left transition-all cursor-pointer flex items-center justify-between ${
-                            selectedBank === b.name
-                              ? 'bg-white border-emerald-500 ring-2 ring-emerald-500/20 text-slate-900 shadow-xs'
-                              : 'bg-white/80 border-slate-200 text-slate-700 hover:bg-white hover:border-slate-300'
-                          }`}
-                        >
-                          <span className="truncate">{b.name}</span>
-                          {selectedBank === b.name && (
-                            <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        {language === 'gu' ? 'અથવા અન્ય બેંક પસંદ કરો' : 'Or Select Other Bank'}
-                      </label>
-                      <select
-                        value={selectedBank}
-                        onChange={(e) => setSelectedBank(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                      >
-                        {POPULAR_BANKS.map((b) => (
-                          <option key={b.id} value={b.name}>
-                            {b.name}
-                          </option>
-                        ))}
-                        {OTHER_BANKS.map((bank) => (
-                          <option key={bank} value={bank}>
-                            {bank}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
-
-            {/* Dynamic Submit Button */}
-            <button
-              type="submit"
-              disabled={processing}
-              className="w-full py-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-base transition-all shadow-lg shadow-red-600/25 active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
-            >
-              <Lock className="w-5 h-5" />
-              <span>
-                {processing
-                  ? (language === 'gu' ? 'પ્રોસેસ થઈ રહ્યું છે...' : 'Processing...')
-                  : selectedMethod === 'upi'
-                  ? `${language === 'gu' ? 'UPI થી Pay કરો' : 'Pay via UPI'} — ${formatPrice(finalPrice)}`
-                  : selectedMethod === 'qr'
-                  ? `${language === 'gu' ? 'QR Code વડે Pay કરો' : 'Pay via QR Code'} — ${formatPrice(finalPrice)}`
-                  : `${language === 'gu' ? 'Net Banking થી Pay કરો' : 'Pay via Net Banking'} — ${formatPrice(finalPrice)}`}
-              </span>
-            </button>
 
             <p className="text-center text-xs text-slate-500 flex items-center justify-center gap-1.5">
               <span>{dict.checkout.secureNotice}</span>
@@ -912,31 +603,6 @@ export const CheckoutPage: React.FC = () => {
 
             {/* Modal Body */}
             <div className="p-6 space-y-5">
-              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center gap-2.5">
-                <Sparkles className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>
-                  {selectedMethod === 'upi'
-                    ? (language === 'gu' ? 'UPI ચુકવણી સિમ્યુલેશન મોડ એક્ટિવ છે.' : 'UPI Payment flow ready.')
-                    : selectedMethod === 'qr'
-                    ? (language === 'gu' ? 'QR Code સ્કેનર ચુકવણી મોડ એક્ટિવ છે.' : 'QR Code Scanner flow ready.')
-                    : `${language === 'gu' ? 'બેંક:' : 'Bank:'} ${selectedBank} Net Banking flow ready.`}
-                </span>
-              </div>
-
-              {/* QR Preview if QR method */}
-              {selectedMethod === 'qr' && qrDataUrl && (
-                <div className="text-center p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                  <img
-                    src={qrDataUrl}
-                    alt="Scan QR"
-                    className="w-40 h-40 mx-auto rounded-lg shadow-2xs"
-                  />
-                  <p className="text-xs font-semibold text-slate-700 mt-2">
-                    {language === 'gu' ? 'કોઈપણ UPI એપ વડે સ્કેન કરો' : 'Scan with GPay / PhonePe / Paytm'}
-                  </p>
-                </div>
-              )}
-
               {/* Order Info */}
               <div className="text-xs text-slate-600 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <div className="flex justify-between">
@@ -948,8 +614,8 @@ export const CheckoutPage: React.FC = () => {
                   <span className="text-slate-800 font-semibold">{fullName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Selected Method:</span>
-                  <span className="text-emerald-700 font-bold uppercase">{selectedMethod}</span>
+                  <span className="text-slate-500">{dict.checkout.totalAmount}:</span>
+                  <span className="text-emerald-700 font-extrabold">{formatPrice(finalPrice)}</span>
                 </div>
               </div>
 

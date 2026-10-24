@@ -61,7 +61,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onWishlistChange
   const [isPreviewActive, setIsPreviewActive] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [videoProgress, setVideoProgress] = useState(0);
-  const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const ytId = getYouTubeId(course.preview_video_url);
