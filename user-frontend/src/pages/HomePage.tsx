@@ -175,7 +175,7 @@ export const HomePage: React.FC = () => {
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold text-slate-950 dark:text-white tracking-tight leading-[1.18]">
               {dict.hero.headlinePart1}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-rose-600 to-red-700">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-green-600 to-green-700">
                 {dict.hero.headlineHighlight}
               </span>{" "}
               {dict.hero.headlinePart2}
@@ -230,7 +230,7 @@ export const HomePage: React.FC = () => {
                 href="https://wa.me/917435961016?text=Hello%20The%20Safe%20Trading%2C%20I%20want%20to%20know%20more%20about%20your%20courses."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto px-6 py-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 font-bold text-base border border-emerald-200 dark:border-emerald-800 transition-all flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer"
+                className="w-full sm:w-auto px-6 py-4 rounded-xl bg-green-600 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 font-bold text-base border border-emerald-200 dark:border-emerald-800 transition-all flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer"
               >
                 <MessageCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <span>{dict.hero.chatWhatsApp}</span>

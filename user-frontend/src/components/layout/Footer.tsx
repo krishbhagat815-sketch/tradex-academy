@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
+import { BrandLogo } from "../common/BrandLogo";
 import {
   TrendingUp,
   ShieldCheck,
@@ -23,13 +24,8 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
         {/* Brand Column */}
         <div className="lg:col-span-2 space-y-4">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center shadow-md border border-slate-800">
-              <TrendingUp className="w-6 h-6 text-red-500 stroke-[2.2]" />
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-              The Safe<span className="text-red-600">Trading</span>
-            </span>
+          <Link to="/" className="inline-flex items-center gap-3">
+            <BrandLogo variant="footer" showText={true} showTagline={false} />
           </Link>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
             {dict.footer.aboutDesc}

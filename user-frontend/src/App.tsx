@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { SiteSettingsProvider } from './context/SiteSettingsContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 
@@ -42,27 +43,29 @@ export function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <LanguageProvider>
-          <AuthProvider>
-            <Layout>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/courses" element={<CoursesPage />} />
-                <Route path="/counseling" element={<CounselingBookingPage />} />
-                <Route path="/book-session" element={<CounselingBookingPage />} />
-                <Route path="/course/:id" element={<CourseDetailsPage />} />
-                <Route path="/checkout/:courseId" element={<CheckoutPage />} />
-                <Route path="/dashboard" element={<StudentDashboardPage />} />
-                <Route path="/my-courses" element={<StudentDashboardPage />} />
-                <Route path="/learn/:courseId" element={<CoursePlayerPage />} />
-                <Route path="/verify-certificate" element={<CertificateVerifyPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              </Routes>
-            </Layout>
-          </AuthProvider>
-        </LanguageProvider>
+        <SiteSettingsProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/courses" element={<CoursesPage />} />
+                  <Route path="/counseling" element={<CounselingBookingPage />} />
+                  <Route path="/book-session" element={<CounselingBookingPage />} />
+                  <Route path="/course/:id" element={<CourseDetailsPage />} />
+                  <Route path="/checkout/:courseId" element={<CheckoutPage />} />
+                  <Route path="/dashboard" element={<StudentDashboardPage />} />
+                  <Route path="/my-courses" element={<StudentDashboardPage />} />
+                  <Route path="/learn/:courseId" element={<CoursePlayerPage />} />
+                  <Route path="/verify-certificate" element={<CertificateVerifyPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                </Routes>
+              </Layout>
+            </AuthProvider>
+          </LanguageProvider>
+        </SiteSettingsProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
+import { BrandLogo } from "../components/common/BrandLogo";
 import {
   TrendingUp,
   Mail,
@@ -44,12 +45,7 @@ export const LoginPage: React.FC = () => {
         {/* Brand */}
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center shadow-md border border-slate-800">
-              <TrendingUp className="w-6 h-6 text-red-500 stroke-[2.2]" />
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-slate-950">
-              The Safe<span className="text-red-600 font-black">Trading</span>
-            </span>
+            <BrandLogo variant="auth" showText={true} showTagline={false} />
           </Link>
           <h2 className="text-2xl font-extrabold text-slate-950">
             {dict.auth.loginTitle}

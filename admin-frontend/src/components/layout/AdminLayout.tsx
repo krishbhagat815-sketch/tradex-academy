@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { api } from '../../services/api';
+import { getMediaUrl } from '../../utils/media';
 import {
   LayoutDashboard,
   BookOpen,
@@ -19,7 +21,8 @@ import {
   ShieldCheck,
   PlusCircle,
   Megaphone,
-  Calendar
+  Calendar,
+  TrendingUp
 } from 'lucide-react';
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -28,6 +31,19 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [brandLogo, setBrandLogo] = useState<any>(null);
+
+  useEffect(() => {
+    async function loadBrand() {
+      try {
+        const res = await api.get('/content/settings');
+        if (res.success && res.logo) {
+          setBrandLogo(res.logo);
+        }
+      } catch {}
+    }
+    loadBrand();
+  }, [location.pathname]);
 
   const menuItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -60,13 +76,32 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         {/* Brand */}
         <div className="h-16 px-5 flex items-center justify-between border-b border-slate-100">
           <Link to="/" className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center flex-shrink-0 shadow-xs">
-              <GraduationCap className="w-5 h-5 text-white stroke-[2.2]" />
-            </div>
+            {brandLogo?.logoType === 'image' && brandLogo?.logoUrl ? (
+              <div className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-200 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden p-1">
+                <img
+                  src={getMediaUrl(brandLogo.logoUrl)}
+                  alt="Logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            ) : (
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-800"
+                style={{ backgroundColor: brandLogo?.bgColor || '#020617' }}
+              >
+                <TrendingUp
+                  className="w-5 h-5 stroke-[2.2]"
+                  style={{ color: brandLogo?.iconColor || '#ef4444' }}
+                />
+              </div>
+            )}
             {sidebarOpen && (
               <div className="flex flex-col min-w-0">
                 <span className="text-base font-extrabold text-slate-900 tracking-tight leading-none truncate">
-                  The Safe<span className="text-emerald-600">Trading</span>
+                  {brandLogo?.brandNamePrimary || 'The Safe'}
+                  <span style={{ color: brandLogo?.brandSecondaryColor || '#16a34a' }}>
+                    {brandLogo?.brandNameSecondary || 'Trading'}
+                  </span>
                 </span>
                 <span className="text-[10px] text-slate-400 uppercase tracking-widest font-mono mt-0.5">
                   Management Console
@@ -155,10 +190,31 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
       {/* Mobile Header */}
       <div className="md:hidden h-16 bg-white border-b border-slate-200 px-4 flex items-center justify-between sticky top-0 z-40 shadow-xs">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
-            <GraduationCap className="w-5 h-5" />
-          </div>
-          <span className="font-extrabold text-slate-900 text-base">The Safe Trading Admin</span>
+          {brandLogo?.logoType === 'image' && brandLogo?.logoUrl ? (
+            <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-200 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden p-1">
+              <img
+                src={getMediaUrl(brandLogo.logoUrl)}
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+          ) : (
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-800"
+              style={{ backgroundColor: brandLogo?.bgColor || '#020617' }}
+            >
+              <TrendingUp
+                className="w-4 h-4 stroke-[2.2]"
+                style={{ color: brandLogo?.iconColor || '#ef4444' }}
+              />
+            </div>
+          )}
+          <span className="font-extrabold text-slate-900 text-base">
+            {brandLogo?.brandNamePrimary || 'The Safe'}{' '}
+            <span style={{ color: brandLogo?.brandSecondaryColor || '#16a34a' }}>
+              {brandLogo?.brandNameSecondary || 'Trading'}
+            </span>
+          </span>
         </Link>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

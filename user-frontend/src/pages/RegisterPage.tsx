@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { BrandLogo } from '../components/common/BrandLogo';
 import { TrendingUp, Mail, Lock, User, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
 
 export const RegisterPage: React.FC = () => {
@@ -39,12 +40,7 @@ export const RegisterPage: React.FC = () => {
       <div className="w-full max-w-md p-8 sm:p-10 rounded-3xl bg-white border border-slate-200/90 shadow-card space-y-6">
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center shadow-md border border-slate-800">
-              <TrendingUp className="w-6 h-6 text-red-500 stroke-[2.2]" />
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-slate-950">
-              The Safe<span className="text-red-600 font-black">Trading</span>
-            </span>
+            <BrandLogo variant="auth" showText={true} showTagline={false} />
           </Link>
           <h2 className="text-2xl font-extrabold text-slate-950">{dict.auth.registerTitle}</h2>
           <p className="text-xs text-slate-500">{dict.auth.registerSubtitle}</p>

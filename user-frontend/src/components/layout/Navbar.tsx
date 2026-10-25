@@ -22,6 +22,7 @@ import {
   Sun,
 } from "lucide-react";
 import { ThemeToggle } from "../common/ThemeToggle";
+import { BrandLogo } from "../common/BrandLogo";
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -62,7 +63,9 @@ export const Navbar: React.FC = () => {
     const timer = setTimeout(async () => {
       try {
         setIsSearching(true);
-        const res = await api.get(`/courses?search=${encodeURIComponent(searchQuery.trim())}&limit=5`);
+        const res = await api.get(
+          `/courses?search=${encodeURIComponent(searchQuery.trim())}&limit=5`,
+        );
         if (res.success && res.courses) {
           setSuggestions(res.courses.slice(0, 4));
         }
@@ -79,7 +82,7 @@ export const Navbar: React.FC = () => {
   // Sync input with URL search param on page change
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const q = params.get('search');
+    const q = params.get("search");
     if (q !== null) {
       setSearchQuery(q);
     }
@@ -96,7 +99,7 @@ export const Navbar: React.FC = () => {
     if (clean) {
       navigate(`/courses?search=${encodeURIComponent(clean)}`);
     } else {
-      navigate('/courses');
+      navigate("/courses");
     }
   };
 
@@ -105,12 +108,12 @@ export const Navbar: React.FC = () => {
     {
       name: language === "gu" ? "૧-ઓન-૧ કાઉન્સેલિંગ" : "1-on-1 Counseling",
       path: "/counseling",
-      badge: "Live Mentor"
+      badge: "Live Mentor",
     },
     {
       name: dict.nav.myCourses,
       path: user ? "/my-courses" : "/login?redirect=/my-courses",
-      badge: user ? "Enrolled" : undefined
+      badge: user ? "Enrolled" : undefined,
     },
     { name: dict.nav.whyUs, path: "/#why-us" },
     { name: dict.nav.verifyCert, path: "/verify-certificate" },
@@ -122,18 +125,12 @@ export const Navbar: React.FC = () => {
         {/* Left Side: Brand Logo + Extended Search Bar */}
         <div className="flex items-center gap-4 lg:gap-6 flex-1 min-w-0">
           <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center shadow-md border border-slate-800 group-hover:scale-105 transition-transform">
-              <TrendingUp className="w-6 h-6 text-red-500 stroke-[2.4]" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-slate-950 dark:text-white flex items-center gap-1.5 whitespace-nowrap">
-                The Safe
-                <span className="text-red-600 font-black">Trading</span>
-              </span>
-              <span className="text-[10px] tracking-wider text-slate-500 dark:text-slate-400 font-medium -mt-1 font-gujarati whitespace-nowrap">
-                {dict.nav.tagline}
-              </span>
-            </div>
+            <BrandLogo
+              variant="navbar"
+              showText={true}
+              showTagline={true}
+              iconClassName="group-hover:scale-105 transition-transform"
+            />
           </Link>
 
           {/* Global Extended Search Bar (Desktop) */}
@@ -141,7 +138,10 @@ export const Navbar: React.FC = () => {
             ref={searchContainerRef}
             className="hidden md:flex flex-1 max-w-xl lg:max-w-2xl relative"
           >
-            <form onSubmit={handleSearch} className="w-full relative flex items-center">
+            <form
+              onSubmit={handleSearch}
+              className="w-full relative flex items-center"
+            >
               <input
                 type="text"
                 placeholder={dict.nav.searchPlaceholder}
@@ -195,12 +195,16 @@ export const Navbar: React.FC = () => {
 
             {/* Live Autocomplete Suggestions Dropdown */}
             {showDropdown && searchQuery.trim().length >= 2 && (
-              <div
-                className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden z-[999] animate-in fade-in slide-in-from-top-1 duration-150"
-              >
+              <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden z-[999] animate-in fade-in slide-in-from-top-1 duration-150">
                 <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center justify-between">
-                  <span>{language === 'gu' ? 'કોર્સ પરિણામો:' : 'Matching Courses:'}</span>
-                  {isSearching && <span className="text-emerald-600 dark:text-emerald-400 animate-pulse text-[10px]">Searching...</span>}
+                  <span>
+                    {language === "gu" ? "કોર્સ પરિણામો:" : "Matching Courses:"}
+                  </span>
+                  {isSearching && (
+                    <span className="text-emerald-600 dark:text-emerald-400 animate-pulse text-[10px]">
+                      Searching...
+                    </span>
+                  )}
                 </div>
 
                 {suggestions.length > 0 ? (
@@ -226,7 +230,9 @@ export const Navbar: React.FC = () => {
                           </p>
                           <div className="flex items-center gap-2 mt-0.5 text-[10px] text-slate-500 dark:text-slate-400">
                             <span className="text-red-600 dark:text-red-400 font-bold">
-                              {formatPrice(course.discount_price ?? course.price)}
+                              {formatPrice(
+                                course.discount_price ?? course.price,
+                              )}
                             </span>
                             <span>•</span>
                             <span>{course.difficulty_level}</span>
@@ -239,18 +245,26 @@ export const Navbar: React.FC = () => {
                       onClick={() => handleSearch()}
                       className="w-full text-center py-2.5 bg-slate-50 dark:bg-slate-950 hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 font-bold text-xs transition-colors"
                     >
-                      {language === 'gu' ? 'બધા પરિણામો જુઓ →' : 'View all matching courses →'}
+                      {language === "gu"
+                        ? "બધા પરિણામો જુઓ →"
+                        : "View all matching courses →"}
                     </button>
                   </div>
                 ) : !isSearching ? (
                   <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
-                    <p>{language === 'gu' ? 'કોઈ કોર્સ મળ્યો નથી.' : 'No courses found for this query.'}</p>
+                    <p>
+                      {language === "gu"
+                        ? "કોઈ કોર્સ મળ્યો નથી."
+                        : "No courses found for this query."}
+                    </p>
                     <button
                       type="button"
                       onClick={() => handleSearch()}
                       className="mt-2 text-red-600 dark:text-red-400 underline hover:text-red-700 dark:hover:text-red-300 font-semibold"
                     >
-                      {language === 'gu' ? 'બધા Courses પેજ પર શોધો' : 'Browse full catalog'}
+                      {language === "gu"
+                        ? "બધા Courses પેજ પર શોધો"
+                        : "Browse full catalog"}
                     </button>
                   </div>
                 ) : null}
@@ -259,15 +273,15 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-
         {/* Desktop Navigation Links */}
         <nav className="hidden xl:flex items-center gap-5 text-sm font-medium text-slate-700 dark:text-slate-300">
           {navLinks.map((link) => {
             const isActive =
               location.pathname === link.path ||
-              (link.path.startsWith('/my-courses') &&
-                (location.pathname === '/my-courses' ||
-                  (location.pathname === '/dashboard' && !location.search.includes('tab='))));
+              (link.path.startsWith("/my-courses") &&
+                (location.pathname === "/my-courses" ||
+                  (location.pathname === "/dashboard" &&
+                    !location.search.includes("tab="))));
             return (
               <Link
                 key={link.name}
@@ -278,7 +292,10 @@ export const Navbar: React.FC = () => {
               >
                 <span>{link.name}</span>
                 {link.badge && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="Active Learning" />
+                  <span
+                    className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
+                    title="Active Learning"
+                  />
                 )}
               </Link>
             );
@@ -353,7 +370,8 @@ export const Navbar: React.FC = () => {
                   alt={user.name}
                   className="w-7 h-7 rounded-full object-cover ring-2 ring-red-500/40 bg-slate-100"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}`;
+                    (e.target as HTMLImageElement).src =
+                      `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}`;
                   }}
                 />
                 <span className="text-slate-800 dark:text-slate-200 max-w-[100px] truncate font-medium">
@@ -472,7 +490,10 @@ export const Navbar: React.FC = () => {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="sm:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 py-5 space-y-4 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
-          <form onSubmit={handleSearch} className="relative flex items-center gap-2">
+          <form
+            onSubmit={handleSearch}
+            className="relative flex items-center gap-2"
+          >
             <div className="relative flex-1">
               <input
                 type="text"
@@ -534,9 +555,10 @@ export const Navbar: React.FC = () => {
             {navLinks.map((link) => {
               const isActive =
                 location.pathname === link.path ||
-                (link.path.startsWith('/my-courses') &&
-                  (location.pathname === '/my-courses' ||
-                    (location.pathname === '/dashboard' && !location.search.includes('tab='))));
+                (link.path.startsWith("/my-courses") &&
+                  (location.pathname === "/my-courses" ||
+                    (location.pathname === "/dashboard" &&
+                      !location.search.includes("tab="))));
               return (
                 <Link
                   key={link.name}
